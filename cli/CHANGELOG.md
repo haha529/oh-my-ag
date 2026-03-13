@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v2.0.8...cli-v2.1.0) (2026-03-13)
+
+
+### Features
+
+* **cli:** restore Claude Code and GitHub Copilot symlink prompt during install ([db93945](https://github.com/first-fluke/oh-my-agent/commit/db93945aa337dae1874ca7de91831720ee4f95b8))
+* **cli:** show contextual support message based on star status ([42d7b19](https://github.com/first-fluke/oh-my-agent/commit/42d7b198bc1519ef523d7fa4a1d1d9d7e95497fb))
+
+
+### Miscellaneous
+
+* sync prompt-manifest.json ([9d51af1](https://github.com/first-fluke/oh-my-agent/commit/9d51af154f70ed30751dab07784b5a926b04b473))
+
 ## [2.0.8](https://github.com/first-fluke/oh-my-agent/compare/cli-v2.0.7...cli-v2.0.8) (2026-03-13)
 
 
