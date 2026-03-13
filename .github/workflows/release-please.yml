@@ -136,3 +136,8 @@ jobs:
         run: cd /tmp/oh-my-ag-publish && bun publish --access public
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Deprecate legacy NPM package
+        run: npm deprecate 'oh-my-ag@*' 'Deprecated. Use oh-my-agent instead.'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
