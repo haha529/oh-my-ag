@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v2.3.0...cli-v2.4.0) (2026-03-13)
+
+
+### Features
+
+* **skills:** add db-agent with vector retrieval guidance ([f433c18](https://github.com/first-fluke/oh-my-agent/commit/f433c184efa72f95c49ce8616ead7fad9b1be6eb))
+* **skills:** add ISO guidance across core agents ([58ce1af](https://github.com/first-fluke/oh-my-agent/commit/58ce1afe7e6b663210c0a9ea5b888db67419daa7))
+
+
+### Miscellaneous
+
+* sync prompt-manifest.json [skip ci] ([5010329](https://github.com/first-fluke/oh-my-agent/commit/50103293e06e9272349af9a883098e68e279b60d))
+* sync prompt-manifest.json [skip ci] ([77c800f](https://github.com/first-fluke/oh-my-agent/commit/77c800f1a167b3e15cfeb62ce087efee83ef24cb))
+
 ## [2.3.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v2.2.0...cli-v2.3.0) (2026-03-13)
 
 
