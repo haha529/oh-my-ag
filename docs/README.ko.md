@@ -34,7 +34,7 @@
 | 도구 / IDE | 스킬 소스 | 상호운용 모드 | 참고 |
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | 네이티브 | 주 single source-of-truth 레이아웃 |
-| Claude Code | `.claude/skills/` | `.agents/skills/` 로 심볼릭 링크 | 인스톨러가 관리 |
+| Claude Code | `.claude/skills/` + `.claude/agents/` | 네이티브 + 어댑터 | 도메인 스킬 심링크 + 네이티브 워크플로우 스킬, 서브에이전트, CLAUDE.md |
 | OpenCode | `.agents/skills/` | 네이티브 호환 | 동일 프로젝트 레벨 스킬 소스 사용 |
 | Amp | `.agents/skills/` | 네이티브 호환 | 동일 프로젝트 레벨 소스 공유 |
 | Codex CLI | `.agents/skills/` | 네이티브 호환 | 동일 프로젝트 스킬 소스에서 작동 |
@@ -42,6 +42,17 @@
 | GitHub Copilot | `.github/skills/` | 선택적 심볼릭 링크 | 설정 중 선택 시 설치 |
 
 자세한 지원 매트릭스와 상호운용성 노트는 [SUPPORTED_AGENTS.md](./SUPPORTED_AGENTS.md) 를 참고하세요.
+
+### Claude Code 네이티브 통합
+
+Claude Code는 심링크 이상의 일급 네이티브 통합을 지원합니다:
+
+- **`CLAUDE.md`** — 프로젝트 정체성, 아키텍처, 규칙 (Claude Code가 자동 로딩)
+- **`.claude/skills/`** — `.agents/workflows/`에서 매핑된 12개 워크플로우 스킬 (예: `/orchestrate`, `/coordinate`, `/ultrawork`)
+- **`.claude/agents/`** — Task tool로 스폰되는 7개 서브에이전트 정의 (backend-impl, frontend-impl, mobile-impl, db-impl, qa-reviewer, debug-investigator, pm-planner)
+- **네이티브 루프 패턴** — CLI 폴링 대신 Task tool 동기 결과를 활용한 Review Loop, Issue Remediation Loop, Phase Gate Loop
+
+도메인 스킬(backend-agent, frontend-agent 등)은 `.agents/skills/`의 심링크로 유지됩니다. 워크플로우 스킬은 원본 `.agents/workflows/*.md`를 SSOT로 참조하는 네이티브 SKILL.md 파일입니다.
 
 ## `.agents` 명세
 

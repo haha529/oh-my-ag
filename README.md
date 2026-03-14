@@ -77,7 +77,7 @@ flowchart TD
 | Tool / IDE | Skills Source | Interop Mode | Notes |
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Native | Primary source-of-truth layout |
-| Claude Code | `.claude/skills/` | Symlink to `.agents/skills/` | Managed by installer |
+| Claude Code | `.claude/skills/` + `.claude/agents/` | Native + Adapter | Symlinks for domain skills + native workflow skills, subagents, and CLAUDE.md |
 | OpenCode | `.agents/skills/` | Native-compatible | Uses the same project-level skill source |
 | Amp | `.agents/skills/` | Native-compatible | Shares the same project-level source |
 | Codex CLI | `.agents/skills/` | Native-compatible | Works from the same project skill source |
@@ -85,6 +85,17 @@ flowchart TD
 | GitHub Copilot | `.github/skills/` | Optional symlink | Installed when selected during setup |
 
 See [SUPPORTED_AGENTS.md](./docs/SUPPORTED_AGENTS.md) for the current support matrix and interoperability notes.
+
+### Claude Code Native Integration
+
+Claude Code has first-class native integration beyond symlinks:
+
+- **`CLAUDE.md`** — project identity, architecture, and rules (auto-loaded by Claude Code)
+- **`.claude/skills/`** — 12 workflow skills mapped from `.agents/workflows/` (e.g., `/orchestrate`, `/coordinate`, `/ultrawork`)
+- **`.claude/agents/`** — 7 subagent definitions spawned via Task tool (backend-impl, frontend-impl, mobile-impl, db-impl, qa-reviewer, debug-investigator, pm-planner)
+- **Native loop patterns** — Review Loop, Issue Remediation Loop, and Phase Gate Loop using synchronous Task tool results instead of CLI polling
+
+Domain skills (backend-agent, frontend-agent, etc.) remain as symlinks from `.agents/skills/`. Workflow skills are native SKILL.md files that reference the original `.agents/workflows/*.md` as the source of truth.
 
 ## The `.agents` Spec
 

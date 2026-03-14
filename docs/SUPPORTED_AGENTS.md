@@ -9,7 +9,7 @@ The installer can then project compatibility to other tool-specific directories 
 | Tool / IDE | Project Skill Path | Status | Interop Mode | Notes |
 |------------|--------------------|--------|--------------|-------|
 | Antigravity | `.agents/skills/` | First-class | Native | Primary source-of-truth layout |
-| Claude Code | `.claude/skills/` | First-class | Symlink from `.agents/skills/` | Installed by default for compatibility |
+| Claude Code | `.claude/skills/` + `.claude/agents/` | First-class | Native + Adapter | Domain skill symlinks + native workflow skills, subagents, and CLAUDE.md |
 | OpenCode | `.agents/skills/` | First-class | Native-compatible | Shares the same project-level source |
 | Amp | `.agents/skills/` | First-class | Native-compatible | Shares the same project-level source |
 | Codex CLI | `.agents/skills/` | First-class | Native-compatible | Shares the same project-level source |
@@ -22,6 +22,17 @@ The installer can then project compatibility to other tool-specific directories 
 - Skills remain authored once under `.agents/skills/`
 - Interop directories are generated rather than becoming separate sources of truth
 - Workflows and shared resources continue to be managed from the same project structure
+
+## Claude Code Native Integration
+
+Claude Code extends beyond symlinks with a full native adapter layer:
+
+- **`CLAUDE.md`** at project root (auto-loaded by Claude Code)
+- **`.claude/skills/`** — 12 workflow skills mapped from `.agents/workflows/` as native SKILL.md files
+- **`.claude/agents/`** — 7 subagent definitions (backend-impl, frontend-impl, mobile-impl, db-impl, qa-reviewer, debug-investigator, pm-planner)
+- **Native loop patterns** — Review Loop, Issue Remediation Loop, Phase Gate Loop via Task tool
+- Domain skills remain as symlinks from `.agents/skills/` (coexist with native workflow skills)
+- `.agents/` is never modified — all native files reference it as the source of truth
 
 ## Current Design Principle
 

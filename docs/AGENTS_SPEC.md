@@ -106,6 +106,30 @@ Compatibility directories are projections, not separate sources of truth:
 
 Where supported, these should point back to `.agents/skills/` via symlinks or equivalent generated views.
 
+### Claude Code Native Adapter
+
+Claude Code uses a hybrid model beyond simple symlinks:
+
+```text
+.claude/
+├── skills/
+│   ├── backend-agent/  → ../../.agents/skills/backend-agent  (symlink, domain skill)
+│   ├── orchestrate/SKILL.md                                   (native, workflow skill)
+│   └── ...
+├── agents/
+│   ├── backend-impl.md         (subagent definition)
+│   ├── qa-reviewer.md          (subagent definition)
+│   └── ...
+└── settings.local.json         (hooks for SSOT protection)
+```
+
+- **Domain skills**: symlinked from `.agents/skills/` (unchanged)
+- **Workflow skills**: native SKILL.md files that reference `.agents/workflows/*.md` as the source of truth
+- **Subagents**: `.claude/agents/*.md` definitions spawned via Task tool, referencing domain skills via `skills:` frontmatter
+- **CLAUDE.md**: project-level integration file auto-loaded by Claude Code
+
+All native files reference `.agents/` — they never replace or duplicate it.
+
 ## Packaging Rules
 
 - repository-owned skill metadata is tracked in git
