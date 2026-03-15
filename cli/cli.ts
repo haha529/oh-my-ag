@@ -608,13 +608,11 @@ addOutputOptions(
   program
     .command("visualize")
     .alias("viz")
-    .description("Visualize project structure as a dependency graph")
-    .option("-o, --out <path>", "Save as SVG file"),
+    .description("Visualize project structure as a dependency graph"),
 ).action(
   runAction(
     async (options) => {
       await visualize({
-        output: options.out,
         json: resolveJsonMode(options),
       });
     },
