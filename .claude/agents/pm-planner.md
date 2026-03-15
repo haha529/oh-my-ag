@@ -1,6 +1,6 @@
 ---
 name: pm-planner
-description: PM 요구사항 분석, 태스크 분해, API 계약 정의 에이전트
+description: PM requirements analysis, task decomposition, API contract definition agent
 tools: Read, Write, Grep, Glob, Bash
 model: sonnet
 maxTurns: 10

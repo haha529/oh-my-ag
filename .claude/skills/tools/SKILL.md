@@ -1,44 +1,44 @@
 ---
 name: tools
-description: MCP 도구 상태 확인 및 관리 — 도구 그룹 활성화/비활성화
+description: Check and manage MCP tool status — Enable/disable tool groups
 disable-model-invocation: true
 ---
 
 # /tools
 
-## 실행 전 필수 참조
+## Required Reading Before Execution
 
-다음 파일을 읽고 따르세요:
+Read and follow this file:
 
-1. `.agents/workflows/tools.md` (정식 워크플로우 — 모든 스텝 준수)
+1. `.agents/workflows/tools.md` (Official workflow — Follow all steps)
 
-## Claude Code 어댑션
+## Claude Code Adaptation
 
-- inline 실행
-- `.agents/mcp.json` 직접 읽기/수정 (Read, Edit 도구)
+- Execute inline
+- Read/modify `.agents/mcp.json` directly (Read, Edit tools)
 
-## 사용법
+## Usage
 
-- `/tools` — 현재 도구 상태 표시
-- `/tools memory only` — memory 도구만 활성화
-- `/tools all` — 모든 도구 활성화 (리셋)
-- `/tools memory only --temp` — 임시 세션 전용 오버라이드
+- `/tools` — Show current tool status
+- `/tools memory only` — Enable only memory tools
+- `/tools all` — Enable all tools (reset)
+- `/tools memory only --temp` — Temporary session-only override
 
-## 도구 그룹
+## Tool Groups
 
-| 그룹 | 도구 |
-|:----|:----|
+| Group | Tools |
+|:------|:------|
 | memory | read_memory, write_memory, edit_memory, list_memories |
 | code-analysis | get_symbols_overview, find_symbol, find_referencing_symbols, search_for_pattern |
 | code-edit | apply_diff, create_file |
 | file-ops | list_dir, read_file |
-| all | 위 전체 |
+| all | All of the above |
 
-## 핵심 스텝 요약
+## Key Steps Summary
 
-1. **상태 표시**: `.agents/mcp.json` 읽기, 활성 도구/그룹 표시
-2. **명령 파싱**: "enable only {group}", "disable {tool}", "enable all"
-3. **설정 변경**: 영구 (mcp.json 수정) 또는 임시 (--temp)
-4. **특수 상황**: 알 수 없는 도구, 서버 충돌, 빈 도구 목록 처리
+1. **Show Status**: Read `.agents/mcp.json`, show active tools/groups
+2. **Parse Command**: "enable only {group}", "disable {tool}", "enable all"
+3. **Change Config**: Permanent (modify mcp.json) or temporary (--temp)
+4. **Handle Edge Cases**: Unknown tools, server conflicts, empty tool lists
 
 $ARGUMENTS

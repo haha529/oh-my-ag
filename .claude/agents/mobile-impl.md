@@ -1,6 +1,6 @@
 ---
 name: mobile-impl
-description: Flutter/React Native 모바일 구현. 모바일 앱, 위젯, 플랫폼 기능 작업 시 사용.
+description: Flutter/React Native mobile implementation. Use for mobile app, widgets, platform feature work.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 maxTurns: 20

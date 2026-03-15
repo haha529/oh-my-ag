@@ -1,6 +1,6 @@
 ---
 name: db-impl
-description: DB 설계 및 구현 전문가. 스키마, ERD, 마이그레이션, 쿼리 튜닝, 벡터 DB 작업 시 사용.
+description: Database design and implementation specialist. Use for schema, ERD, migration, query tuning, vector DB work.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 maxTurns: 15

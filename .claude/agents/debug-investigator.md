@@ -1,6 +1,6 @@
 ---
 name: debug-investigator
-description: 버그 진단 및 수정 전문가. 에러 분석, 근본 원인 식별, 회귀 테스트 작성.
+description: Bug diagnosis and fix specialist. Error analysis, root cause identification, regression test writing.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 maxTurns: 15

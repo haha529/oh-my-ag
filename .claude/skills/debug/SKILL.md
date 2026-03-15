@@ -1,49 +1,49 @@
 ---
 name: debug
-description: 구조적 버그 진단 및 수정 — 근본 원인 분석, 패턴 스캔, 회귀 테스트
+description: Structured bug diagnosis and fix — Root cause analysis, pattern scanning, regression tests
 disable-model-invocation: true
 ---
 
 # /debug
 
-## 실행 전 필수 참조
+## Required Reading Before Execution
 
-다음 파일을 순서대로 읽고 따르세요:
+Read and follow these files in order:
 
-1. `.agents/workflows/debug.md` (정식 워크플로우 — 모든 스텝 준수)
-2. `.agents/skills/debug-agent/SKILL.md` (Debug Agent 전문성)
-3. `.agents/skills/_shared/context-loading.md` (리소스 선택적 로딩)
+1. `.agents/workflows/debug.md` (Official workflow — Follow all steps)
+2. `.agents/skills/debug-agent/SKILL.md` (Debug Agent expertise)
+3. `.agents/skills/_shared/context-loading.md` (Resource loading)
 
-## Claude Code 어댑션
+## Claude Code Adaptation
 
-### 기본 모드 (inline 진단)
+### Default Mode (Inline Diagnosis)
 
-간단한 버그는 메인 에이전트가 직접 처리:
+Main agent handles simple bugs directly:
 
-1. **에러 수집**: 에러 메시지, 재현 스텝, 환경 정보
-2. **재현 확인**: Grep, Read 도구로 코드 추적
-3. **근본 원인 진단**: null access, race condition, type mismatch 등
-4. **수정 제안**: 최소 변경, 사용자 확인 후 적용
-5. **회귀 테스트 작성**: 수정에 대한 테스트
-6. **유사 패턴 스캔**: 동일 패턴이 다른 곳에 존재하는지 Grep
+1. **Collect Error**: Error message, reproduction steps, environment info
+2. **Verify Reproduction**: Trace code with Grep, Read tools
+3. **Diagnose Root Cause**: null access, race condition, type mismatch, etc.
+4. **Propose Fix**: Minimal changes, apply after user confirmation
+5. **Write Regression Test**: Test for the fix
+6. **Scan Similar Patterns**: Check if same pattern exists elsewhere with Grep
 
-### 복잡한 디버그 (서브에이전트 위임)
+### Complex Debug (Delegate to Subagent)
 
-유사 패턴 스캔이 넓은 범위를 커버해야 할 경우:
+When similar pattern scanning needs to cover broad scope:
 
-1. `debug-investigator` 서브에이전트를 Task tool로 스폰
-2. 현재까지의 진단 결과 + 스캔 범위를 프롬프트에 포함
-3. 결과 수신 후 사용자에게 보고
+1. Spawn `debug-investigator` subagent via Task tool
+2. Include diagnosis results so far + scan scope in prompt
+3. Receive results and report to user
 
-Task tool 스폰 판단 기준:
-- 에러가 여러 도메인에 걸쳐 있을 때
-- 유사 패턴 스캔 범위가 10+ 파일일 때
-- 진단에 깊은 의존성 추적이 필요할 때
+Task tool spawn criteria:
+- Error spans multiple domains
+- Similar pattern scan scope is 10+ files
+- Deep dependency tracing needed for diagnosis
 
-## 핵심 원칙
+## Core Principles
 
-- 증상이 아닌 근본 원인 수정
-- 최소 변경만 — 디버그 중 리팩토링 금지
-- 모든 수정에 회귀 테스트 필수
+- Fix root causes, not symptoms
+- Minimal changes only — No refactoring during debug
+- Regression tests required for all fixes
 
 $ARGUMENTS

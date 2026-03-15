@@ -1,6 +1,6 @@
 ---
 name: backend-impl
-description: FastAPI/SQLAlchemy 백엔드 구현. API, 인증, DB 마이그레이션 작업 시 사용.
+description: FastAPI/SQLAlchemy backend implementation. Use for API, authentication, DB migration work.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 maxTurns: 20

@@ -1,6 +1,6 @@
 ---
 name: frontend-impl
-description: React/Next.js/TypeScript 프론트엔드 구현. UI, 컴포넌트, 스타일링 작업 시 사용.
+description: React/Next.js/TypeScript frontend implementation. Use for UI, components, styling work.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 maxTurns: 20
@@ -39,7 +39,7 @@ FSD-lite: root `src/` + feature `src/features/*/`
 2. Component reuse: shadcn/ui first, extend via `cva`
 3. Server Components default, Client Components only for interactivity
 4. Accessibility mandatory (semantic HTML, ARIA, keyboard nav)
-5. TailwindCSS v4 for styling, design tokens 1:1 매핑
+5. TailwindCSS v4 for styling, design tokens 1:1 mapping
 6. Libraries: luxon (dates), ahooks (hooks), es-toolkit (utils), jotai (client state), TanStack Query (server state)
 7. Absolute imports with `@/`
 8. Write tests for custom logic (>90% coverage target)

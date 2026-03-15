@@ -1,6 +1,6 @@
 ---
 name: qa-reviewer
-description: OWASP 보안, 성능, 접근성, 코드 품질 리뷰 에이전트
+description: OWASP security, performance, accessibility, code quality review agent
 tools: Read, Grep, Glob, Bash
 model: sonnet
 maxTurns: 15
