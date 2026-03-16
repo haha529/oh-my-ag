@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.10.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v2.9.1...cli-v2.10.0) (2026-03-16)
+
+
+### Features
+
+* **cli:** sync CLI version from package.json and auto-bump Homebrew formula ([de179a1](https://github.com/first-fluke/oh-my-agent/commit/de179a149e58b1c43476f4f394322ea5992f9211))
+* **skills:** add translator skill with anti-AI pattern detection ([1c62625](https://github.com/first-fluke/oh-my-agent/commit/1c62625c24eae78b12d839dcc5284421a956c820))
+
+
+### Bug Fixes
+
+* **ci:** extract homebrew bump to manual workflow and update formula ([7e57bac](https://github.com/first-fluke/oh-my-agent/commit/7e57bac22a808bb184a52c273c837a6973bd2362))
+* **docs:** improve all 10 README translations with anti-AI patterns ([bef08a5](https://github.com/first-fluke/oh-my-agent/commit/bef08a5a77bd547b04f144c7a94548fe9812ac30))
+
+
+### Refactoring
+
+* **skills:** restructure tf-infra-agent to match standard skill pattern ([cf1b8f7](https://github.com/first-fluke/oh-my-agent/commit/cf1b8f7f1b83061296541e20112b2740979933ff))
+
 ## [2.9.1](https://github.com/first-fluke/oh-my-agent/compare/cli-v2.9.0...cli-v2.9.1) (2026-03-15)
 
 
