@@ -7,7 +7,7 @@
   },
   "plugins": [
     {
-      "name": "oh-my-agent",
+      "name": "oma",
       "description": "Portable multi-agent harness for .agents-based skills and workflows",
       "category": "productivity",
       "tags": ["multi-agent", "orchestrator", "skills", "workflows"],
