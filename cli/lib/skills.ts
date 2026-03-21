@@ -230,6 +230,7 @@ export function installGlobalWorkflows(sourceDir: string): void {
   cpSync(src, dest, { recursive: true, force: true });
 }
 
+/** @deprecated Use installVendorAdaptations() instead for agent/workflow generation. */
 export function installClaudeSkills(
   sourceDir: string,
   targetDir: string,
@@ -358,16 +359,14 @@ function installClaudeWorkflowRouters(
     const description =
       (frontmatter.description as string) || name;
 
-    const routerContent = `---
-name: ${name}
-description: ${description}
-disable-model-invocation: true
----
-
-# /${name}
-
-Read and follow \`.agents/workflows/${entry}\` step by step.
-`;
+    const routerContent = serializeFrontmatter(
+      {
+        name,
+        description,
+        "disable-model-invocation": true,
+      },
+      `# /${name}\n\nRead and follow \`.agents/workflows/${entry}\` step by step.\n`,
+    );
 
     const skillDir = join(targetDir, ".claude", "skills", name);
     mkdirSync(skillDir, { recursive: true });

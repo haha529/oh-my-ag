@@ -49,7 +49,9 @@ export function serializeFrontmatter(
         lines.push(`  - ${item}`);
       }
     } else {
-      lines.push(`${key}: ${value}`);
+      const str = String(value);
+      const needsQuote = /[:#\[\]{}|>&*!,'"%@`]/.test(str) || str.includes("\n");
+      lines.push(`${key}: ${needsQuote ? JSON.stringify(str) : str}`);
     }
   }
   lines.push("---");
