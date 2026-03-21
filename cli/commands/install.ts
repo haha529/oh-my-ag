@@ -114,7 +114,11 @@ export async function install(): Promise<void> {
       initialValue: "python",
     });
 
-    if (!p.isCancel(backendLang) && backendLang !== "other") {
+    if (p.isCancel(backendLang)) {
+      p.cancel("Cancelled.");
+      process.exit(0);
+    }
+    if (backendLang !== "other") {
       variantSelections["oma-backend"] = backendLang as string;
     }
   }

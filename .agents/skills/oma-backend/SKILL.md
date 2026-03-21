@@ -84,12 +84,9 @@ Source files live under `../_shared/runtime/execution-protocols/{vendor}.md`.
 
 - Execution steps: `resources/execution-protocol.md`
 - Code examples: `resources/examples.md`
-- Code snippets: `stack/snippets.md`
 - Checklist: `resources/checklist.md`
 - ORM reference: `resources/orm-reference.md`
 - Error recovery: `resources/error-playbook.md`
-- Tech stack: `stack/tech-stack.md`
-- API template: `stack/api-template.*`
 - Context loading: `../_shared/core/context-loading.md`
 - Reasoning templates: `../_shared/core/reasoning-templates.md`
 - Clarification: `../_shared/core/clarification-protocol.md`

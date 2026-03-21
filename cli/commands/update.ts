@@ -129,12 +129,15 @@ export async function update(force = false): Promise<void> {
 
       // Restore stack/ directories
       if (hasBackendStack) {
-        mkdirSync(backendStackDir, { recursive: true });
-        cpSync(join(stackBackupDir, "oma-backend"), backendStackDir, {
-          recursive: true,
-          force: true,
-        });
-        rmSync(stackBackupDir, { recursive: true, force: true });
+        try {
+          mkdirSync(backendStackDir, { recursive: true });
+          cpSync(join(stackBackupDir, "oma-backend"), backendStackDir, {
+            recursive: true,
+            force: true,
+          });
+        } finally {
+          rmSync(stackBackupDir, { recursive: true, force: true });
+        }
       }
 
       // Clean up variants/ from user project (not needed at runtime)
