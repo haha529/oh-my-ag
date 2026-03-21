@@ -140,24 +140,12 @@ export async function update(force = false): Promise<void> {
         }
       }
 
-      // Clean up variants/ from user project (not needed at runtime)
-      const backendVariantsDir = join(
-        cwd,
-        ".agents",
-        "skills",
-        "oma-backend",
-        "variants",
-      );
-      if (existsSync(backendVariantsDir)) {
-        rmSync(backendVariantsDir, { recursive: true, force: true });
-      }
-
       // Migrate legacy Python resources to stack/ (one-time)
       // hasLegacyFiles was captured before cpSync (old resources/ had Python files)
-      // After cpSync, use variants/python/ from the new source as the migration source
+      // Read variant from repoDir (source temp dir), not cwd (already overwritten)
       if (hasLegacyFiles) {
         const variantPythonDir = join(
-          cwd,
+          repoDir,
           ".agents",
           "skills",
           "oma-backend",
@@ -175,6 +163,19 @@ export async function update(force = false): Promise<void> {
             "language: python\nframework: fastapi\norm: sqlalchemy\nsource: migrated\n",
           );
         }
+      }
+
+      // Clean up variants/ from user project (not needed at runtime)
+      // Must run AFTER migration (which reads from repoDir, not cwd)
+      const backendVariantsDir = join(
+        cwd,
+        ".agents",
+        "skills",
+        "oma-backend",
+        "variants",
+      );
+      if (existsSync(backendVariantsDir)) {
+        rmSync(backendVariantsDir, { recursive: true, force: true });
       }
 
       // Shared layout migration (core/, conditional/, runtime/)
