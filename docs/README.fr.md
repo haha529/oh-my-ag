@@ -43,8 +43,8 @@ Orchestrez 10 agents de domaine spécialisés (PM, Frontend, Backend, DB, Mobile
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Natif | Principale disposition source-de-vérité ; pas de sous-agents personnalisés |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Natif + Adaptateur | Skills de domaine via lien symbolique, workflow skills en tant que thin routers, sous-agents générés depuis `.agents/agents/` |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Natif + Adaptateur | Définitions d'agents en TOML générées depuis `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Natif + Adaptateur | Définitions d'agents en MD générées depuis `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Natif + Adaptateur | Définitions d'agents en TOML générées depuis `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Natif + Adaptateur | Définitions d'agents en MD générées depuis `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Natif-compatible | Utilise la même source de compétences au niveau du projet |
 | Amp | `.agents/skills/` | Natif-compatible | Partage la même source au niveau du projet |
 | Cursor | `.agents/skills/` | Natif-compatible | Peut consommer la même source de compétences |
@@ -68,7 +68,7 @@ Les skills de domaine (oma-backend, oma-frontend, etc.) restent des liens symbol
 `oh-my-agent` traite `.agents/` comme une convention de projet portable pour les compétences, workflows et contexte partagé des agents.
 
 - Les compétences vivent dans `.agents/skills/<skill-name>/SKILL.md`
-- Les définitions abstraites d'agents vivent dans `.agents/agents/` (SSOT neutre vis-à-vis des fournisseurs ; le CLI génère `.claude/agents/`, `.codex/agents/`, `.gemini/agents/` à partir de celles-ci)
+- Les définitions abstraites d'agents vivent dans `.agents/agents/` (SSOT neutre vis-à-vis des fournisseurs ; le CLI génère `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned) à partir de celles-ci)
 - Les ressources partagées vivent dans `.agents/skills/_shared/`
 - Les workflows vivent dans `.agents/workflows/*.md`
 - La configuration du projet vit dans `.agents/config/`

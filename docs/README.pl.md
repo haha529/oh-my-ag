@@ -43,8 +43,8 @@ Orkiestruj 10 wyspecjalizowanymi agentami domenowymi (PM, Frontend, Backend, DB,
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Natywny | Główny układ źródła-prawdy; brak niestandardowych subagentów |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Natywny + Adapter | Skills domenowe przez dowiązanie symboliczne, skills workflow jako thin routery, subagenty generowane z `.agents/agents/` |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Natywny + Adapter | Definicje agentów w TOML generowane z `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Natywny + Adapter | Definicje agentów w MD generowane z `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Natywny + Adapter | Definicje agentów w TOML generowane z `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Natywny + Adapter | Definicje agentów w MD generowane z `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Natywnie-kompatybilny | Używa tego samego źródła skills na poziomie projektu |
 | Amp | `.agents/skills/` | Natywnie-kompatybilny | Dzieli to samo źródło na poziomie projektu |
 | Cursor | `.agents/skills/` | Natywnie-kompatybilny | Może konsumować to samo źródło skills na poziomie projektu |
@@ -66,7 +66,7 @@ Claude Code obsługuje `oh-my-agent` w pełni natywnie — bez żadnych wtyczek.
 `oh-my-agent` traktuje `.agents/` jako przenośną konwencję projektu dla skills, workflows i współdzielonego kontekstu agentów.
 
 - Skills żyją w `.agents/skills/<skill-name>/SKILL.md`
-- Abstrakcyjne definicje agentów żyją w `.agents/agents/` (SSOT neutralne wobec dostawców; CLI generuje `.claude/agents/`, `.codex/agents/`, `.gemini/agents/` z nich)
+- Abstrakcyjne definicje agentów żyją w `.agents/agents/` (SSOT neutralne wobec dostawców; CLI generuje `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned) z nich)
 - Zasoby współdzielone żyją w `.agents/skills/_shared/`
 - Workflows żyją w `.agents/workflows/*.md`
 - Konfiguracja projektu żyje w `.agents/config/`

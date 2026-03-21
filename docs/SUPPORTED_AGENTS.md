@@ -10,8 +10,8 @@ The installer can then project compatibility to other tool-specific directories 
 |------------|--------------------|--------|--------------|-------|
 | Antigravity | `.agents/skills/` | First-class | Native | Primary source-of-truth layout; reads `.agents/agents/` directly but no custom subagent spawning |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | First-class | Native + Adapter | Domain skill symlinks + thin router workflow skills, subagents generated from `.agents/agents/`, and CLAUDE.md |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | First-class | Native + Adapter | Agent definitions generated as TOML from `.agents/agents/`; skills read from `.agents/skills/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | First-class | Native + Adapter | Agent definitions generated as MD from `.agents/agents/`; skills read from `.agents/skills/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | First-class | Native + Adapter | Agent definitions generated as TOML from `.agents/agents/` (planned); skills read from `.agents/skills/` |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | First-class | Native + Adapter | Agent definitions generated as MD from `.agents/agents/` (planned); skills read from `.agents/skills/` |
 | OpenCode | `.agents/skills/` | First-class | Native-compatible | Shares the same project-level source |
 | Amp | `.agents/skills/` | First-class | Native-compatible | Shares the same project-level source |
 | Cursor | `.agents/skills/` | First-class | Native-compatible | Can consume the same project-level skill source |
@@ -24,8 +24,8 @@ Abstract agent definitions in `.agents/agents/` are vendor-neutral (name, descri
 | Vendor | Generated Path | Format | Subagent Spawning |
 |--------|---------------|--------|-------------------|
 | Claude Code | `.claude/agents/*.md` | Markdown with frontmatter | Task tool |
-| Codex CLI | `.codex/agents/*.toml` | TOML | Native |
-| Gemini CLI | `.gemini/agents/*.md` | Markdown | Native |
+| Codex CLI | `.codex/agents/*.toml` (planned) | TOML | Native |
+| Gemini CLI | `.gemini/agents/*.md` (planned) | Markdown | Native |
 | Antigravity | (reads `.agents/agents/` directly) | YAML | Not supported (no custom subagents) |
 
 ## What “First-class” Means

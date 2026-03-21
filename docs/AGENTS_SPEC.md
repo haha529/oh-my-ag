@@ -94,8 +94,8 @@ Each definition contains only portable fields:
 These definitions contain no vendor-specific fields (no Claude `allowed_tools`, no Codex `model`, etc.). The CLI generates vendor-adapted files from these abstractions:
 
 - `.claude/agents/*.md` (Claude Code — Markdown with frontmatter)
-- `.codex/agents/*.toml` (Codex CLI — TOML format)
-- `.gemini/agents/*.md` (Gemini CLI — Markdown format)
+- `.codex/agents/*.toml` (Codex CLI — TOML format) (planned)
+- `.gemini/agents/*.md` (Gemini CLI — Markdown format) (planned)
 
 Antigravity IDE reads `.agents/agents/` directly but does not support custom subagent spawning.
 
@@ -133,8 +133,8 @@ Typical examples:
 Compatibility directories are projections, not separate sources of truth:
 
 - `.claude/skills/` (thin routers that delegate to `.agents/workflows/`)
-- `.codex/agents/` (generated from `.agents/agents/`)
-- `.gemini/agents/` (generated from `.agents/agents/`)
+- `.codex/agents/` (generated from `.agents/agents/`) (planned)
+- `.gemini/agents/` (generated from `.agents/agents/`) (planned)
 - `.cursor/skills/`
 - `.github/skills/`
 

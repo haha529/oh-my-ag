@@ -43,8 +43,8 @@ Orchestrieren Sie 10 spezialisierte Domain-Agenten (PM, Frontend, Backend, DB, M
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Native | Primäre Source-of-Truth-Layout; keine benutzerdefinierten Subagenten |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Nativ + Adapter | Domain-Skills per Symlink, Workflow-Skills als Thin Router, Subagenten generiert aus `.agents/agents/` |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Nativ + Adapter | Agent-Definitionen als TOML generiert aus `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Nativ + Adapter | Agent-Definitionen als MD generiert aus `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Nativ + Adapter | Agent-Definitionen als TOML generiert aus `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Nativ + Adapter | Agent-Definitionen als MD generiert aus `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Native-kompatibel | Verwendet dieselbe Projekt-Level-Skill-Quelle |
 | Amp | `.agents/skills/` | Native-kompatibel | Teilt dieselbe Projekt-Level-Quelle |
 | Cursor | `.agents/skills/` | Native-kompatibel | Kann dieselbe Projekt-Level-Skill-Quelle konsumieren |
@@ -66,7 +66,7 @@ Claude Code unterstützt `oh-my-agent` vollständig nativ — ohne Plugins.
 `oh-my-agent` behandelt `.agents/` als portable Projektkonvention für Agenten-Skills, Workflows und gemeinsamen Kontext.
 
 - Skills leben in `.agents/skills/<skill-name>/SKILL.md`
-- Abstrakte Agent-Definitionen leben in `.agents/agents/` (herstellerneutraler SSOT; die CLI generiert daraus `.claude/agents/`, `.codex/agents/`, `.gemini/agents/`)
+- Abstrakte Agent-Definitionen leben in `.agents/agents/` (herstellerneutraler SSOT; die CLI generiert daraus `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned))
 - Gemeinsame Ressourcen leben in `.agents/skills/_shared/`
 - Workflows leben in `.agents/workflows/*.md`
 - Projektkonfiguration lebt in `.agents/config/`

@@ -79,8 +79,8 @@ flowchart TD
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | 네이티브 | 원본 레이아웃; 커스텀 서브에이전트 스폰 미지원 |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | 네이티브 + 어댑터 | 도메인 스킬은 심링크, 워크플로우 스킬은 씬 라우터, 서브에이전트는 `.agents/agents/`에서 생성 |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | 네이티브 + 어댑터 | `.agents/agents/`에서 TOML로 에이전트 정의 생성 |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | 네이티브 + 어댑터 | `.agents/agents/`에서 MD로 에이전트 정의 생성 |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | 네이티브 + 어댑터 | `.agents/agents/`에서 TOML로 에이전트 정의 생성 (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | 네이티브 + 어댑터 | `.agents/agents/`에서 MD로 에이전트 정의 생성 (planned) |
 | OpenCode | `.agents/skills/` | 호환 | 같은 스킬 소스 사용 |
 | Amp | `.agents/skills/` | 호환 | 같은 소스 공유 |
 | Cursor | `.agents/skills/` | 호환 | 같은 스킬 소스 사용 가능 |
@@ -104,7 +104,7 @@ Claude Code는 심링크를 넘어서 직접 연동됩니다:
 `oh-my-agent`는 `.agents/`를 에이전트 스킬, 워크플로우, 공유 컨텍스트를 담는 프로젝트 규약으로 씁니다.
 
 - 스킬: `.agents/skills/<skill-name>/SKILL.md`
-- 추상 에이전트 정의: `.agents/agents/` (벤더 중립 SSOT; CLI가 `.claude/agents/`, `.codex/agents/`, `.gemini/agents/`를 여기서 생성)
+- 추상 에이전트 정의: `.agents/agents/` (벤더 중립 SSOT; CLI가 `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned)를 여기서 생성)
 - 공유 리소스: `.agents/skills/_shared/`
 - 워크플로우: `.agents/workflows/*.md`
 - 프로젝트 설정: `.agents/config/`

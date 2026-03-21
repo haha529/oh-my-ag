@@ -78,8 +78,8 @@ flowchart TD
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Native | Primary source-of-truth layout; no custom subagent spawning |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Native + Adapter | Symlinks for domain skills + thin router workflow skills, subagents generated from `.agents/agents/`, and CLAUDE.md |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Native + Adapter | Agent TOML generated from `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Native + Adapter | Agent MD generated from `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Native + Adapter | Agent TOML generated from `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Native + Adapter | Agent MD generated from `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Native-compatible | Uses the same project-level skill source |
 | Amp | `.agents/skills/` | Native-compatible | Shares the same project-level source |
 | Cursor | `.agents/skills/` | Native-compatible | Can consume the same project-level skill source |
@@ -103,7 +103,7 @@ Domain skills (oma-backend, oma-frontend, etc.) remain as symlinks from `.agents
 `oh-my-agent` treats `.agents/` as a portable project convention for agent skills, workflows, and shared context.
 
 - Skills live in `.agents/skills/<skill-name>/SKILL.md`
-- Abstract agent definitions live in `.agents/agents/` (vendor-neutral SSOT; the CLI generates `.claude/agents/`, `.codex/agents/`, `.gemini/agents/` from these)
+- Abstract agent definitions live in `.agents/agents/` (vendor-neutral SSOT; the CLI generates `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned) from these)
 - Shared resources live in `.agents/skills/_shared/`
   and are grouped into `core/`, `conditional/`, and `runtime/`
 - Workflows live in `.agents/workflows/*.md`

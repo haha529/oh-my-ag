@@ -310,8 +310,9 @@ function installClaudeAgents(
   const destDir = join(targetDir, ".claude", "agents");
   mkdirSync(destDir, { recursive: true });
 
-  for (const entry of readdirSync(agentsDir)) {
-    if (!entry.endsWith(".md")) continue;
+  for (const dirEntry of readdirSync(agentsDir, { withFileTypes: true })) {
+    if (!dirEntry.isFile() || !dirEntry.name.endsWith(".md")) continue;
+    const entry = dirEntry.name;
 
     const content = readFileSync(join(agentsDir, entry), "utf-8");
     const { frontmatter, body } = parseFrontmatter(content);
@@ -359,14 +360,20 @@ function installClaudeWorkflowRouters(
 ): void {
   if (!existsSync(workflowsDir)) return;
 
-  for (const entry of readdirSync(workflowsDir)) {
-    if (!entry.endsWith(".md") || entry.startsWith("_")) continue;
+  for (const dirEntry of readdirSync(workflowsDir, { withFileTypes: true })) {
+    // Skip non-files, non-md, and private partials (underscore prefix)
+    if (!dirEntry.isFile() || !dirEntry.name.endsWith(".md") || dirEntry.name.startsWith("_"))
+      continue;
+    const entry = dirEntry.name;
 
     const content = readFileSync(join(workflowsDir, entry), "utf-8");
     const { frontmatter } = parseFrontmatter(content);
     const name = entry.replace(".md", "");
     const description =
       (frontmatter.description as string) || name;
+
+    const skillDir = join(targetDir, ".claude", "skills", name);
+    clearNonDirectory(skillDir);
 
     const routerContent = serializeFrontmatter(
       {
@@ -377,7 +384,6 @@ function installClaudeWorkflowRouters(
       `# /${name}\n\nRead and follow \`.agents/workflows/${entry}\` step by step.\n`,
     );
 
-    const skillDir = join(targetDir, ".claude", "skills", name);
     mkdirSync(skillDir, { recursive: true });
     writeFileSync(join(skillDir, "SKILL.md"), routerContent);
   }

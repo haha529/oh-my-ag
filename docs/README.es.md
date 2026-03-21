@@ -43,8 +43,8 @@ Orquesta 10 agentes de dominio especializados (PM, Frontend, Backend, DB, Mobile
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Nativo | Disposición principal fuente-de-verdad; sin subagentes personalizados |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Nativo + Adaptador | Skills de dominio vía enlace simbólico, workflow skills como thin routers, subagentes generados desde `.agents/agents/` |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Nativo + Adaptador | Definiciones de agentes en TOML generadas desde `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Nativo + Adaptador | Definiciones de agentes en MD generadas desde `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Nativo + Adaptador | Definiciones de agentes en TOML generadas desde `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Nativo + Adaptador | Definiciones de agentes en MD generadas desde `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Nativo-compatible | Usa la misma fuente de skills a nivel de proyecto |
 | Amp | `.agents/skills/` | Nativo-compatible | Comparte la misma fuente a nivel de proyecto |
 | Cursor | `.agents/skills/` | Nativo-compatible | Puede consumir la misma fuente de skills |
@@ -67,7 +67,7 @@ Los patrones de bucle (Review Loop, Issue Remediation Loop, Phase Gate Loop) se 
 `oh-my-agent` trata `.agents/` como una convención de proyecto portable para skills, workflows y contexto compartido de agentes.
 
 - Los skills viven en `.agents/skills/<skill-name>/SKILL.md`
-- Las definiciones abstractas de agentes viven en `.agents/agents/` (SSOT neutral al proveedor; el CLI genera `.claude/agents/`, `.codex/agents/`, `.gemini/agents/` a partir de ellas)
+- Las definiciones abstractas de agentes viven en `.agents/agents/` (SSOT neutral al proveedor; el CLI genera `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned) a partir de ellas)
 - Los recursos compartidos viven en `.agents/skills/_shared/`
 - Los workflows viven en `.agents/workflows/*.md`
 - La configuración del proyecto vive en `.agents/config/`

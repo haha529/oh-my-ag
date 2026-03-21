@@ -79,8 +79,8 @@ flowchart TD
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | ネイティブ | 原本のレイアウト。カスタムサブエージェントのスポーンは非対応 |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | ネイティブ + アダプター | ドメインスキルはシンボリックリンク、ワークフロースキルはシンルーター、サブエージェントは`.agents/agents/`から生成 |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | ネイティブ + アダプター | `.agents/agents/`からTOML形式でエージェント定義を生成 |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | ネイティブ + アダプター | `.agents/agents/`からMD形式でエージェント定義を生成 |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | ネイティブ + アダプター | `.agents/agents/`からTOML形式でエージェント定義を生成 (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | ネイティブ + アダプター | `.agents/agents/`からMD形式でエージェント定義を生成 (planned) |
 | OpenCode | `.agents/skills/` | 互換 | 同じスキルソースを使用 |
 | Amp | `.agents/skills/` | 互換 | 同じソースを共有 |
 | Cursor | `.agents/skills/` | 互換 | 同じスキルソースを使用可能 |
@@ -104,7 +104,7 @@ Claude Codeはシンボリックリンクだけでなく、直接連携できま
 `oh-my-agent`は`.agents/`を、エージェントスキル・ワークフロー・共有コンテキストを入れるプロジェクト規約として使います。
 
 - スキル: `.agents/skills/<skill-name>/SKILL.md`
-- 抽象エージェント定義: `.agents/agents/`（ベンダー中立のSSOT。CLIが`.claude/agents/`、`.codex/agents/`、`.gemini/agents/`を生成）
+- 抽象エージェント定義: `.agents/agents/`（ベンダー中立のSSOT。CLIが`.claude/agents/`、`.codex/agents/` (planned)、`.gemini/agents/` (planned)を生成）
 - 共有リソース: `.agents/skills/_shared/`
 - ワークフロー: `.agents/workflows/*.md`
 - プロジェクト設定: `.agents/config/`

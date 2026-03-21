@@ -43,8 +43,8 @@ Orquestre 10 agentes de domínio especializados (PM, Frontend, Backend, DB, Mobi
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Nativo | Layout principal fonte-da-verdade; sem suporte a subagentes customizados |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Nativo + Adaptador | Skills de domínio via symlink, workflow skills como thin routers, subagentes gerados de `.agents/agents/` |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Nativo + Adaptador | Definições de agentes em TOML geradas de `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Nativo + Adaptador | Definições de agentes em MD geradas de `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Nativo + Adaptador | Definições de agentes em TOML geradas de `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Nativo + Adaptador | Definições de agentes em MD geradas de `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Nativo-compatível | Usa a mesma fonte de skills de nível de projeto |
 | Amp | `.agents/skills/` | Nativo-compatível | Compartilha a mesma fonte de nível de projeto |
 | Cursor | `.agents/skills/` | Nativo-compatível | Pode consumir a mesma fonte de skills de nível de projeto |
@@ -68,7 +68,7 @@ As skills de domínio (oma-backend, oma-frontend, etc.) permanecem como symlinks
 `oh-my-agent` trata `.agents/` como uma convenção de projeto portátil para skills, workflows e contexto compartilhado de agentes.
 
 - Skills vivem em `.agents/skills/<skill-name>/SKILL.md`
-- Definições abstratas de agentes vivem em `.agents/agents/` (SSOT vendor-neutral; o CLI gera `.claude/agents/`, `.codex/agents/`, `.gemini/agents/` a partir delas)
+- Definições abstratas de agentes vivem em `.agents/agents/` (SSOT vendor-neutral; o CLI gera `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned) a partir delas)
 - Recursos compartilhados vivem em `.agents/skills/_shared/`
 - Workflows vivem em `.agents/workflows/*.md`
 - Configuração do projeto vive em `.agents/config/`

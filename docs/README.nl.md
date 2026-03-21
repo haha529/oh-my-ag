@@ -43,8 +43,8 @@ Orkestreer 10 gespecialiseerde domeinagents (PM, Frontend, Backend, DB, Mobile, 
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | Native | Primaire bron-van-waarheid lay-out; geen aangepaste subagents |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | Native + Adapter | Domeinskills via symlink, workflow skills als thin routers, subagents gegenereerd uit `.agents/agents/` |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | Native + Adapter | Agent-definities als TOML gegenereerd uit `.agents/agents/` |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Native + Adapter | Agent-definities als MD gegenereerd uit `.agents/agents/` |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | Native + Adapter | Agent-definities als TOML gegenereerd uit `.agents/agents/` (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | Native + Adapter | Agent-definities als MD gegenereerd uit `.agents/agents/` (planned) |
 | OpenCode | `.agents/skills/` | Native-compatibel | Gebruikt dezelfde projectniveau skillbron |
 | Amp | `.agents/skills/` | Native-compatibel | Deelt dezelfde projectniveau bron |
 | Cursor | `.agents/skills/` | Native-compatibel | Kan dezelfde projectniveau skillbron consumeren |
@@ -67,7 +67,7 @@ Luspatronen (Review Loop, Issue Remediation Loop, Phase Gate Loop) draaien recht
 `oh-my-agent` behandelt `.agents/` als een draagbare projectconventie voor agent skills, workflows en gedeelde context.
 
 - Skills leven in `.agents/skills/<skill-name>/SKILL.md`
-- Abstracte agent-definities leven in `.agents/agents/` (leverancier-neutrale SSOT; de CLI genereert `.claude/agents/`, `.codex/agents/`, `.gemini/agents/` hieruit)
+- Abstracte agent-definities leven in `.agents/agents/` (leverancier-neutrale SSOT; de CLI genereert `.claude/agents/`, `.codex/agents/` (planned), `.gemini/agents/` (planned) hieruit)
 - Gedeelde bronnen leven in `.agents/skills/_shared/`
 - Workflows leven in `.agents/workflows/*.md`
 - Projectconfiguratie leeft in `.agents/config/`

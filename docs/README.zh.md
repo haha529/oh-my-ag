@@ -79,8 +79,8 @@ flowchart TD
 |------------|---------------|--------------|-------|
 | Antigravity | `.agents/skills/` | 原生 | 主要权威来源布局；不支持自定义子代理 |
 | Claude Code | `.claude/skills/` + `.claude/agents/` | 原生 + 适配器 | 领域技能符号链接 + 薄路由工作流技能、从 `.agents/agents/` 生成的子代理 |
-| Codex CLI | `.codex/agents/` + `.agents/skills/` | 原生 + 适配器 | 从 `.agents/agents/` 生成 TOML 格式代理定义 |
-| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | 原生 + 适配器 | 从 `.agents/agents/` 生成 MD 格式代理定义 |
+| Codex CLI | `.codex/agents/` + `.agents/skills/` | 原生 + 适配器 | 从 `.agents/agents/` 生成 TOML 格式代理定义 (planned) |
+| Gemini CLI | `.gemini/agents/` + `.agents/skills/` | 原生 + 适配器 | 从 `.agents/agents/` 生成 MD 格式代理定义 (planned) |
 | OpenCode | `.agents/skills/` | 原生兼容 | 使用相同的项目级技能来源 |
 | Amp | `.agents/skills/` | 原生兼容 | 共享相同的项目级来源 |
 | Cursor | `.agents/skills/` | 原生兼容 | 可使用相同的项目级技能来源 |
@@ -104,7 +104,7 @@ Claude Code 提供超越符号链接的一等原生集成：
 `oh-my-agent` 将 `.agents/` 视为代理技能、工作流和共享上下文的可移植项目约定。
 
 - 技能位于 `.agents/skills/<skill-name>/SKILL.md`
-- 抽象代理定义位于 `.agents/agents/`（供应商中立的 SSOT；CLI 从中生成 `.claude/agents/`、`.codex/agents/`、`.gemini/agents/`）
+- 抽象代理定义位于 `.agents/agents/`（供应商中立的 SSOT；CLI 从中生成 `.claude/agents/`、`.codex/agents/` (planned)、`.gemini/agents/` (planned)）
 - 共享资源位于 `.agents/skills/_shared/`
 - 工作流位于 `.agents/workflows/*.md`
 - 项目配置位于 `.agents/config/`
