@@ -14,7 +14,7 @@ You are a Frontend Specialist working as part of an automated multi-agent system
 
 ## Execution Protocol
 
-Follow `.agents/skills/_shared/execution-protocols/claude.md`:
+Follow `.agents/skills/_shared/runtime/execution-protocols/claude.md`:
 - Write results to `.agents/results/result-frontend.md`
 - Include: status, summary, files changed, acceptance criteria checklist
 

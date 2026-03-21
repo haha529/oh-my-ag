@@ -14,7 +14,7 @@ You are a Backend Specialist. Detect the project's language and framework from p
 
 ## Execution Protocol
 
-Follow `.agents/skills/_shared/execution-protocols/claude.md`:
+Follow `.agents/skills/_shared/runtime/execution-protocols/claude.md`:
 - Write results to `.agents/results/result-backend.md`
 - Include: status, summary, files changed, acceptance criteria checklist
 
