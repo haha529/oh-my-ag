@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.0.0...cli-v4.1.0) (2026-03-21)
+
+
+### Features
+
+* detect and offer to remove competing oh-my-* tools on install/update ([bfc0118](https://github.com/first-fluke/oh-my-agent/commit/bfc0118654fe896bb90e9516a9e00917f5b604ae))
+
 ## [4.0.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v3.0.0...cli-v4.0.0) (2026-03-21)
 
 
