@@ -10,7 +10,6 @@ import {
   createCliSymlinks,
   getAllSkills,
   INSTALLED_SKILLS_DIR,
-  installClaudeSkills,
   installConfigs,
   installVendorAdaptations,
   installGlobalWorkflows,
@@ -159,10 +158,9 @@ export async function install(): Promise<void> {
 
       spinner.stop("Skills installed!");
 
-      // Install Claude Code native workflow routers and agent definitions
+      // Install Claude Code workflow routers and agent definitions from SSOT
       if (selectedClis.includes("claude")) {
         spinner.start("Installing Claude Code skills...");
-        installClaudeSkills(repoDir, cwd);
         installVendorAdaptations(repoDir, cwd, ["claude"]);
         spinner.stop("Claude Code skills installed!");
       }

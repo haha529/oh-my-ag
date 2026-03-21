@@ -20,7 +20,6 @@ import {
   createCliSymlinks,
   detectExistingCliSymlinkDirs,
   getInstalledSkillNames,
-  installClaudeSkills,
   installVendorAdaptations,
 } from "../lib/skills.js";
 import { downloadAndExtract } from "../lib/tarball.js";
@@ -192,7 +191,6 @@ export async function update(force = false): Promise<void> {
 
       const cliTools = detectExistingCliSymlinkDirs(cwd);
       if (cliTools.includes("claude")) {
-        installClaudeSkills(repoDir, cwd);
         installVendorAdaptations(repoDir, cwd, ["claude"]);
       }
 
