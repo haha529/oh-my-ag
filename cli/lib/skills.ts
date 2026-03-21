@@ -335,7 +335,7 @@ function installClaudeAgents(
     }
 
     // Inject Claude-specific Execution Protocol section before the abstract body
-    const resultName = name.replace(/-engineer|-investigator|-planner|-reviewer/g, "");
+    const resultName = name.replace(/(-engineer|-investigator|-planner|-reviewer)$/, "");
     const executionProtocol = `## Execution Protocol
 
 Follow \`.agents/skills/_shared/runtime/execution-protocols/claude.md\`:

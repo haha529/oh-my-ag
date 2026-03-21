@@ -19,11 +19,9 @@ export function parseFrontmatter(content: string): ParsedFrontmatter {
   if (endIndex === -1) {
     return { frontmatter: {}, body: content };
   }
-  // Adjust to point to the start of "---" (skip the "\n")
-  const fmEnd = endIndex + 1;
 
-  const yamlBlock = trimmed.slice(3, fmEnd).trim();
-  const body = trimmed.slice(fmEnd + 3).replace(/^\n/, "");
+  const yamlBlock = trimmed.slice(3, endIndex).trim();
+  const body = trimmed.slice(endIndex + 4); // skip \n---
 
   try {
     const parsed = parseYaml(yamlBlock);
