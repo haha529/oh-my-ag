@@ -16,7 +16,7 @@ import {
   getLocalVersion,
   saveLocalVersion,
 } from "../lib/manifest.js";
-import { migrateToAgents } from "../lib/migrate.js";
+import { migrateSharedLayout, migrateToAgents } from "../lib/migrate.js";
 import {
   createCliSymlinks,
   detectExistingCliSymlinkDirs,
@@ -48,6 +48,13 @@ export async function update(force = false): Promise<void> {
     const localVersion = await getLocalVersion(cwd);
 
     if (localVersion === remoteManifest.version) {
+      const sharedLayoutMigrations = migrateSharedLayout(cwd);
+      if (sharedLayoutMigrations.length > 0) {
+        p.note(
+          sharedLayoutMigrations.map((m) => `${pc.green("✓")} ${m}`).join("\n"),
+          "Shared layout migration",
+        );
+      }
       spinner.stop(pc.green("Already up to date!"));
       p.outro(`Current version: ${pc.cyan(localVersion)}`);
       return;
@@ -127,7 +134,6 @@ export async function update(force = false): Promise<void> {
       }
 
       // Migrate legacy Python resources to stack/ (one-time)
-      // Check for ANY of the legacy files, not just snippets.md
       const legacyFiles = ["snippets.md", "tech-stack.md", "api-template.py"];
       const backendResourcesDir = join(
         cwd,
@@ -150,6 +156,15 @@ export async function update(force = false): Promise<void> {
         writeFileSync(
           join(backendStackDir, "stack.yaml"),
           "language: python\nframework: fastapi\norm: sqlalchemy\nsource: migrated\n",
+        );
+      }
+
+      // Shared layout migration (core/, conditional/, runtime/)
+      const sharedLayoutMigrations = migrateSharedLayout(cwd);
+      if (sharedLayoutMigrations.length > 0) {
+        p.note(
+          sharedLayoutMigrations.map((m) => `${pc.green("✓")} ${m}`).join("\n"),
+          "Shared layout migration",
         );
       }
 
