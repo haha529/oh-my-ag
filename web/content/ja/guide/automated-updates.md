@@ -1,15 +1,15 @@
 ---
-title: Automated Updates with GitHub Action
-description: Keep oh-my-agent skills up to date automatically using the official GitHub Action.
+title: GitHub Action による自動更新
+description: 公式 GitHub Action を使用して、oh-my-agent のスキルを自動的に最新の状態に保つ方法。
 ---
 
-# Automated Updates with GitHub Action
+# GitHub Action による自動更新
 
-The **oh-my-agent update action** runs `oma update` on a schedule and creates a PR (or commits directly) when new skill versions are available.
+**oh-my-agent update action** はスケジュールに従って `oma update` を実行し、新しいスキルバージョンが利用可能になると PR を作成（または直接コミット）します。
 
-## Quick Start
+## クイックスタート
 
-Add this workflow to any repository that uses oh-my-agent:
+oh-my-agent を使用するリポジトリにこのワークフローを追加します:
 
 ```yaml
 # .github/workflows/update-oma.yml
@@ -32,41 +32,41 @@ jobs:
       - uses: first-fluke/oh-my-agent/action@v1
 ```
 
-This checks for updates weekly and opens a PR if changes are found.
+これにより毎週更新が確認され、変更が見つかった場合は PR が作成されます。
 
-## Action Reference
+## Action リファレンス
 
-The action is available at:
+Action は以下から利用できます:
 
-- **Monorepo path**: `first-fluke/oh-my-agent/action@v1`
+- **モノレポパス**: `first-fluke/oh-my-agent/action@v1`
 - **Marketplace**: [`first-fluke/oma-update-action@v1`](https://github.com/marketplace/actions/oh-my-agent-update)
 
 ### Inputs
 
-| Input | Description | Default |
+| Input | 説明 | デフォルト |
 |:------|:-----------|:--------|
-| `mode` | `pr` creates a pull request, `commit` pushes directly | `pr` |
-| `base-branch` | Base branch for PR or direct commit target | `main` |
-| `force` | Overwrite user config files (`--force`) | `false` |
-| `pr-title` | Custom PR title | `chore(deps): update oh-my-agent skills` |
-| `pr-labels` | Comma-separated labels for the PR | `dependencies,automated` |
-| `commit-message` | Custom commit message | `chore(deps): update oh-my-agent skills` |
-| `token` | GitHub token for PR creation | `${{ github.token }}` |
+| `mode` | `pr` はプルリクエストを作成、`commit` は直接プッシュ | `pr` |
+| `base-branch` | PR のベースブランチ、または直接コミット先のブランチ | `main` |
+| `force` | ユーザー設定ファイルを上書き（`--force`） | `false` |
+| `pr-title` | カスタム PR タイトル | `chore(deps): update oh-my-agent skills` |
+| `pr-labels` | PR に付与するカンマ区切りのラベル | `dependencies,automated` |
+| `commit-message` | カスタムコミットメッセージ | `chore(deps): update oh-my-agent skills` |
+| `token` | PR 作成に使用する GitHub トークン | `${{ github.token }}` |
 
 ### Outputs
 
-| Output | Description |
+| Output | 説明 |
 |:-------|:-----------|
-| `updated` | `true` if changes were detected |
-| `version` | The oh-my-agent version after update |
-| `pr-number` | PR number (only in `pr` mode) |
-| `pr-url` | PR URL (only in `pr` mode) |
+| `updated` | 変更が検出された場合は `true` |
+| `version` | 更新後の oh-my-agent バージョン |
+| `pr-number` | PR 番号（`pr` モード時のみ） |
+| `pr-url` | PR の URL（`pr` モード時のみ） |
 
-## Examples
+## 使用例
 
-### Direct Commit Mode
+### ダイレクトコミットモード
 
-Skip the PR and push changes directly to the base branch:
+PR をスキップして、ベースブランチに直接変更をプッシュします:
 
 ```yaml
 - uses: first-fluke/oh-my-agent/action@v1
@@ -75,9 +75,9 @@ Skip the PR and push changes directly to the base branch:
     commit-message: "chore: sync oh-my-agent skills"
 ```
 
-### With a Personal Access Token
+### Personal Access Token の使用
 
-Required for fork repositories where `GITHUB_TOKEN` lacks write access:
+`GITHUB_TOKEN` に書き込み権限がないフォークリポジトリで必要です:
 
 ```yaml
 - uses: first-fluke/oh-my-agent/action@v1
@@ -85,9 +85,9 @@ Required for fork repositories where `GITHUB_TOKEN` lacks write access:
     token: ${{ secrets.PAT_TOKEN }}
 ```
 
-### Conditional Notification
+### 条件付き通知
 
-Run a follow-up step only when an update was applied:
+更新が適用された場合のみ後続ステップを実行します:
 
 ```yaml
 jobs:
@@ -108,20 +108,20 @@ jobs:
       - run: echo "oh-my-agent was updated to ${{ needs.update.outputs.version }}"
 ```
 
-## How It Works
+## 動作の仕組み
 
-1. Installs the `oh-my-agent` CLI via Bun
-2. Runs `oma update --ci` (non-interactive mode, no prompts)
-3. Detects changes in `.agents/` and `.claude/` directories
-4. Creates a PR or commits directly based on the `mode` input
+1. Bun を使用して `oh-my-agent` CLI をインストール
+2. `oma update --ci`（非インタラクティブモード、プロンプトなし）を実行
+3. `.agents/` および `.claude/` ディレクトリの変更を検出
+4. `mode` の設定に基づいて PR を作成するか、直接コミット
 
-## Comparison with Central Registry
+## セントラルレジストリとの比較
 
 | | GitHub Action | Central Registry |
 |:--|:--:|:--:|
-| Setup | 1 workflow file | 3 files (config + 2 workflows) |
-| Update method | `oma update` CLI | Tarball download + manual sync |
-| Customization | Action inputs | `.agent-registry.yml` |
-| Version pinning | Always latest | Explicit version pin |
+| セットアップ | ワークフローファイル 1 つ | 3 ファイル（設定 + ワークフロー 2 つ） |
+| 更新方法 | `oma update` CLI | Tarball ダウンロード + 手動同期 |
+| カスタマイズ | Action の inputs | `.agent-registry.yml` |
+| バージョン固定 | 常に最新 | 明示的なバージョン固定 |
 
-Use the **GitHub Action** for most projects. Use the **Central Registry** approach if you need strict version pinning or cannot use third-party actions.
+ほとんどのプロジェクトでは **GitHub Action** を使用してください。厳密なバージョン固定が必要な場合や、サードパーティの Action が使用できない場合は **Central Registry** アプローチを使用してください。

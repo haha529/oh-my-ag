@@ -1,15 +1,15 @@
 ---
-title: Automated Updates with GitHub Action
-description: Keep oh-my-agent skills up to date automatically using the official GitHub Action.
+title: 使用 GitHub Action 自动更新
+description: 使用官方 GitHub Action 自动保持 oh-my-agent skills 为最新版本。
 ---
 
-# Automated Updates with GitHub Action
+# 使用 GitHub Action 自动更新
 
-The **oh-my-agent update action** runs `oma update` on a schedule and creates a PR (or commits directly) when new skill versions are available.
+**oh-my-agent update action** 按计划运行 `oma update`，并在有新版本 skill 时创建 PR（或直接提交）。
 
-## Quick Start
+## 快速开始
 
-Add this workflow to any repository that uses oh-my-agent:
+将以下工作流添加到任何使用 oh-my-agent 的仓库：
 
 ```yaml
 # .github/workflows/update-oma.yml
@@ -32,41 +32,41 @@ jobs:
       - uses: first-fluke/oh-my-agent/action@v1
 ```
 
-This checks for updates weekly and opens a PR if changes are found.
+该工作流每周检查一次更新，发现变更时自动创建 PR。
 
-## Action Reference
+## Action 参考
 
-The action is available at:
+Action 可通过以下方式引用：
 
-- **Monorepo path**: `first-fluke/oh-my-agent/action@v1`
-- **Marketplace**: [`first-fluke/oma-update-action@v1`](https://github.com/marketplace/actions/oh-my-agent-update)
+- **Monorepo 路径**：`first-fluke/oh-my-agent/action@v1`
+- **Marketplace**：[`first-fluke/oma-update-action@v1`](https://github.com/marketplace/actions/oh-my-agent-update)
 
-### Inputs
+### 输入参数
 
-| Input | Description | Default |
+| 参数 | 说明 | 默认值 |
 |:------|:-----------|:--------|
-| `mode` | `pr` creates a pull request, `commit` pushes directly | `pr` |
-| `base-branch` | Base branch for PR or direct commit target | `main` |
-| `force` | Overwrite user config files (`--force`) | `false` |
-| `pr-title` | Custom PR title | `chore(deps): update oh-my-agent skills` |
-| `pr-labels` | Comma-separated labels for the PR | `dependencies,automated` |
-| `commit-message` | Custom commit message | `chore(deps): update oh-my-agent skills` |
-| `token` | GitHub token for PR creation | `${{ github.token }}` |
+| `mode` | `pr` 创建 pull request，`commit` 直接推送 | `pr` |
+| `base-branch` | PR 的目标分支或直接提交的目标分支 | `main` |
+| `force` | 覆盖用户配置文件（`--force`） | `false` |
+| `pr-title` | 自定义 PR 标题 | `chore(deps): update oh-my-agent skills` |
+| `pr-labels` | PR 的标签，多个用逗号分隔 | `dependencies,automated` |
+| `commit-message` | 自定义提交信息 | `chore(deps): update oh-my-agent skills` |
+| `token` | 用于创建 PR 的 GitHub token | `${{ github.token }}` |
 
-### Outputs
+### 输出参数
 
-| Output | Description |
+| 参数 | 说明 |
 |:-------|:-----------|
-| `updated` | `true` if changes were detected |
-| `version` | The oh-my-agent version after update |
-| `pr-number` | PR number (only in `pr` mode) |
-| `pr-url` | PR URL (only in `pr` mode) |
+| `updated` | 检测到变更时为 `true` |
+| `version` | 更新后的 oh-my-agent 版本号 |
+| `pr-number` | PR 编号（仅 `pr` 模式） |
+| `pr-url` | PR 链接（仅 `pr` 模式） |
 
-## Examples
+## 示例
 
-### Direct Commit Mode
+### 直接提交模式
 
-Skip the PR and push changes directly to the base branch:
+跳过 PR，将变更直接推送到目标分支：
 
 ```yaml
 - uses: first-fluke/oh-my-agent/action@v1
@@ -75,9 +75,9 @@ Skip the PR and push changes directly to the base branch:
     commit-message: "chore: sync oh-my-agent skills"
 ```
 
-### With a Personal Access Token
+### 使用 Personal Access Token
 
-Required for fork repositories where `GITHUB_TOKEN` lacks write access:
+在 `GITHUB_TOKEN` 缺少写权限的 fork 仓库中需要此配置：
 
 ```yaml
 - uses: first-fluke/oh-my-agent/action@v1
@@ -85,9 +85,9 @@ Required for fork repositories where `GITHUB_TOKEN` lacks write access:
     token: ${{ secrets.PAT_TOKEN }}
 ```
 
-### Conditional Notification
+### 条件通知
 
-Run a follow-up step only when an update was applied:
+仅在更新成功时执行后续步骤：
 
 ```yaml
 jobs:
@@ -108,20 +108,20 @@ jobs:
       - run: echo "oh-my-agent was updated to ${{ needs.update.outputs.version }}"
 ```
 
-## How It Works
+## 工作原理
 
-1. Installs the `oh-my-agent` CLI via Bun
-2. Runs `oma update --ci` (non-interactive mode, no prompts)
-3. Detects changes in `.agents/` and `.claude/` directories
-4. Creates a PR or commits directly based on the `mode` input
+1. 通过 Bun 安装 `oh-my-agent` CLI
+2. 运行 `oma update --ci`（非交互模式，无需手动确认）
+3. 检测 `.agents/` 和 `.claude/` 目录中的变更
+4. 根据 `mode` 参数决定创建 PR 还是直接提交
 
-## Comparison with Central Registry
+## 与中央注册中心的对比
 
 | | GitHub Action | Central Registry |
 |:--|:--:|:--:|
-| Setup | 1 workflow file | 3 files (config + 2 workflows) |
-| Update method | `oma update` CLI | Tarball download + manual sync |
-| Customization | Action inputs | `.agent-registry.yml` |
-| Version pinning | Always latest | Explicit version pin |
+| 配置 | 1 个工作流文件 | 3 个文件（配置 + 2 个工作流） |
+| 更新方式 | `oma update` CLI | Tarball 下载 + 手动同步 |
+| 自定义方式 | Action 输入参数 | `.agent-registry.yml` |
+| 版本锁定 | 始终为最新版 | 显式指定版本 |
 
-Use the **GitHub Action** for most projects. Use the **Central Registry** approach if you need strict version pinning or cannot use third-party actions.
+大多数项目推荐使用 **GitHub Action**。若需要严格锁定版本或无法使用第三方 Action，请使用 **Central Registry** 方案。
