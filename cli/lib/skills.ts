@@ -426,12 +426,26 @@ function bunHookCmd(envVar: string, vendorDir: string, script: string): string {
 }
 
 /**
- * Install Claude Code hooks and settings.json.
+ * Install Claude Code hooks, HUD statusline, and settings.json.
  */
 function installClaudeHooks(sourceDir: string, targetDir: string): void {
   copyHookScripts(sourceDir, join(targetDir, ".claude", "hooks"));
 
-  mergeHooksIntoSettings(join(targetDir, ".claude", "settings.json"), {
+  // Merge hooks + statusLine into settings.json
+  const settingsPath = join(targetDir, ".claude", "settings.json");
+  // biome-ignore lint/suspicious/noExplicitAny: settings.json schema is dynamic
+  let settings: any = {};
+
+  if (existsSync(settingsPath)) {
+    try {
+      settings = JSON.parse(readFileSync(settingsPath, "utf-8"));
+    } catch {
+      // Corrupted — start fresh
+    }
+  }
+
+  // Hooks
+  const omaHooks = {
     UserPromptSubmit: [
       {
         hooks: [
@@ -462,7 +476,16 @@ function installClaudeHooks(sourceDir: string, targetDir: string): void {
         ],
       },
     ],
-  });
+  };
+  settings.hooks = { ...(settings.hooks || {}), ...omaHooks };
+
+  // HUD statusline
+  settings.statusLine = {
+    type: "command",
+    command: bunHookCmd("CLAUDE_PROJECT_DIR", ".claude", "hud.ts"),
+  };
+
+  writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`);
 }
 
 /**
