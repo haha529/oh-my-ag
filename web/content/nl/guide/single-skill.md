@@ -1,31 +1,31 @@
 ---
-title: "Gebruiksscenario: Enkele skill"
-description: Snelpad voor gefocust werk binnen een enkel domein met duidelijke scope en snelle feedbacklussen.
+title: "Gebruiksscenario: Enkele Skill"
+description: Wanneer je maar één agent nodig hebt voor een gerichte taak — het snelle pad.
 ---
 
-# Gebruiksscenario: Enkele skill
+# Gebruiksscenario: Enkele Skill
 
-## Wanneer dit pad te gebruiken
+## Wanneer Dit Te Gebruiken
 
-Gebruik dit wanneer de uitvoer nauw afgebakend is en grotendeels tot een domein behoort:
+Gebruik dit wanneer je taak smal afgebakend is en tot één domein behoort:
 
-- een UI-component
-- een API-endpoint
-- een bug in een laag
-- een refactoring in een module
+- Eén UI-component
+- Eén API-endpoint
+- Eén bug in één laag
+- Eén refactoring in één module
 
-Als de taak cross-domaincoördinatie vereist (API-contract + UI + QA), gebruik dan [`Multi-agentproject`](./multi-agent-project.md).
+Als de taak cross-domein coördinatie nodig heeft (API + UI + QA), schakel over naar [Multi-Agent Project](./multi-agent-project).
 
-## Preflightchecklist
+## Voordat Je Promptt
 
-Definieer voor het prompten:
+Snelle checklist:
 
-1. Exacte uitvoer (bestand of gedrag)
-2. Doelstack en versies
-3. Acceptatiecriteria
-4. Testverwachtingen
+1. **Wat is de output?** — specifiek bestand of gedrag
+2. **Welke stack?** — framework, taal, versies
+3. **Wat is "klaar"?** — acceptatiecriteria
+4. **Welke tests?** — kritieke gevallen om te dekken
 
-## Promptsjabloon
+## Prompt-Sjabloon
 
 ```text
 Build <specific artifact> using <stack>.
@@ -36,7 +36,7 @@ Acceptance criteria:
 Add tests for: <critical cases>.
 ```
 
-## Voorbeeldprompt
+## Echt Voorbeeld
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Verwachte uitvoeringsstroom
+## Wat Er Gebeurt
 
-1. De relevante skill wordt automatisch geselecteerd.
-2. De agent stelt implementatie en aannames voor.
-3. U bevestigt of past de aannames aan.
-4. De agent levert code en tests op.
-5. U voert lokale verificatie uit en vraagt kleine aanpassingen aan.
+1. De juiste skill activeert automatisch op basis van je prompt
+2. Agent verklaart zijn aannames (charter preflight)
+3. Je bevestigt of past aan
+4. Agent schrijft code en tests
+5. Je voert lokale verificatie uit
 
-## Kwaliteitspoort voor merge
+## Voordat Je Mergt
 
-- Gedrag komt overeen met acceptatiecriteria
-- Tests dekken het succespad en kernrandgevallen
-- Geen ongerelateerde bestandswijzigingen
-- Geen verborgen brekende wijzigingen aan gedeelde modules
+Controleer dat:
+- Gedrag overeenkomt met je acceptatiecriteria
+- Tests het happy path en belangrijke randgevallen dekken
+- Geen ongerelateerde bestandswijzigingen erin geslopen zijn
+- Gedeelde modules niet kapot zijn
 
-## Escalatiesignalen
+## Wanneer Op Te Schalen
 
-Schakel over naar multi-agentstroom wanneer:
-
-- UI-werk nieuwe API-contracten vereist
-- Een fix cascaderende wijzigingen over lagen veroorzaakt
-- De scope na de eerste iteratie verder reikt dan een domein
-
-## Gereedcriteria
-
-Enkele-skilluitvoering is gereed wanneer:
-
-- Het doelartefact is geïmplementeerd
-- Acceptatiecriteria aantoonbaar zijn voldaan
-- Tests zijn toegevoegd of bijgewerkt voor het gewijzigde gedrag
+Schakel over naar multi-agent flow wanneer:
+- UI-werk een nieuw API-contract nodig heeft
+- Eén fix cascadeert over lagen
+- Scope groeit voorbij één domein na de eerste iteratie

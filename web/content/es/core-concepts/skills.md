@@ -1,57 +1,87 @@
 ---
 title: Skills
-description: Divulgacion progresiva y arquitectura de skills optimizada en tokens.
+description: Como la arquitectura de skills de dos capas mantiene a los agentes inteligentes sin desperdiciar tokens.
 ---
 
 # Skills
 
-## Divulgacion progresiva
+Los skills son lo que hace experto a cada agente. Son conocimiento estructurado — no solo prompts, sino protocolos de ejecucion, plantillas de codigo, playbooks de errores y checklists de calidad.
 
-Los skills se cargan explicitamente via /command o a traves del campo skills del agente.
+## El Diseno de Dos Capas
 
-## Diseno de dos capas
+Aqui esta la parte ingeniosa: los skills no cargan todo de una vez. Usan divulgacion progresiva para ahorrar ~75% de tokens.
 
-Cada skill utiliza un **diseno de dos capas optimizado en tokens**:
+### Capa 1: SKILL.md (~800 bytes)
 
-| Capa | Contenido | Tamano |
-|------|-----------|--------|
-| `SKILL.md` | Identidad, condiciones de enrutamiento, reglas principales | ~40 lineas (~800B) |
-| `resources/` | Protocolos de ejecucion, ejemplos, listas de verificacion, guias, fragmentos, stack tecnologico | Carga bajo demanda |
+Siempre cargado. Contiene:
+- Identidad y rol del agente
+- Cuando activarse (condiciones de ruteo)
+- Reglas y restricciones principales
+- Que NO hacer
 
-Esto logra un **ahorro de ~75% en tokens** en la carga inicial del skill (3-7KB -> ~800B por skill).
+### Capa 2: resources/ (cargado bajo demanda)
 
-## Capa de recursos compartidos (`_shared/`)
+Solo se carga cuando el agente esta trabajando activamente. Contiene lo profundo:
 
-Recursos comunes deduplicados entre todos los skills:
+| Recurso | Que Hace |
+|---------|----------|
+| `execution-protocol.md` | Flujo paso a paso: Analizar → Planificar → Implementar → Verificar |
+| `tech-stack.md` | Especificaciones detalladas de tecnologia y versiones |
+| `error-playbook.md` | Que hacer cuando las cosas salen mal (con escalamiento de "3 strikes") |
+| `checklist.md` | Verificaciones de calidad especificas del dominio |
+| `snippets.md` | Patrones de codigo listos para usar |
+| `examples/` | Ejemplos few-shot de entrada/salida |
+
+### Como Se Ve
+
+```
+.agents/skills/oma-frontend/
+├── SKILL.md                          ← Siempre cargado (~800 bytes)
+└── resources/
+    ├── execution-protocol.md         ← Bajo demanda
+    ├── tech-stack.md
+    ├── tailwind-rules.md
+    ├── component-template.tsx
+    ├── snippets.md
+    ├── error-playbook.md
+    ├── checklist.md
+    └── examples/
+```
+
+## Recursos Compartidos
+
+Todos los agentes comparten fundamentos comunes de `.agents/skills/_shared/`:
 
 | Recurso | Proposito |
 |---------|-----------|
-| `reasoning-templates.md` | Plantillas estructuradas de completar espacios para razonamiento de multiples pasos |
-| `clarification-protocol.md` | Cuando preguntar vs. asumir, niveles de ambiguedad |
-| `context-budget.md` | Estrategias de lectura de archivos eficientes en tokens por nivel de modelo |
-| `context-loading.md` | Mapeo de tipo de tarea a recurso para la construccion de prompts del orquestador |
-| `skill-routing.md` | Mapeo de skills a agentes y reglas de ejecucion paralela |
-| `difficulty-guide.md` | Evaluacion Simple/Medio/Complejo con bifurcacion de protocolo |
-| `lessons-learned.md` | Problemas de dominio acumulados entre sesiones |
-| `verify.sh` | Script de verificacion automatizada ejecutado tras la finalizacion del agente |
-| `api-contracts/` | El PM crea contratos, backend los implementa, frontend/mobile los consume |
-| `serena-memory-protocol.md` | Protocolo de lectura/escritura de memoria en modo CLI |
-| `common-checklist.md` | Verificaciones universales de calidad de codigo |
+| `skill-routing.md` | Mapea tareas al agente correcto |
+| `context-loading.md` | Que recursos cargar para cada tipo de tarea |
+| `prompt-structure.md` | Objetivo → Contexto → Restricciones → Listo Cuando |
+| `clarification-protocol.md` | Cuando preguntar vs. simplemente asumir |
+| `context-budget.md` | Lectura de archivos eficiente en tokens por nivel de modelo |
+| `difficulty-guide.md` | Evaluacion de tarea Simple / Media / Compleja |
+| `reasoning-templates.md` | Plantillas de razonamiento estructurado |
+| `quality-principles.md` | Estandares de calidad universales |
+| `vendor-detection.md` | Detectar que IDE/CLI esta en ejecucion |
 
-## Recursos por skill
+## Recursos Condicionales
 
-Cada skill proporciona recursos especificos de dominio:
+Algunos recursos solo se cargan cuando se activan por condiciones especificas:
 
-| Recurso | Proposito |
-|---------|-----------|
-| `execution-protocol.md` | Flujo de trabajo de cadena de pensamiento en 4 pasos (Analizar -> Planificar -> Implementar -> Verificar) |
-| `examples.md` | 2-3 ejemplos de entrada/salida tipo few-shot |
-| `checklist.md` | Lista de autoverificacion especifica del dominio |
-| `error-playbook.md` | Recuperacion de fallos con regla de escalacion de "3 intentos" |
-| `tech-stack.md` | Especificaciones tecnologicas detalladas |
-| `snippets.md` | Patrones de codigo listos para copiar y pegar |
-| `variants/` | Presets por lenguaje (e.g., `python/`, `node/`, `rust/`) -- usado por `oma-backend` |
+| Recurso | Cuando Se Carga |
+|---------|-----------------|
+| `quality-score.md` | Se solicita evaluacion de calidad |
+| `experiment-ledger.md` | Probando un enfoque experimental |
+| `exploration-loop.md` | Exploracion iterativa en progreso |
 
-## Por que es importante
+## Ejecucion Especifica por Vendor
 
-Esto mantiene el contexto inicial liviano mientras soporta ejecucion profunda cuando se requiere.
+Cada CLI soportado tiene su propio protocolo de ejecucion en `.agents/skills/_shared/runtime/execution-protocols/`:
+- `claude.md` — Patrones especificos de Claude
+- `gemini.md` — Patrones especificos de Gemini
+- `codex.md` — Patrones especificos de Codex
+- `qwen.md` — Patrones especificos de Qwen
+
+## Por Que Esto Importa
+
+Sin divulgacion progresiva, cargar 5 agentes agotaria tu ventana de contexto antes de que empiece cualquier trabajo. Con ella, obtienes carga inicial ligera y ejecucion profunda cuando importa.

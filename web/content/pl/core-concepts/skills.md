@@ -1,57 +1,87 @@
 ---
-title: Umiejętności
-description: Progresywne ujawnianie i architektura umiejętności zoptymalizowana pod kątem tokenów.
+title: Umiejetnosci (Skills)
+description: Jak dwuwarstwowa architektura umiejetnosci utrzymuje agentow inteligentnymi bez marnowania tokenow.
 ---
 
-# Umiejętności
+# Umiejetnosci (Skills)
 
-## Progresywne ujawnianie
+Umiejetnosci to co czyni kazdego agenta ekspertem. To ustrukturyzowana wiedza -- nie tylko prompty, ale protokoly wykonywania, szablony kodu, poradniki bledow i listy kontrolne jakosci.
 
-Umiejętności są ładowane jawnie przez /command lub pole skills agenta.
+## Dwuwarstwowy Design
 
-## Dwuwarstwowy design
+Oto sprytna czesc: umiejetnosci nie laduja wszystkiego naraz. Uzywaja progresywnego ujawniania aby zaoszczedzic ~75% tokenow.
 
-Każda umiejętność wykorzystuje **dwuwarstwowy design zoptymalizowany pod kątem tokenów**:
+### Warstwa 1: SKILL.md (~800 bajtow)
 
-| Warstwa | Zawartość | Rozmiar |
-|---------|-----------|---------|
-| `SKILL.md` | Tożsamość, warunki routingu, podstawowe reguły | ~40 linii (~800B) |
-| `resources/` | Protokoły wykonania, przykłady, listy kontrolne, poradniki, fragmenty kodu, stos technologiczny | Ładowane na żądanie |
+Zawsze ladowana. Zawiera:
+- Tozsamosc i role agenta
+- Kiedy sie aktywowac (warunki routingu)
+- Glowne zasady i ograniczenia
+- Czego NIE robic
 
-Osiąga to **~75% oszczędności tokenów** przy początkowym ładowaniu umiejętności (3-7KB → ~800B na umiejętność).
+### Warstwa 2: resources/ (ladowane na zadanie)
 
-## Współdzielona warstwa zasobów (`_shared/`)
+Ladowane tylko gdy agent faktycznie pracuje. Zawiera gleboka zawartosc:
 
-Wspólne zasoby zdeduplikowane pomiędzy wszystkimi umiejętnościami:
+| Zasob | Co Robi |
+|-------|--------|
+| `execution-protocol.md` | Workflow krok po kroku: Analizuj → Planuj → Implementuj → Weryfikuj |
+| `tech-stack.md` | Szczegolowe specyfikacje technologii i wersji |
+| `error-playbook.md` | Co robic gdy cos idzie nie tak (z eskalacja "3 strikes") |
+| `checklist.md` | Kontrole jakosci specyficzne dla domeny |
+| `snippets.md` | Gotowe do uzycia wzorce kodu |
+| `examples/` | Przyklady wejscia/wyjscia few-shot |
 
-| Zasób | Przeznaczenie |
-|-------|---------------|
-| `reasoning-templates.md` | Strukturalne szablony do uzupełniania dla wielokrokowego rozumowania |
-| `clarification-protocol.md` | Kiedy pytać, a kiedy zakładać, poziomy niejednoznaczności |
-| `context-budget.md` | Strategie odczytu plików efektywne tokenowo dla poszczególnych poziomów modeli |
-| `context-loading.md` | Mapowanie typ zadania → zasób dla konstruowania promptu orkiestratora |
-| `skill-routing.md` | Mapowanie umiejętności na agentów i reguły wykonywania równoległego |
-| `difficulty-guide.md` | Ocena Proste/Średnie/Złożone z rozgałęzieniem protokołu |
-| `lessons-learned.md` | Zgromadzone między sesjami pułapki domenowe |
-| `verify.sh` | Automatyczny skrypt weryfikacyjny uruchamiany po zakończeniu pracy agenta |
-| `api-contracts/` | PM tworzy kontrakty, backend implementuje, frontend/mobile konsumuje |
-| `serena-memory-protocol.md` | Protokół odczytu/zapisu pamięci w trybie CLI |
-| `common-checklist.md` | Uniwersalne kontrole jakości kodu |
+### Jak To Wyglada
 
-## Zasoby specyficzne dla umiejętności
+```
+.agents/skills/oma-frontend/
+├── SKILL.md                          ← Zawsze ladowane (~800 bajtow)
+└── resources/
+    ├── execution-protocol.md         ← Na zadanie
+    ├── tech-stack.md
+    ├── tailwind-rules.md
+    ├── component-template.tsx
+    ├── snippets.md
+    ├── error-playbook.md
+    ├── checklist.md
+    └── examples/
+```
 
-Każda umiejętność dostarcza zasoby specyficzne dla danej domeny:
+## Wspoldzielone Zasoby
 
-| Zasób | Przeznaczenie |
-|-------|---------------|
-| `execution-protocol.md` | 4-krokowy przepływ łańcucha myśli (Analiza → Plan → Implementacja → Weryfikacja) |
-| `examples.md` | 2-3 przykłady wejścia/wyjścia typu few-shot |
-| `checklist.md` | Lista kontrolna samoweryfikacji specyficzna dla domeny |
-| `error-playbook.md` | Odzyskiwanie po awariach z regułą eskalacji „3 strajki" |
-| `tech-stack.md` | Szczegółowe specyfikacje technologiczne |
-| `snippets.md` | Gotowe do skopiowania wzorce kodu |
-| `variants/` | Presety językowe (np. `python/`, `node/`, `rust/`) -- używane przez `oma-backend` |
+Wszyscy agenci wspoldziela wspolne podstawy z `.agents/skills/_shared/`:
 
-## Dlaczego to ma znaczenie
+| Zasob | Przeznaczenie |
+|-------|-------------|
+| `skill-routing.md` | Mapuje zadania do odpowiedniego agenta |
+| `context-loading.md` | Ktore zasoby ladowac dla jakiego typu zadania |
+| `prompt-structure.md` | Cel → Kontekst → Ograniczenia → Gotowe Gdy |
+| `clarification-protocol.md` | Kiedy pytac vs. po prostu zakladac |
+| `context-budget.md` | Efektywne tokenowo czytanie plikow per tier modelu |
+| `difficulty-guide.md` | Ocena zadania: Proste / Srednie / Zlożone |
+| `reasoning-templates.md` | Szablony ustrukturyzowanego rozumowania do wypelnienia |
+| `quality-principles.md` | Uniwersalne standardy jakosci |
+| `vendor-detection.md` | Wykrywanie ktore IDE/CLI jest uruchomione |
 
-Dzięki temu początkowy kontekst pozostaje oszczędny, jednocześnie wspierając głębokie wykonanie, gdy jest to wymagane.
+## Zasoby Warunkowe
+
+Niektore zasoby laduja sie tylko przy okreslonych warunkach:
+
+| Zasob | Kiedy Sie Laduje |
+|-------|-----------------|
+| `quality-score.md` | Zazadano oceny jakosci |
+| `experiment-ledger.md` | Probowanie eksperymentalnego podejscia |
+| `exploration-loop.md` | Trwa iteracyjna eksploracja |
+
+## Wykonywanie Specyficzne dla Vendora
+
+Kazde wspierane CLI ma wlasny protokol wykonywania w `.agents/skills/_shared/runtime/execution-protocols/`:
+- `claude.md` -- Wzorce specyficzne dla Claude
+- `gemini.md` -- Wzorce specyficzne dla Gemini
+- `codex.md` -- Wzorce specyficzne dla Codex
+- `qwen.md` -- Wzorce specyficzne dla Qwen
+
+## Dlaczego To Wazne
+
+Bez progresywnego ujawniania, ladowanie 5 agentow wyczerpaloby okno kontekstu zanim jakakolwiek praca by sie zaczela. Z nim dostajesz lekkie poczatkowe ladowanie i gleboka realizacje gdy to ma znaczenie.

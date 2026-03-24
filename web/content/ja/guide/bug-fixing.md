@@ -1,76 +1,70 @@
 ---
 title: "ユースケース: バグ修正"
-description: 重大度に基づくエスカレーション付きの構造化された再現-診断-修正-リグレッションループ。
+description: 構造化されたデバッグ — 問題の再現からリグレッションテストの作成まで。
 ---
 
 # ユースケース: バグ修正
 
-## 受付フォーマット
+## 良いバグレポートから始める
 
-再現可能なレポートから始めます:
+バグレポートが良いほど、修正は早くなります：
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## 重大度トリアージ
+## まずトリアージ
 
-対応速度を選択するため、早期に分類します:
+| 深刻度 | 意味 | 対応 |
+|----------|--------------|----------|
+| **P0** | データ損失、認証バイパス、本番障害 | すべてを中断、QA/セキュリティに関与 |
+| **P1** | 主要ユーザーフローの障害 | 現在のスプリントで修正 |
+| **P2** | 劣化しているが回避策あり | 修正をスケジュール |
+| **P3** | 軽微、ブロッキングなし | バックログ |
 
-- `P0`: データ損失、認証バイパス、本番障害
-- `P1`: 主要なユーザーフローの障害
-- `P2`: ワークアラウンドありの機能低下
-- `P3`: 軽微/非ブロッキング
+## デバッグループ
 
-`P0/P1` は必ず QA/セキュリティレビューを実施してください。
+1. **再現** — 最小限の環境で正確に再現
+2. **分離** — 根本原因を見つける（症状だけでなく）
+3. **修正** — 最小限の安全な変更
+4. **テスト** — 失敗パスのリグレッションテスト
+5. **スキャン** — 同じパターンが隣接コードにないか確認
 
-## 実行ループ
-
-1. 最小限の環境で正確に再現する。
-2. 根本原因を特定する（症状の表面的な修正ではなく）。
-3. 最小限の安全な修正を実装する。
-4. 失敗パスに対するリグレッションテストを追加する。
-5. 同じ障害モードを共有する可能性のある隣接パスを再確認する。
-
-## oma-debug 用プロンプトテンプレート
+## プロンプトテンプレート
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## 一般的なエスカレーションシグナル
+## エスカレーションのタイミング
 
-バグが以下に関連する場合、QA またはセキュリティにエスカレーションしてください:
+バグが以下に関わる場合は、QAまたはセキュリティに相談してください：
 
-- 認証/セッション/トークンリフレッシュ
-- 権限境界
-- 支払い/トランザクションの整合性
-- 負荷下でのパフォーマンスリグレッション
+- 認証 / セッション / トークンリフレッシュ
+- パーミッション境界
+- 決済 / トランザクション整合性
+- 負荷下のパフォーマンス
 
-## 修正後の検証
+## 修正後に
 
-- 元の再現手順で障害が発生しなくなること
-- 関連フローに新しいエラーがないこと
-- テストが修正前に失敗し、修正後に成功すること
-- ホットフィックスが必要な場合のロールバックパスが明確であること
-
-## 完了基準
-
-バグ修正は以下の条件を満たした場合に完了です:
-
-- 根本原因が特定され、文書化されている
-- 修正が再現可能なチェックにより検証されている
-- リグレッションカバレッジが整備されている
+以下を確認してください：
+- 元の再現手順で失敗しなくなった
+- 関連フローに新しいエラーがない
+- テストが修正前に失敗し、修正後にパスする
+- 必要に応じてロールバックパスが明確

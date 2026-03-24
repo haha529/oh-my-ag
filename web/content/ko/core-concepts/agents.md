@@ -1,41 +1,88 @@
 ---
-title: Agents
-description: 에이전트 타입, 워크스페이스 전략, 오케스트레이션 흐름.
+title: 에이전트
+description: 에이전트의 동작 원리 — 역할, 카테고리, Charter Preflight, 오케스트레이션 플로우.
 ---
 
-# Agents
+# 에이전트
 
-## 에이전트 분류
+oh-my-agent의 에이전트는 범용 챗봇이 아닙니다. 각각 특정 엔지니어링 팀 역할을 모델링하며, 정해진 범위와 도구, 품질 기준을 갖고 있습니다.
 
-- 아이디에이션: Brainstorm
-- 기획: PM agent
-- 구현: Frontend, Backend, Mobile, DB
-- 인프라: TF-infra agent
-- DevOps: Dev-workflow
-- 검증: QA, Debug
-- 로컬라이제이션: Translator
-- 조율: oma-coordination, oma-orchestrator
+## 에이전트 카테고리
+
+엔지니어링 조직이라고 생각하면 됩니다:
+
+| 카테고리 | 에이전트 | 담당 영역 |
+|----------|--------|-----------------|
+| **아이디어** | oma-brainstorm | 코드 작성 전 아이디어 탐색 |
+| **기획** | oma-pm | 요구사항, 태스크 분해, API 계약 |
+| **구현** | oma-frontend, oma-backend, oma-mobile, oma-db | 실제 코딩 |
+| **디자인** | oma-design | 디자인 시스템, 토큰, UI/UX 패턴 |
+| **인프라** | oma-tf-infra | Terraform으로 클라우드 프로비저닝 |
+| **DevOps** | oma-dev-workflow | CI/CD, 마이그레이션, 릴리스 |
+| **품질** | oma-qa, oma-debug | 리뷰, 보안 감사, 버그 수정 |
+| **로컬라이제이션** | oma-translator | 자연스러운 다국어 번역 |
+| **조율** | oma-orchestrator, oma-coordination | 에이전트 실행 및 동기화 |
+| **Git** | oma-commit | 깔끔한 Conventional Commit |
+
+## 에이전트 실행 방식
+
+모든 에이전트는 동일한 규율을 따릅니다:
+
+### 1. Charter Preflight
+
+코드를 작성하기 전에 에이전트는 `CHARTER_CHECK`를 출력합니다:
+- 어떤 도메인에서 작업하는지
+- 어떤 제약 조건이 적용되는지
+- 어떤 가정을 하고 있는지
+- "완료"가 어떤 상태인지
+
+이를 통해 범위 확장이나 오해를 조기에 잡을 수 있습니다.
+
+### 2. 2단계 로딩
+
+에이전트는 토큰 효율성을 위해 설계되었습니다:
+- **Layer 1** (`SKILL.md`, ~800바이트): 정체성과 라우팅 규칙 — 항상 로딩
+- **Layer 2** (`resources/`): 실행 프로토콜, 에러 플레이북, 코드 템플릿 — 필요할 때만 로딩
+
+이 방식으로 모든 걸 한꺼번에 로딩하는 것 대비 약 75% 토큰을 절약합니다.
+
+### 3. 범위 한정 실행
+
+프론트엔드 에이전트는 백엔드 코드를 건드리지 않습니다. DB 에이전트는 UI 컴포넌트를 수정하지 않습니다. 각 에이전트는 자기 영역을 지킵니다.
+
+### 4. 품질 게이트
+
+모든 에이전트에는 도메인별 체크리스트가 있습니다. 체크리스트를 통과해야 "완료"입니다.
 
 ## 워크스페이스 전략
 
-워크스페이스 분리로 머지 충돌을 줄입니다.
+멀티 에이전트 프로젝트에서는 별도의 워크스페이스를 사용해 머지 충돌을 줄입니다:
 
 ```text
-./apps/api      -> backend
-./apps/web      -> frontend
-./apps/mobile   -> mobile
+./apps/api      → backend 에이전트 워크스페이스
+./apps/web      → frontend 에이전트 워크스페이스
+./apps/mobile   → mobile 에이전트 워크스페이스
 ```
 
-## Agent Manager 흐름
+## 오케스트레이션 플로우
 
-1. PM이 태스크 분해 계획 수립
-2. 도메인별 에이전트 병렬 실행
-3. Serena 메모리에 진행 상태 기록
-4. QA가 시스템 일관성 검증
+멀티 에이전트 워크플로우를 실행하면:
 
-## Serena 런타임 파일
+1. **PM 에이전트**가 태스크를 도메인별 서브태스크로 분해합니다
+2. **도메인 에이전트**들이 각자 워크스페이스에서 병렬로 실행합니다
+3. **진행 상황**이 Serena 메모리(`.serena/memories/`)에 기록됩니다
+4. **QA 에이전트**가 크로스 도메인 일관성을 검증합니다
+5. **결과**가 수집되어 머지 준비가 됩니다
 
-- `orchestrator-session.md`
-- `task-board.md`
-- `progress-{agent}.md`
-- `result-{agent}.md`
+## 런타임 상태 (Serena Memory)
+
+에이전트들은 공유 메모리 파일을 통해 조율합니다:
+
+| 파일 | 용도 |
+|------|---------|
+| `orchestrator-session.md` | 현재 세션 상태 |
+| `task-board.md` | 태스크 할당 및 상태 |
+| `progress-{agent}.md` | 에이전트별 진행 업데이트 |
+| `result-{agent}.md` | 최종 에이전트 산출물 |
+
+이 파일들은 `.serena/memories/`에 있으며, 대시보드가 모니터링하는 대상입니다.

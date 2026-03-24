@@ -1,154 +1,106 @@
-# oh-my-agent: Draagbare Multi-Agent Harness
+# oh-my-agent: Portable Multi-Agent Harness
 
 [![npm version](https://img.shields.io/npm/v/oh-my-agent?color=cb3837&logo=npm)](https://www.npmjs.com/package/oh-my-agent) [![npm downloads](https://img.shields.io/npm/dm/oh-my-agent?color=cb3837&logo=npm)](https://www.npmjs.com/package/oh-my-agent) [![GitHub stars](https://img.shields.io/github/stars/first-fluke/oh-my-agent?style=flat&logo=github)](https://github.com/first-fluke/oh-my-agent) [![License](https://img.shields.io/github/license/first-fluke/oh-my-agent)](https://github.com/first-fluke/oh-my-agent/blob/main/LICENSE) [![Last Updated](https://img.shields.io/github/last-commit/first-fluke/oh-my-agent?label=updated&logo=git)](https://github.com/first-fluke/oh-my-agent/commits/main)
 
 [English](../README.md) | [한국어](./README.ko.md) | [中文](./README.zh.md) | [Português](./README.pt.md) | [日本語](./README.ja.md) | [Français](./README.fr.md) | [Español](./README.es.md) | [Polski](./README.pl.md) | [Русский](./README.ru.md) | [Deutsch](./README.de.md)
 
-Het draagbare, rolgebaseerde agentharnas voor serieuze AI-ondersteunde engineering.
+Ooit gewenst dat je AI-assistent collega's had? Dat is precies wat oh-my-agent doet.
 
-`oh-my-agent` werkt met alle grote AI IDE's, waaronder Antigravity, Claude Code, Cursor, Gemini, OpenCode en meer. Het combineert rolgebaseerde agents, expliciete workflows, realtime waarneembaarheid en standaardbewuste begeleiding voor teams die minder AI-rommel en een meer gedisciplineerde uitvoering willen.
+In plaats van een enkele AI die alles doet (en halverwege de draad kwijtraakt), verdeelt oh-my-agent het werk over **gespecialiseerde agents** — frontend, backend, QA, PM, DB, mobile, infra, debug, design en meer. Elk van hen kent zijn domein door en door, heeft eigen tools en checklists, en blijft in zijn eigen baan.
 
-## Wat is dit?
-
-Een verzameling **Agent Skills** die collaboratieve multi-agent ontwikkeling mogelijk maken. Werk wordt verdeeld over expert agents:
-
-| Agent | Specialisatie | Triggers |
-|-------|---------------|----------|
-| **Brainstorm** | Design-first ideatie vóór planning | "brainstorm", "ideate", "explore idea" |
-| **PM Agent** | Requirements analyse, taak decompositie, architectuur | "plan", "onderverdelen", "wat moeten we bouwen" |
-| **Frontend Agent** | React/Next.js, TypeScript, Tailwind CSS | "UI", "component", "styling" |
-| **Backend Agent** | Backend (Python, Node.js, Rust, ...) | "API", "database", "authenticatie" |
-| **DB Agent** | SQL/NoSQL-modellering, normalisatie, integriteit, back-up, capaciteitsplanning | "ERD", "schema", "databaseontwerp", "index-tuning" |
-| **Mobile Agent** | Flutter cross-platform ontwikkeling | "mobiele app", "iOS/Android" |
-| **QA Agent** | OWASP Top 10 beveiliging, prestaties, toegankelijkheid | "bekijk beveiliging", "audit", "controleer prestaties" |
-| **Debug Agent** | Bug diagnose, root cause analyse, regressietests | "bug", "fout", "crash" |
-| **Developer Workflow** | Monorepo-taakautomatisering, mise-taken, CI/CD, migraties, release | "dev workflow", "mise-taken", "CI/CD-pipeline" |
-| **TF Infra Agent** | Multi-cloud IaC-provisioning (AWS, GCP, Azure, OCI) | "infrastructuur", "terraform", "cloud-setup" |
-| **Orchestrator** | CLI-gebaseerde parallelle agent uitvoering  | "spawn agent", "parallelle uitvoering" |
-| **Commit** | Conventional Commits met projectspecifieke regels | "commit", "wijzigingen opslaan" |
-
-
-## Waarom anders
-
-- **`.agents/` is de bron van waarheid**: skills, workflows, gedeelde bronnen en configuratie leven in één draagbare projectstructuur in plaats van gevangen te zitten in één IDE-plugin.
-- **Rolgebaseerde agentteams**: PM, QA, DB, Infra, Frontend, Backend, Mobile, Debug en Workflow agents zijn gemodelleerd als een engineeringorganisatie, niet zomaar een stapel prompts.
-- **Workflow-first orchestratie**: planning, review, debug en gecoördineerde uitvoering zijn first-class workflows, geen nagedachten.
-- **Standaard-bewust ontwerp**: agents dragen nu gerichte begeleiding voor ISO-gedreven planning, QA, databasecontinuïteit/veiligheid en infrastructuurgovernance.
-- **Gebouwd voor verificatie**: dashboards, manifestgeneratie, gedeelde uitvoeringsprotocollen en gestructureerde uitvoer geven de voorkeur aan traceerbaarheid boven alleen-vibe-generatie.
-
-
+Werkt met alle grote AI IDE's: Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode en meer.
 
 ## Snel starten
 
-### Vereisten
-
-- **AI IDE** (Antigravity, Claude Code, Codex, Gemini, etc.)
-
-### Optie 1: Installatie in één regel (aanbevolen)
-
 ```bash
+# Eenregelig (installeert bun & uv automatisch als ze ontbreken)
 curl -fsSL https://raw.githubusercontent.com/first-fluke/oh-my-agent/main/cli/install.sh | bash
-```
 
-Detecteert en installeert automatisch ontbrekende afhankelijkheden (bun, uv) en start vervolgens de interactieve setup.
-
-### Optie 2: Handmatige installatie
-
-```bash
-# Installeer bun als je het nog niet hebt:
-# curl -fsSL https://bun.sh/install | bash
-
-# Installeer uv als je het nog niet hebt:
-# curl -LsSf https://astral.sh/uv/install.sh | sh
-
+# Of handmatig
 bunx oh-my-agent
 ```
 
-Selecteer je projecttype en skills worden geïnstalleerd in `.agents/skills/`.
+Kies een preset en je bent klaar:
 
-| Preset | Skills |
-|--------|--------|
-| ✨ All | Alles |
-| 🌐 Fullstack | oma-brainstorm, oma-frontend, oma-backend, oma-db, oma-pm, oma-qa, oma-debug, oma-commit |
-| 🎨 Frontend | oma-brainstorm, oma-frontend, oma-pm, oma-qa, oma-debug, oma-commit |
-| ⚙️ Backend | oma-brainstorm, oma-backend, oma-db, oma-pm, oma-qa, oma-debug, oma-commit |
-| 📱 Mobile | oma-brainstorm, oma-mobile, oma-pm, oma-qa, oma-debug, oma-commit |
-| 🚀 DevOps | oma-brainstorm, oma-tf-infra, oma-dev-workflow, oma-pm, oma-qa, oma-debug, oma-commit |
+| Preset | Wat je krijgt |
+|--------|-------------|
+| ✨ All | Alle agents en skills |
+| 🌐 Fullstack | frontend + backend + db + pm + qa + debug + brainstorm + commit |
+| 🎨 Frontend | frontend + pm + qa + debug + brainstorm + commit |
+| ⚙️ Backend | backend + db + pm + qa + debug + brainstorm + commit |
+| 📱 Mobile | mobile + pm + qa + debug + brainstorm + commit |
+| 🚀 DevOps | tf-infra + dev-workflow + pm + qa + debug + brainstorm + commit |
 
-### Optie 3: Globale installatie (voor Orchestrator)
+## Jouw Agent Team
 
-Om de core tools globaal te gebruiken of de SubAgent Orchestrator uit te voeren:
+| Agent | Wat ze doen |
+|-------|-------------|
+| **oma-brainstorm** | Verkent ideeen voordat je begint met bouwen |
+| **oma-pm** | Plant taken, splitst requirements op, definieert API-contracten |
+| **oma-frontend** | React/Next.js, TypeScript, Tailwind CSS v4, shadcn/ui |
+| **oma-backend** | API's in Python, Node.js of Rust |
+| **oma-db** | Schema-ontwerp, migraties, indexering, vector DB |
+| **oma-mobile** | Cross-platform apps met Flutter |
+| **oma-design** | Design systems, tokens, toegankelijkheid, responsive |
+| **oma-qa** | OWASP-beveiliging, performance, toegankelijkheidsreview |
+| **oma-debug** | Root cause-analyse, fixes, regressietests |
+| **oma-tf-infra** | Multi-cloud Terraform IaC |
+| **oma-dev-workflow** | CI/CD, releases, monorepo-automatisering |
+| **oma-translator** | Natuurlijke meertalige vertaling |
+| **oma-orchestrator** | Parallelle agent-uitvoering via CLI |
+| **oma-commit** | Nette conventional commits |
+
+## Hoe het werkt
+
+Gewoon chatten. Beschrijf wat je wilt en oh-my-agent zoekt uit welke agents nodig zijn.
+
+```
+Jij: "Bouw een TODO-app met gebruikersauthenticatie"
+→ PM plant het werk
+→ Backend bouwt de auth API
+→ Frontend bouwt de React UI
+→ DB ontwerpt het schema
+→ QA reviewt alles
+→ Klaar: gecoordineerde, gereviewde code
+```
+
+Of gebruik slash commands voor gestructureerde workflows:
+
+| Commando | Wat het doet |
+|---------|-------------|
+| `/plan` | PM splitst je feature op in taken |
+| `/coordinate` | Stapsgewijze multi-agent uitvoering |
+| `/orchestrate` | Automatische parallelle agent-spawning |
+| `/ultrawork` | 5-fasen kwaliteitsworkflow met 11 review gates |
+| `/review` | Beveiligings- + performance- + toegankelijkheidsaudit |
+| `/debug` | Gestructureerde root cause-debugging |
+| `/design` | 7-fasen design system workflow |
+| `/brainstorm` | Vrije brainstorm |
+| `/commit` | Conventional commit met type/scope-analyse |
+
+**Autodetectie**: Je hebt de slash commands niet eens nodig — woorden als "plan", "review", "debug" in je bericht (in 11 talen!) activeren automatisch de juiste workflow.
+
+## CLI
 
 ```bash
-# Homebrew (macOS/Linux)
-brew install oh-my-agent
+# Globaal installeren
+bun install --global oh-my-agent   # of: brew install oh-my-agent
 
-# npm/bun
-bun install --global oh-my-agent
+# Overal gebruiken
+oma doctor                  # Health check
+oma dashboard               # Realtime agent-monitoring
+oma agent:spawn backend "Build auth API" session-01
+oma agent:parallel -i backend:"Auth API" frontend:"Login form"
 ```
 
-Je hebt ook minimaal één CLI tool nodig:
+## Waarom oh-my-agent?
 
-| CLI | Installeren | Authenticatie |
-|-----|-------------|---------------|
-| Gemini | `bun install --global @google/gemini-cli` | Auto on first `gemini` run |
-| Claude | `curl -fsSL https://claude.ai/install.sh \| bash` | Auto on first `claude` run |
-| Codex | `bun install --global @openai/codex` | `codex login` |
-| Qwen | `bun install --global @qwen-code/qwen-code` | `/auth` inside CLI |
-
-### Optie 4: Integreren in bestaand project
-
-**Aanbevolen (CLI):**
-
-Voer het volgende commando uit in je projectroot om automatisch skills en workflows te installeren/updaten:
-
-```bash
-bunx oh-my-agent
-```
-
-> **Tip:** Voer `bunx oh-my-agent doctor` uit na installatie om te verifiëren dat alles correct is ingesteld (inclusief globale workflows).
-
-### 2. Chat
-
-**Eenvoudige taak** (domeinskill direct aanroepen):
-
-```
-"Maak een loginformulier met Tailwind CSS en formuliervalidatie"
-→ oma-frontend skill
-```
-
-**Complex project** (/coordinate workflow):
-
-```
-"Bouw een TODO app met gebruikersauthenticatie"
-→ /coordinate → PM Agent plant → agents gespawned in Agent Manager
-```
-
-**Maximale inzet** (/ultrawork workflow):
-
-```
-"Auth module refactoren, API tests toevoegen en docs updaten"
-→ /ultrawork → Onafhankelijke taken worden parallel uitgevoerd over agenten
-```
-
-**Wijzigingen committen** (conventional commits):
-
-```
-/commit
-→ Analyseer wijzigingen, stel commit type/scope voor, creëer commit met Co-Author
-```
-
-**Ontwerpsysteem** (DESIGN.md + anti-patronen + optionele Stitch MCP):
-
-```
-/design
-→ 7-fasen workflow: Instelling → Extractie → Verbetering → Voorstel → Generatie → Audit → Overdracht
-```
-
-### 3. Monitoren met dashboards
-
-Voor dashboard setup en gebruiksdetails, zie [`web/content/nl/guide/usage.md`](./web/content/nl/guide/usage.md#realtime-dashboards).
-
+- **Draagbaar** — `.agents/` reist mee met je project, niet opgesloten in een IDE
+- **Rolgebaseerd** — Agents gemodelleerd als een echt engineeringteam, niet een stapel prompts
+- **Token-efficient** — Tweelaags skill-ontwerp bespaart ~75% tokens
+- **Kwaliteit eerst** — Charter preflight, quality gates en review-workflows ingebouwd
+- **Multi-vendor** — Mix Gemini, Claude, Codex en Qwen per agent-type
+- **Observeerbaar** — Terminal- en webdashboards voor realtime monitoring
 
 ## Architectuur
 
@@ -167,13 +119,13 @@ flowchart TD
         W7["/design"]
     end
 
-    subgraph Orchestration["Orkestratie"]
+    subgraph Orchestration["Orchestration"]
         direction TB
         PM[oma-pm]
-        ORC[orchestrator]
+        ORC[oma-orchestrator]
     end
 
-    subgraph Domain["Domein Agents"]
+    subgraph Domain["Domain Agents"]
         direction TB
         FE[oma-frontend]
         BE[oma-backend]
@@ -183,23 +135,35 @@ flowchart TD
         TF[oma-tf-infra]
     end
 
-    subgraph Quality["Kwaliteit"]
+    subgraph Quality["Quality"]
         direction TB
         QA[oma-qa]
         DBG[oma-debug]
     end
 
-
     Workflows --> Orchestration
     Orchestration --> Domain
     Domain --> Quality
-    Quality --> CMT([commit])
+    Quality --> CMT([oma-commit])
 ```
 
+## Meer informatie
+
+- **[Uitgebreide documentatie](./AGENTS_SPEC.md)** — Volledige technische spec en architectuur
+- **[Ondersteunde agents](./SUPPORTED_AGENTS.md)** — Agent-ondersteuningsmatrix per IDE
+- **[Webdocs](https://oh-my-agent.dev)** — Handleidingen, tutorials en CLI-referentie
 
 ## Sponsors
 
-Dit project wordt onderhouden dankzij onze genereuze sponsors.
+Dit project wordt onderhouden dankzij onze gulle sponsors.
+
+> **Vind je dit project leuk?** Geef een ster!
+>
+> ```bash
+> gh api --method PUT /user/starred/first-fluke/oh-my-agent
+> ```
+>
+> Probeer onze geoptimaliseerde startertemplate: [fullstack-starter](https://github.com/first-fluke/fullstack-starter)
 
 <a href="https://github.com/sponsors/first-fluke">
   <img src="https://img.shields.io/badge/Sponsor-♥-ea4aaa?style=for-the-badge" alt="Sponsor" />
@@ -210,22 +174,22 @@ Dit project wordt onderhouden dankzij onze genereuze sponsors.
 
 ### 🚀 Champion
 
-<!-- Champion tier ($100/mo) logo's hier -->
+<!-- Champion tier ($100/mo) logos here -->
 
 ### 🛸 Booster
 
-<!-- Booster tier ($30/mo) logo's hier -->
+<!-- Booster tier ($30/mo) logos here -->
 
 ### ☕ Contributor
 
-<!-- Contributor tier ($10/mo) namen hier -->
+<!-- Contributor tier ($10/mo) names here -->
 
 [Word sponsor →](https://github.com/sponsors/first-fluke)
 
-Zie [SPONSORS.md](./SPONSORS.md) voor een volledige lijst van supporters.
+Zie [SPONSORS.md](../SPONSORS.md) voor de volledige lijst van supporters.
+
 
 
 ## Licentie
 
 MIT
-

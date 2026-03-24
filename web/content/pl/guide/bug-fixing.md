@@ -1,76 +1,70 @@
 ---
-title: "Przypadek użycia: Naprawianie błędów"
-description: Strukturalna pętla odtworzenie-diagnoza-naprawa-regresja z eskalacją opartą na priorytecie.
+title: "Przypadek Uzycia: Naprawianie Bledow"
+description: Ustrukturyzowane debugowanie -- od odtworzenia problemu do napisania testow regresyjnych.
 ---
 
-# Przypadek użycia: Naprawianie błędów
+# Przypadek Uzycia: Naprawianie Bledow
 
-## Format zgłoszenia
+## Zacznij od Dobrego Raportu
 
-Zacznij od odtwarzalnego raportu:
+Im lepszy raport bledu, tym szybsza naprawa:
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## Triage priorytetów
+## Najpierw Triaz
 
-Klasyfikuj wcześnie, aby wybrać szybkość reakcji:
+| Waznosc | Co Oznacza | Reakcja |
+|---------|-----------|--------|
+| **P0** | Utrata danych, obejscie auth, awaria produkcji | Rzuc wszystko, zaangazuj QA/bezpieczenstwo |
+| **P1** | Glowny przeplyw uzytkownika zepsuty | Napraw w biezacym sprincie |
+| **P2** | Pogorszony ale ma obejscie | Zaplanuj naprawe |
+| **P3** | Drobny, nieblokujacy | Backlog |
 
-- `P0`: utrata danych, obejście autoryzacji, awaria produkcyjna
-- `P1`: główny przepływ użytkownika zablokowany
-- `P2`: pogorszone działanie z obejściem
-- `P3`: drobny/nieblokujący
+## Petla Debugowania
 
-`P0/P1` powinny zawsze obejmować przegląd QA/bezpieczeństwa.
+1. **Odtworz** -- dokladnie, w minimalnym srodowisku
+2. **Izoluj** -- znajdz przyczyne zrodlowa (nie tylko symptom)
+3. **Napraw** -- najmniejsza bezpieczna zmiana
+4. **Przetestuj** -- test regresyjny dla zepsutej sciezki
+5. **Przeskanuj** -- sprawdz sasiedni kod pod katem tego samego wzorca
 
-## Pętla wykonania
-
-1. Odtwórz dokładnie w minimalnym środowisku.
-2. Wyizoluj przyczynę źródłową (nie tylko łatanie objawów).
-3. Zaimplementuj najmniejszą bezpieczną poprawkę.
-4. Dodaj testy regresji dla wadliwej ścieżki.
-5. Sprawdź ponownie sąsiednie ścieżki, które mogą mieć ten sam tryb awarii.
-
-## Szablon promptu dla oma-debug
+## Szablon Prompta
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## Typowe sygnały eskalacji
+## Kiedy Eskalowac
 
-Eskaluj do QA lub bezpieczeństwa, gdy błąd dotyczy:
+Zaangazuj QA lub bezpieczenstwo gdy blad dotyka:
 
-- autoryzacji/sesji/odświeżania tokenów
-- granic uprawnień
-- spójności płatności/transakcji
-- regresji wydajności pod obciążeniem
+- Uwierzytelniania / sesji / odswiezania tokenu
+- Granic uprawnien
+- Platnosci / spojnosci transakcji
+- Wydajnosci pod obciazeniem
 
-## Walidacja po naprawie
+## Po Naprawie
 
-- oryginalne odtworzenie nie kończy się już niepowodzeniem
-- brak nowych błędów w powiązanych przepływach
-- testy kończą się niepowodzeniem przed naprawą i przechodzą po naprawie
-- ścieżka wycofania jest jasna, jeśli wymagana jest pilna poprawka
-
-## Kryteria zakończenia
-
-Naprawianie błędów jest zakończone, gdy:
-
-- przyczyna źródłowa jest zidentyfikowana i udokumentowana
-- poprawka jest zweryfikowana poprzez odtwarzalne kontrole
-- pokrycie regresji jest zapewnione
+Zweryfikuj:
+- Oryginalne odtworzenie juz nie zawodzi
+- Zadnych nowych bledow w powiazanych przeplywach
+- Testy zawiodly przed naprawa, przechodza po niej
+- Sciezka wycofania jest jasna w razie potrzeby

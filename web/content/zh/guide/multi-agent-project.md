@@ -1,76 +1,77 @@
 ---
-title: "用例：多代理项目"
-description: 复杂跨领域交付的端到端流程，包含显式的协调关卡。
+title: "使用场景：多智能体项目"
+description: 如何协调多个智能体来开发跨前端、后端、数据库和 QA 的功能。
 ---
 
-# 用例：多代理项目
+# 使用场景：多智能体项目
 
-## 何时使用此路径
+## 何时使用
 
-当功能跨越多个领域（例如 backend + frontend + QA）且并行执行有益时使用。
+你的功能跨越多个领域 —— 后端 API + 前端 UI + 数据库 schema + QA 审查。一个智能体搞不定，你希望它们并行工作。
 
-## 协调模型
+## 协调流程
 
-推荐执行序列：
+```text
+/plan → /coordinate → agent:spawn (parallel) → /review → merge
+```
 
-1. `/plan` 进行任务拆解和依赖映射
-2. `/coordinate` 确定执行顺序和所有权
-3. 按领域并行执行 `agent:spawn`
-4. `/review` 进行 QA/安全/性能关卡审查
+1. **`/plan`** —— PM 智能体将功能分解为领域任务
+2. **`/coordinate`** —— 设定执行顺序和负责人
+3. **`agent:spawn`** —— 智能体并行执行
+4. **`/review`** —— QA 审查跨领域一致性
 
-## 会话与工作区策略
+## 会话策略
 
-每个功能流使用一个会话 ID：
+每个功能使用一个 session ID：
 
 ```text
 session-auth-v2
 ```
 
-为每个领域分配隔离的工作区以减少合并冲突：
+按领域分配工作区：
 
-- backend：`./apps/api`
-- frontend：`./apps/web`
-- mobile：`./apps/mobile`
+| 智能体 | 工作区 |
+|--------|--------|
+| backend | `./apps/api` |
+| frontend | `./apps/web` |
+| mobile | `./apps/mobile` |
 
 ## 启动示例
 
 ```bash
-oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api
-oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web
-oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2
+oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api &
+oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web &
+oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2 &
+wait
 ```
 
 ## 契约优先原则
 
-在并行编码之前，锁定共享契约：
+在智能体并行编码之前，**先锁定 API 契约**：
 
-- 请求/响应模式
-- 错误码和错误消息
-- 认证/会话生命周期假设
+- 请求/响应 schema
+- 错误码和消息
+- 认证/会话生命周期的假设
 
-如果契约在执行过程中发生变更，暂停下游代理并使用更新后的契约重新发出提示。
+如果契约在运行中变更，暂停下游智能体，并用更新后的契约重新下发提示。
 
 ## 合并关卡
 
-所有关卡通过后方可合并：
+不满足以下条件不要合并：
 
-1. 领域级测试通过
-2. 集成点与约定的契约匹配
-3. QA 高/严重级别问题已解决或明确豁免
-4. 当外部可见行为变更时，更新了变更日志或发布说明
+1. 领域级别的测试通过
+2. 集成点与约定的契约一致
+3. QA 的高/严重级别问题已解决（或明确豁免）
+4. 如果外部可见行为发生变化，更新了 Changelog
 
-## 操作反模式
+## 不要做这些事
 
-应避免：
+- 所有智能体共用一个工作区（合并冲突噩梦）
+- 更改契约却不通知其他智能体
+- 在兼容性检查前分别合并后端和前端
 
-- 所有代理共享同一工作区
-- 变更契约而不通知其他代理
-- 在兼容性检查前独立合并 backend/frontend
+## 完成标志
 
-## 完成标准
-
-多代理执行完成的条件：
-
-- 所有领域的计划任务已完成
+- 所有已规划的任务在各领域完成
 - 跨领域集成已验证
-- QA 签核（或已记录的风险接受）已录入
+- QA 签收已记录

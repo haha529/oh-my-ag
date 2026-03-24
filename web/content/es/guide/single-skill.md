@@ -1,42 +1,42 @@
 ---
-title: "Caso de uso: Skill individual"
-description: Ruta rapida para trabajo enfocado en un solo dominio con alcance claro y ciclos de retroalimentacion rapidos.
+title: "Caso de Uso: Skill Individual"
+description: Cuando solo necesitas un agente para una tarea enfocada — el camino rapido.
 ---
 
-# Caso de uso: Skill individual
+# Caso de Uso: Skill Individual
 
-## Cuando usar esta ruta
+## Cuando Usar Esto
 
-Use esta opcion cuando la salida tiene un alcance reducido y es propiedad principalmente de un dominio:
+Usa esto cuando tu tarea tiene un alcance estrecho y pertenece a un solo dominio:
 
 - Un componente de UI
 - Un endpoint de API
-- Un error en una sola capa
-- Una refactorizacion en un solo modulo
+- Un bug en una sola capa
+- Un refactor en un solo modulo
 
-Si la tarea requiere coordinacion entre dominios (contrato de API + UI + QA), use [`Proyecto multi-agente`](./multi-agent-project.md).
+Si la tarea necesita coordinacion entre dominios (API + UI + QA), cambia a [Proyecto Multi-Agente](./multi-agent-project).
 
-## Lista de verificacion previa
+## Antes de Escribir tu Prompt
 
-Antes de escribir el prompt, defina:
+Checklist rapido:
 
-1. Salida exacta (archivo o comportamiento)
-2. Stack tecnologico y versiones objetivo
-3. Criterios de aceptacion
-4. Expectativas de pruebas
+1. **Cual es la salida?** — archivo o comportamiento especifico
+2. **Que stack?** — framework, lenguaje, versiones
+3. **Que es "terminado"?** — criterios de aceptacion
+4. **Que tests?** — casos criticos a cubrir
 
-## Plantilla de prompt
+## Plantilla de Prompt
 
 ```text
-Build <specific artifact> using <stack>.
-Constraints: <style/perf/security constraints>.
-Acceptance criteria:
+Construye <artefacto especifico> usando <stack>.
+Restricciones: <restricciones de estilo/rendimiento/seguridad>.
+Criterios de aceptacion:
 1) ...
 2) ...
-Add tests for: <critical cases>.
+Agrega tests para: <casos criticos>.
 ```
 
-## Ejemplo de prompt
+## Ejemplo Real
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Flujo de ejecucion esperado
+## Lo Que Pasa
 
-1. El skill relevante se selecciona automaticamente.
-2. El agente propone la implementacion y las suposiciones.
-3. Usted confirma o ajusta las suposiciones.
-4. El agente entrega el codigo y las pruebas.
-5. Usted ejecuta la verificacion local y solicita pequenos ajustes.
+1. El skill correcto se auto-activa basado en tu prompt
+2. El agente declara sus supuestos (charter preflight)
+3. Confirmas o ajustas
+4. El agente escribe codigo y tests
+5. Ejecutas verificacion local
 
-## Compuerta de calidad antes del merge
+## Antes de Hacer Merge
 
-- El comportamiento coincide con los criterios de aceptacion
-- Las pruebas cubren la ruta exitosa y los casos limite principales
-- No hay cambios en archivos no relacionados
-- No hay cambios incompatibles ocultos en modulos compartidos
+Verifica que:
+- El comportamiento coincide con tus criterios de aceptacion
+- Los tests cubren happy path y edge cases clave
+- No se colaron cambios en archivos no relacionados
+- Los modulos compartidos no estan rotos
 
-## Senales de escalacion
+## Cuando Escalar
 
-Cambie al flujo multi-agente cuando:
-
-- El trabajo de UI requiere nuevos contratos de API
-- Una correccion genera cambios en cascada entre capas
+Cambia al flujo multi-agente cuando:
+- El trabajo de UI necesita un nuevo contrato de API
+- Una correccion se propaga a traves de capas
 - El alcance crece mas alla de un dominio despues de la primera iteracion
-
-## Criterios de finalizacion
-
-La ejecucion de skill individual esta completa cuando:
-
-- El artefacto objetivo esta implementado
-- Los criterios de aceptacion estan satisfechos de forma demostrable
-- Las pruebas estan agregadas o actualizadas para el comportamiento modificado

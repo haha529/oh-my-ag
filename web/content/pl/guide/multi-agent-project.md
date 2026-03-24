@@ -1,76 +1,77 @@
 ---
-title: "Przypadek użycia: Projekt wieloagentowy"
-description: Kompletny przepływ dla złożonego dostarczania między domenami z jawnymi bramkami koordynacji.
+title: "Przypadek Uzycia: Projekt Wieloagentowy"
+description: Jak koordynowac wielu agentow dla funkcjonalnosci obejmujacych frontend, backend, baze danych i QA.
 ---
 
-# Przypadek użycia: Projekt wieloagentowy
+# Przypadek Uzycia: Projekt Wieloagentowy
 
-## Kiedy używać tej ścieżki
+## Kiedy Tego Uzywac
 
-Użyj tego, gdy funkcjonalność obejmuje wiele domen (na przykład backend + frontend + QA) i wykonywanie równoległe jest korzystne.
+Twoja funkcjonalnosc obejmuje wiele domen -- backend API + frontend UI + schemat bazy danych + przeglad QA. Jeden agent nie poradzi sobie ze wszystkim, a chcesz zeby pracowali rownolegle.
 
-## Model koordynacji
+## Sekwencja Koordynacji
 
-Zalecana sekwencja:
+```text
+/plan → /coordinate → agent:spawn (parallel) → /review → merge
+```
 
-1. `/plan` do dekompozycji i mapowania zależności
-2. `/coordinate` do kolejności wykonania i przypisania odpowiedzialności
-3. Równoległe `agent:spawn` na domenę
-4. `/review` do bramki QA/bezpieczeństwa/wydajności
+1. **`/plan`** -- Agent PM rozklada funkcjonalnosc na zadania per domena
+2. **`/coordinate`** -- Ustala kolejnosc wykonywania i wlasnosc
+3. **`agent:spawn`** -- Agenci wykonuja rownolegle
+4. **`/review`** -- QA przegąda spojnosc miedzydomenowa
 
-## Strategia sesji i przestrzeni roboczych
+## Strategia Sesji
 
-Używaj jednego identyfikatora sesji na strumień funkcjonalności:
+Uzywaj jednego session ID na funkcjonalnosc:
 
 ```text
 session-auth-v2
 ```
 
-Przypisz izolowane przestrzenie robocze na domenę, aby zmniejszyć konflikty scalania:
+Przydzielaj workspace per domena:
 
-- backend: `./apps/api`
-- frontend: `./apps/web`
-- mobile: `./apps/mobile`
+| Agent | Workspace |
+|-------|-----------|
+| backend | `./apps/api` |
+| frontend | `./apps/web` |
+| mobile | `./apps/mobile` |
 
-## Przykład uruchomienia
+## Przyklad Uruchomienia
 
 ```bash
-oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api
-oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web
-oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2
+oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api &
+oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web &
+oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2 &
+wait
 ```
 
-## Zasada kontraktu w pierwszej kolejności
+## Zasada Kontrakt Najpierw
 
-Przed równoległym kodowaniem zablokuj współdzielone kontrakty:
+Zanim agenci zaczna kodowac rownolegle, **zablokuj kontrakty API**:
 
-- schematy żądania/odpowiedzi
-- kody błędów i komunikaty
-- założenia cyklu życia autoryzacji/sesji
+- Schematy request/response
+- Kody i komunikaty bledow
+- Zalozenia cyklu zycia auth/sesji
 
-Jeśli kontrakty zmienią się w trakcie wykonywania, wstrzymaj podrzędnych agentów i ponownie wydaj prompty ze zaktualizowanym kontraktem.
+Jesli kontrakty zmienia sie w trakcie, wstrzymaj agentow downstream i ponownie wydaj ich prompty z aktualnymi kontraktami.
 
-## Bramki scalania
+## Bramki Merge
 
-Nie scalaj, dopóki wszystkie bramki nie zostaną przejdzie:
+Nie merguj dopoki:
 
-1. Testy na poziomie domeny przechodzą
-2. Punkty integracji odpowiadają uzgodnionym kontraktom
-3. Problemy QA o wysokim/krytycznym priorytecie rozwiązane lub jawnie zaakceptowane
-4. Changelog lub notatki wydania zaktualizowane, gdy zmienia się zachowanie widoczne zewnętrznie
+1. Testy na poziomie domeny przejda
+2. Punkty integracji odpowiadaja uzgodnionym kontraktom
+3. Problemy QA high/critical sa rozwiazane (lub wyraznie odrzucone)
+4. Changelog zaktualizowany jesli zmienilo sie zewnetrznie widoczne zachowanie
 
-## Antywzorce operacyjne
+## Czego NIE Robic
 
-Unikaj:
+- Wspoldzielenie jednego workspace miedzy wszystkimi agentami (koszmar konfliktow merge)
+- Zmiana kontraktow bez informowania innych agentow
+- Mergowanie backendu i frontendu niezaleznie przed sprawdzeniem kompatybilnosci
 
-- współdzielenia jednej przestrzeni roboczej między wszystkimi agentami
-- zmieniania kontraktów bez powiadamiania innych agentów
-- scalania backendu/frontendu niezależnie przed sprawdzeniem kompatybilności
+## Kiedy Jest Gotowe
 
-## Kryteria zakończenia
-
-Wykonywanie wieloagentowe jest zakończone, gdy:
-
-- zaplanowane zadania są ukończone we wszystkich domenach
-- integracja między domenami jest zwalidowana
-- zatwierdzenie QA (lub udokumentowana akceptacja ryzyka) jest zarejestrowane
+- Wszystkie zaplanowane zadania ukonczone we wszystkich domenach
+- Integracja miedzydomenowa zwalidowana
+- Zatwierdzenie QA zarejestrowane

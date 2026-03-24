@@ -1,11 +1,13 @@
 ---
-title: Параллельное выполнение
-description: Паттерны CLI-оркестрации для одновременного запуска нескольких агентов.
+title: Параллельное Выполнение
+description: Запускайте нескольких агентов одновременно — потому что ждать завершения одного перед запуском следующего медленно.
 ---
 
-# Параллельное выполнение
+# Параллельное Выполнение
 
-## Базовый паттерн
+Настоящая сила oh-my-agent — в одновременном запуске нескольких агентов. Пока бэкенд-агент создаёт ваш API, фронтенд-агент уже создаёт UI.
+
+## Базовый Паттерн
 
 ```bash
 oma agent:spawn backend "Implement auth API" session-01 &
@@ -13,47 +15,77 @@ oma agent:spawn frontend "Create login form" session-01 &
 wait
 ```
 
-## Паттерн с учётом рабочих пространств
+`&` запускает каждого агента в фоне. `wait` блокирует, пока оба не завершатся.
+
+## Паттерн с Workspace
+
+Дайте каждому агенту свою директорию, чтобы избежать конфликтов слияния:
 
 ```bash
 oma agent:spawn backend "Auth + DB migration" session-02 -w ./apps/api
 oma agent:spawn frontend "Login + token refresh" session-02 -w ./apps/web
+oma agent:spawn mobile "Auth screens" session-02 -w ./apps/mobile
 ```
 
-## Паттерн мониторинга
+## Использование `agent:parallel`
+
+Для более чистого синтаксиса:
 
 ```bash
-bunx oh-my-agent dashboard:web
-# open http://localhost:9847
+oma agent:parallel -i backend:"Implement auth API" frontend:"Build login form" mobile:"Auth screens"
 ```
 
-## Конфигурация нескольких CLI
+Добавьте `--no-wait`, чтобы запустить и забыть:
 
-Настройте различные CLI для каждого типа агента в `.agents/config/user-preferences.yaml`:
+```bash
+oma agent:parallel -i backend:"task" frontend:"task" --no-wait
+```
+
+## Мониторинг Во Время Работы
+
+Откройте отдельный терминал:
+
+```bash
+# Дашборд в терминале
+oma dashboard
+
+# Или веб-дашборд
+oma dashboard:web
+# → http://localhost:9847
+```
+
+Дашборд показывает статус каждого агента в реальном времени — количество ходов, текущая задача, состояние завершения.
+
+## Мульти-CLI Конфигурация
+
+Не все инструменты ИИ одинаковы. Направляйте агентов к CLI, которая лучше справляется с их доменом:
 
 ```yaml
-# Язык ответов
-language: ko  # ko, en, ja, zh, ...
-
-# CLI по умолчанию (для одиночных задач)
+# .agents/config/user-preferences.yaml
 default_cli: gemini
 
-# Привязка CLI к агентам (мульти-CLI режим)
 agent_cli_mapping:
-  frontend: gemini
-  backend: codex
+  frontend: claude      # Сложное рассуждение по UI
+  backend: gemini       # Быстрая генерация API
   mobile: gemini
-  pm: claude
-  qa: claude
-  debug: gemini
+  qa: claude            # Тщательный аудит безопасности
+  debug: claude         # Глубокий анализ корневых причин
+  pm: gemini            # Быстрая декомпозиция
 ```
 
-Выполните `/setup` для интерактивной настройки.
+## Разрешение CLI-Вендора
 
-## Приоритет определения CLI-вендора
+При запуске агента CLI выбирается в таком порядке:
 
-1. Аргумент командной строки `--vendor`
-2. `agent_cli_mapping` из user-preferences.yaml
-3. `default_cli` из user-preferences.yaml
-4. `active_vendor` из cli-config.yaml (устаревший)
-5. Значение по умолчанию: `gemini`
+1. Флаг `--vendor` (высший приоритет)
+2. `agent_cli_mapping` для конкретного агента
+3. Настройка `default_cli`
+4. `active_vendor` из `cli-config.yaml`
+5. `gemini` (по умолчанию)
+
+## Советы для Параллельных Запусков
+
+- **Используйте один session ID на фичу** — группирует выходные данные агентов
+- **Зафиксируйте контракты API сначала** — выполните `/plan` перед запуском агентов реализации
+- **Отдельные workspace** — не позволяйте агентам наступать на файлы друг друга
+- **Активно мониторьте** — обнаруживайте проблемы рано через дашборд, а не при слиянии

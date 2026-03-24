@@ -1,66 +1,97 @@
 ---
 title: Installation
-description: Prérequis, options d'installation et configuration initiale.
+description: Faites tourner oh-my-agent dans votre projet — trois facons d'installer, toutes rapides.
 ---
 
 # Installation
 
-## Prérequis
+## Ce Dont Vous Avez Besoin
 
-- Google Antigravity (2026+)
-- Bun
-- uv
+- **Un IDE IA** — Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI, ou similaire
+- **bun** et **uv** — installes automatiquement si absents
 
-## Option 1 : Installation interactive
+## Option 1 : Une Seule Ligne (Recommande)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/first-fluke/oh-my-agent/main/cli/install.sh | bash
+```
+
+Ceci detecte les dependances manquantes (bun, uv), les installe et lance la configuration interactive. Termine en environ une minute.
+
+## Option 2 : Installation Manuelle
 
 ```bash
 bunx oh-my-agent
 ```
 
-Installe les skills et workflows dans `.agents/` du projet courant.
+Vous obtiendrez un menu pour choisir un preset :
 
-## Option 2 : Installation globale
+| Preset | Ce Que Vous Obtenez |
+|--------|---------------------|
+| All | Tous les agents et skills |
+| Fullstack | frontend + backend + db + pm + qa + debug + brainstorm + commit |
+| Frontend | frontend + pm + qa + debug + brainstorm + commit |
+| Backend | backend + db + pm + qa + debug + brainstorm + commit |
+| Mobile | mobile + pm + qa + debug + brainstorm + commit |
+| DevOps | tf-infra + dev-workflow + pm + qa + debug + brainstorm + commit |
+
+Les skills atterrissent dans `.agents/skills/` avec des symlinks crees pour votre IDE.
+
+## Option 3 : Installation Globale
+
+Pour une utilisation frequente du CLI (dashboards, spawn d'agents, diagnostics) :
 
 ```bash
-# Homebrew (macOS/Linux)
+# Homebrew
 brew install oh-my-agent
 
-# npm/bun
+# ou npm/bun
 bun install --global oh-my-agent
 ```
 
-Recommandé si vous utilisez fréquemment les commandes de l'orchestrateur.
-
-## Option 3 : Intégration dans un projet existant
-
-### Via le CLI
+Maintenant vous pouvez utiliser `oma` partout :
 
 ```bash
-bunx oh-my-agent
-bunx oh-my-agent doctor
+oma doctor          # Verifier que tout va bien
+oma dashboard       # Surveillance en temps reel
+oma agent:spawn     # Lancer des agents depuis le terminal
 ```
 
-### Copie manuelle
+## Choisissez un CLI IA
+
+Vous en avez besoin d'au moins un :
+
+| CLI | Installation | Comment S'Authentifier |
+|-----|-------------|------------------------|
+| Gemini | `bun install --global @google/gemini-cli` | Automatique au premier lancement |
+| Claude | `curl -fsSL https://claude.ai/install.sh \| bash` | Automatique au premier lancement |
+| Codex | `bun install --global @openai/codex` | `codex login` |
+| Qwen | `bun install --global @qwen-code/qwen-code` | `/auth` dans le CLI |
+
+## Configuration Initiale
+
+Apres l'installation, lancez `/setup` dans votre IDE IA pour configurer :
+
+- Langue de reponse
+- CLI vendor par defaut
+- Mappage CLI par agent (utilisez differents outils IA pour differents agents)
+
+Ceci cree `.agents/config/user-preferences.yaml` — le fichier qui controle toutes vos preferences.
+
+## Verifier Que Ca A Marche
 
 ```bash
-cp -r oh-my-agent/.agents/skills /path/to/project/.agents/
-cp -r oh-my-agent/.agents/workflows /path/to/project/.agents/
-cp -r oh-my-agent/.agents/config /path/to/project/.agents/
+oma doctor
 ```
 
-## Commande de configuration initiale
+Ceci verifie les installations CLI, les configs MCP et l'etat des skills. Si quelque chose ne va pas, il vous dit exactement quoi corriger.
 
-```text
-/setup
+## Et Ensuite ?
+
+Ouvrez votre projet dans votre IDE IA et commencez a discuter. Les skills sont auto-detectes. Essayez quelque chose comme :
+
+```
+"Construis un formulaire de connexion avec validation d'email en utilisant Tailwind CSS"
 ```
 
-Crée `.agents/config/user-preferences.yaml`.
-
-## Fournisseurs CLI requis
-
-Installez et authentifiez au moins un fournisseur :
-
-- Gemini
-- Claude
-- Codex
-- Qwen
+Ou allez directement au [Guide d'Utilisation](/guide/usage) pour plus d'exemples.

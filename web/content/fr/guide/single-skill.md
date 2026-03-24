@@ -1,31 +1,31 @@
 ---
-title: "Cas d'usage : Skill unique"
-description: Chemin rapide pour un travail ciblé sur un seul domaine avec un périmètre clair et des boucles de retour rapides.
+title: "Cas d'Usage : Skill Unique"
+description: Quand vous avez juste besoin d'un agent pour une tache ciblee — la voie rapide.
 ---
 
-# Cas d'usage : Skill unique
+# Cas d'Usage : Skill Unique
 
-## Quand utiliser ce chemin
+## Quand L'Utiliser
 
-Utilisez-le lorsque le livrable est de portée limitée et principalement géré par un seul domaine :
+Utilisez ceci quand votre tache a un perimetre etroit et appartient a un seul domaine :
 
-- un composant UI
-- un endpoint API
-- un bug dans une seule couche
-- un refactoring dans un seul module
+- Un composant UI
+- Un endpoint d'API
+- Un bug dans une seule couche
+- Un refactor dans un seul module
 
-Si la tâche nécessite une coordination inter-domaines (contrat API + UI + QA), utilisez [`Projet multi-agent`](./multi-agent-project.md).
+Si la tache necessite une coordination inter-domaines (API + UI + QA), passez au [Projet Multi-Agent](./multi-agent-project).
 
-## Checklist de pré-lancement
+## Avant de Formuler Votre Prompt
 
-Avant de rédiger le prompt, définissez :
+Checklist rapide :
 
-1. le livrable exact (fichier ou comportement)
-2. la pile technique cible et ses versions
-3. les critères d'acceptation
-4. les attentes de test
+1. **Quelle est la sortie ?** — fichier ou comportement specifique
+2. **Quel stack ?** — framework, langage, versions
+3. **Qu'est-ce que "termine" ?** — criteres d'acceptation
+4. **Quels tests ?** — cas critiques a couvrir
 
-## Modèle de prompt
+## Template de Prompt
 
 ```text
 Build <specific artifact> using <stack>.
@@ -36,7 +36,7 @@ Acceptance criteria:
 Add tests for: <critical cases>.
 ```
 
-## Exemple de prompt
+## Exemple Concret
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Flux d'exécution attendu
+## Ce Qui Se Passe
 
-1. Le skill pertinent est sélectionné automatiquement.
-2. L'agent propose l'implémentation et les hypothèses.
-3. Vous confirmez ou ajustez les hypothèses.
-4. L'agent livre le code et les tests.
-5. Vous effectuez la vérification locale et demandez de petits ajustements.
+1. Le bon skill s'auto-active en fonction de votre prompt
+2. L'agent declare ses hypotheses (charter preflight)
+3. Vous confirmez ou ajustez
+4. L'agent ecrit le code et les tests
+5. Vous lancez la verification locale
 
-## Contrôle qualité avant fusion
+## Avant de Merger
 
-- le comportement correspond aux critères d'acceptation
-- les tests couvrent le chemin nominal et les cas limites principaux
-- aucune modification de fichier non liée
-- aucun changement cassant caché sur les modules partagés
+Verifiez que :
+- Le comportement correspond a vos criteres d'acceptation
+- Les tests couvrent le happy path et les cas limites cles
+- Aucun changement non lie ne s'est glisse
+- Les modules partages ne sont pas casses
 
-## Signaux d'escalade
+## Quand Escalader
 
-Passez au flux multi-agent lorsque :
-
-- le travail UI nécessite de nouveaux contrats API
-- un correctif crée des changements en cascade à travers les couches
-- le périmètre s'étend au-delà d'un seul domaine après la première itération
-
-## Critères de terminaison
-
-L'exécution en skill unique est terminée lorsque :
-
-- le livrable cible est implémenté
-- les critères d'acceptation sont démontrés comme satisfaits
-- les tests sont ajoutés ou mis à jour pour le comportement modifié
+Passez au flux multi-agent quand :
+- Le travail UI necessite un nouveau contrat d'API
+- Un correctif se propage a travers les couches
+- Le perimetre depasse un seul domaine apres la premiere iteration

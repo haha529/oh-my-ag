@@ -1,172 +1,112 @@
-# oh-my-agent: 어디서든 쓸 수 있는 멀티 에이전트 하네스
+# oh-my-agent: Portable Multi-Agent Harness
 
 [![npm version](https://img.shields.io/npm/v/oh-my-agent?color=cb3837&logo=npm)](https://www.npmjs.com/package/oh-my-agent) [![npm downloads](https://img.shields.io/npm/dm/oh-my-agent?color=cb3837&logo=npm)](https://www.npmjs.com/package/oh-my-agent) [![GitHub stars](https://img.shields.io/github/stars/first-fluke/oh-my-agent?style=flat&logo=github)](https://github.com/first-fluke/oh-my-agent) [![License](https://img.shields.io/github/license/first-fluke/oh-my-agent)](https://github.com/first-fluke/oh-my-agent/blob/main/LICENSE) [![Last Updated](https://img.shields.io/github/last-commit/first-fluke/oh-my-agent?label=updated&logo=git)](https://github.com/first-fluke/oh-my-agent/commits/main)
 
 [English](../README.md) | [中文](./README.zh.md) | [Português](./README.pt.md) | [日本語](./README.ja.md) | [Français](./README.fr.md) | [Español](./README.es.md) | [Nederlands](./README.nl.md) | [Polski](./README.pl.md) | [Русский](./README.ru.md) | [Deutsch](./README.de.md)
 
-AI 로 제대로 개발하고 싶은 팀을 위한 에이전트 하네스. 역할별로 나뉘어 있고, 특정 IDE 에 종속되지 않습니다.
+AI 어시스턴트한테 동료가 있으면 좋겠다고 생각한 적 없나요? oh-my-agent가 바로 그겁니다.
 
-Antigravity, Claude Code, Cursor, Gemini, OpenCode 등 모든 주요 AI IDE 에서 작동합니다. 역할이 정해진 에이전트, 명확한 워크플로우, 실시간 모니터링, 표준 기반 가이드를 합쳐서 AI 가 대충 만든 코드를 줄이고 체계적으로 일할 수 있게 해줍니다.
+AI 하나가 전부 다 하다가 중간에 길을 잃는 대신, oh-my-agent는 작업을 **전문 에이전트**들에게 나눠줍니다 — frontend, backend, QA, PM, DB, mobile, infra, debug, design 등등. 각 에이전트는 자기 영역을 깊이 알고, 전용 도구와 체크리스트를 갖고 있으며, 맡은 일에만 집중합니다.
 
-## 이게 뭔가요?
-
-여러 에이전트가 협업해서 개발하는 **Agent Skills** 모음입니다. 전문 에이전트에게 역할을 나눠 맡깁니다:
-
-| 에이전트 | 하는 일 | 이럴 때 불러요 |
-|---------|----------|-----------|
-| **Brainstorm** | 기획 전에 아이디어를 먼저 탐색 | "브레인스톰", "아이디어", "설계 탐색" |
-| **PM Agent** | 요구사항 분석, 태스크 분해, 아키텍처 | "기획", "분석", "뭘 만들어야 할까" |
-| **Frontend Agent** | React/Next.js, TypeScript, Tailwind CSS | "UI", "컴포넌트", "스타일링" |
-| **Backend Agent** | Backend (Python, Node.js, Rust, ...) | "API", "데이터베이스", "인증" |
-| **DB Agent** | SQL/NoSQL 모델링, 정규화, 무결성, 백업 | "ERD", "스키마", "DB 설계", "인덱스 튜닝" |
-| **Mobile Agent** | Flutter 크로스 플랫폼 개발 | "모바일 앱", "iOS/Android" |
-| **QA Agent** | OWASP Top 10 보안, 성능, 접근성 | "보안 검토", "감사", "성능 확인" |
-| **Debug Agent** | 버그 진단, 원인 분석, 회귀 테스트 | "버그", "에러", "크래시" |
-| **Developer Workflow** | 모노레포 자동화, mise, CI/CD, 릴리스 | "개발 워크플로우", "mise", "CI/CD" |
-| **TF Infra Agent** | 멀티 클라우드 IaC (AWS, GCP, Azure, OCI) | "인프라", "terraform", "클라우드" |
-| **Orchestrator** | CLI로 에이전트를 병렬 실행  | "에이전트 실행", "병렬 실행" |
-| **Commit** | Conventional Commits 규칙으로 커밋 | "커밋", "변경사항 저장" |
-
-
-
-## 뭐가 다른가요?
-
-- **`.agents/`가 원본입니다**: 스킬, 워크플로우, 공유 리소스, 설정이 하나의 프로젝트 구조에 들어있어서 특정 IDE 플러그인에 갇히지 않습니다.
-- **엔지니어링 조직처럼 굴러갑니다**: PM, QA, DB, Infra, Frontend, Backend, Mobile, Debug, Workflow 에이전트가 프롬프트 모음이 아니라 팀처럼 역할을 나눠 일합니다.
-- **워크플로우가 먼저입니다**: 기획, 리뷰, 디버그, 조율 실행이 부가 기능이 아니라 핵심 워크플로우로 설계되어 있습니다.
-- **표준을 알고 있습니다**: ISO 기반 기획, QA, DB 보안, 인프라 거버넌스 가이드가 에이전트에 내장되어 있습니다.
-- **검증할 수 있습니다**: 대시보드, 매니페스트 생성, 실행 프로토콜, 구조화된 출력으로 결과를 추적할 수 있습니다. 그냥 만들어내기만 하는 게 아닙니다.
-
-
-### Claude Code 네이티브 연동
-
-Claude Code는 심링크를 넘어서 직접 연동됩니다:
-
-- **`CLAUDE.md`** — 프로젝트 정보, 아키텍처, 규칙 (Claude Code가 자동으로 읽음)
-- **`.claude/skills/`** — `.agents/workflows/`로 위임하는 12개 씬 라우터 SKILL.md (`/orchestrate`, `/coordinate`, `/ultrawork` 등). 슬래시 커맨드로 명시적 호출만 허용되며, 키워드 자동 활성화되지 않습니다.
-- **`.claude/agents/`** — `.agents/agents/*.yaml`에서 생성된 7개 서브에이전트, Task tool로 스폰 (backend-engineer, frontend-engineer, mobile-engineer, db-engineer, qa-reviewer, debug-investigator, pm-planner)
-- **루프 패턴** — CLI 폴링 없이 Task tool의 동기 결과를 활용하는 Review Loop, Issue Remediation Loop, Phase Gate Loop
-
-도메인 스킬(oma-backend, oma-frontend 등)은 `.agents/skills/`에서 심링크로 가져옵니다. 워크플로우 스킬은 `.agents/workflows/*.md` 원본으로 위임하는 씬 라우터 SKILL.md 파일입니다.
-
-
-
+주요 AI IDE 모두 지원: Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode 등.
 
 ## 빠른 시작
 
-### 필요한 것
-
-- **AI IDE** (Antigravity, Claude Code, Codex, Gemini 등)
-
-### 옵션 1: 한 줄 설치 (권장)
-
 ```bash
+# 한 줄로 설치 (bun & uv 없으면 자동 설치)
 curl -fsSL https://raw.githubusercontent.com/first-fluke/oh-my-agent/main/cli/install.sh | bash
-```
 
-빠진 의존성(bun, uv)을 자동으로 찾아서 설치하고 대화형 설정을 시작합니다.
-
-### 옵션 2: 직접 설치
-
-```bash
-# bun이 없으면:
-# curl -fsSL https://bun.sh/install | bash
-
-# uv가 없으면:
-# curl -LsSf https://astral.sh/uv/install.sh | sh
-
+# 또는 직접 실행
 bunx oh-my-agent
 ```
 
-프로젝트 타입을 고르면 `.agents/skills/`에 스킬이 설치됩니다.
+프리셋 하나 고르면 바로 시작:
 
-| 프리셋 | 스킬 |
-|--------|--------|
-| ✨ All | 전체 |
-| 🌐 Fullstack | oma-brainstorm, oma-frontend, oma-backend, oma-db, oma-pm, oma-qa, oma-debug, oma-commit |
-| 🎨 Frontend | oma-brainstorm, oma-frontend, oma-pm, oma-qa, oma-debug, oma-commit |
-| ⚙️ Backend | oma-brainstorm, oma-backend, oma-db, oma-pm, oma-qa, oma-debug, oma-commit |
-| 📱 Mobile | oma-brainstorm, oma-mobile, oma-pm, oma-qa, oma-debug, oma-commit |
-| 🚀 DevOps | oma-brainstorm, oma-tf-infra, oma-dev-workflow, oma-pm, oma-qa, oma-debug, oma-commit |
+| 프리셋 | 구성 |
+|--------|------|
+| ✨ All | 모든 에이전트와 스킬 |
+| 🌐 Fullstack | frontend + backend + db + pm + qa + debug + brainstorm + commit |
+| 🎨 Frontend | frontend + pm + qa + debug + brainstorm + commit |
+| ⚙️ Backend | backend + db + pm + qa + debug + brainstorm + commit |
+| 📱 Mobile | mobile + pm + qa + debug + brainstorm + commit |
+| 🚀 DevOps | tf-infra + dev-workflow + pm + qa + debug + brainstorm + commit |
 
-### 옵션 3: 전역 설치 (Orchestrator용)
+## 에이전트 팀
 
-SubAgent Orchestrator를 쓰거나 도구를 전역에서 쓰려면:
+| 에이전트 | 역할 |
+|----------|------|
+| **oma-brainstorm** | 구현 전에 아이디어를 탐색 |
+| **oma-pm** | 작업 계획, 요구사항 분석, API 계약 정의 |
+| **oma-frontend** | React/Next.js, TypeScript, Tailwind CSS v4, shadcn/ui |
+| **oma-backend** | Python, Node.js, Rust로 API 개발 |
+| **oma-db** | 스키마 설계, 마이그레이션, 인덱싱, vector DB |
+| **oma-mobile** | Flutter 크로스플랫폼 앱 |
+| **oma-design** | 디자인 시스템, 토큰, 접근성, 반응형 |
+| **oma-qa** | OWASP 보안, 성능, 접근성 리뷰 |
+| **oma-debug** | 근본 원인 분석, 수정, 회귀 테스트 |
+| **oma-tf-infra** | 멀티 클라우드 Terraform IaC |
+| **oma-dev-workflow** | CI/CD, 릴리스, 모노레포 자동화 |
+| **oma-translator** | 자연스러운 다국어 번역 |
+| **oma-orchestrator** | CLI를 통한 병렬 에이전트 실행 |
+| **oma-commit** | 깔끔한 conventional commit |
+
+## 작동 방식
+
+그냥 채팅하세요. 원하는 걸 설명하면 oh-my-agent가 알아서 적절한 에이전트를 고릅니다.
+
+```
+You: "유저 인증이 있는 TODO 앱 만들어줘"
+→ PM이 작업을 계획
+→ Backend가 인증 API 구축
+→ Frontend가 React UI 구축
+→ DB가 스키마 설계
+→ QA가 전체 리뷰
+→ 완료: 조율된 코드, 리뷰 완료
+```
+
+또는 슬래시 커맨드로 구조화된 워크플로우를 실행:
+
+| 커맨드 | 설명 |
+|--------|------|
+| `/plan` | PM이 기능을 태스크로 분해 |
+| `/coordinate` | 단계별 멀티 에이전트 실행 |
+| `/orchestrate` | 자동 병렬 에이전트 스포닝 |
+| `/ultrawork` | 11개 리뷰 게이트가 포함된 5단계 품질 워크플로우 |
+| `/review` | 보안 + 성능 + 접근성 감사 |
+| `/debug` | 구조화된 근본 원인 디버깅 |
+| `/design` | 7단계 디자인 시스템 워크플로우 |
+| `/brainstorm` | 자유로운 아이디어 발산 |
+| `/commit` | type/scope 분석 포함 conventional commit |
+
+**자동 감지**: 슬래시 커맨드 없이도 메시지에 "계획", "리뷰", "디버그" 같은 키워드를 쓰면 (11개 언어 지원!) 알맞은 워크플로우가 자동으로 활성화됩니다.
+
+## CLI
 
 ```bash
-# Homebrew (macOS/Linux)
-brew install oh-my-agent
+# 전역 설치
+bun install --global oh-my-agent   # 또는: brew install oh-my-agent
 
-# npm/bun
-bun install --global oh-my-agent
+# 어디서든 사용
+oma doctor                  # 상태 점검
+oma dashboard               # 실시간 에이전트 모니터링
+oma agent:spawn backend "Build auth API" session-01
+oma agent:parallel -i backend:"Auth API" frontend:"Login form"
 ```
 
-CLI 도구가 최소 1개 필요합니다:
+## 왜 oh-my-agent인가?
 
-| CLI | 설치 | 인증 |
-|-----|------|------|
-| Gemini | `bun install --global @google/gemini-cli` | Auto on first `gemini` run |
-| Claude | `curl -fsSL https://claude.ai/install.sh \| bash` | Auto on first `claude` run |
-| Codex | `bun install --global @openai/codex` | `codex login` |
-| Qwen | `bun install --global @qwen-code/qwen-code` | `/auth` inside CLI |
-
-### 옵션 4: 기존 프로젝트에 추가
-
-프로젝트 루트에서 실행하면 스킬과 워크플로우가 자동 설치됩니다:
-
-```bash
-bunx oh-my-agent
-```
-
-> **팁:** 설치 후 `bunx oh-my-agent doctor`를 실행하면 설정이 제대로 됐는지 확인할 수 있습니다.
-
-### 2. 채팅으로 쓰기
-
-**복잡한 프로젝트** (/coordinate):
-
-```
-"사용자 인증이 있는 TODO 앱 만들어줘"
-→ /coordinate → PM Agent가 기획 → Agent Manager에서 에이전트 실행
-```
-
-**전력 투구** (/ultrawork):
-
-```
-"인증 모듈 리팩토링, API 테스트 추가, 문서 업데이트"
-→ /ultrawork → 독립된 작업이 에이전트 사이에서 동시 실행
-```
-
-**간단한 작업** (도메인 스킬 직접 호출):
-
-```
-"Tailwind CSS로 로그인 폼 만들어줘"
-→ oma-frontend 스킬
-```
-
-**커밋** (Conventional Commits):
-
-```
-/commit
-→ 변경 분석, 커밋 타입/스코프 제안, Co-Author 포함 커밋
-```
-
-**디자인 시스템** (DESIGN.md + 안티패턴 + 선택적 Stitch MCP):
-
-```
-/design
-→ 7단계 워크플로우: 설정 → 추출 → 증강 → 제안 → 생성 → 검증 → 전달
-```
-
-### 3. 대시보드로 모니터링
-
-대시보드 설정과 사용법은 [`web/content/ko/guide/usage.md`](./web/content/ko/guide/usage.md#실시간-대시보드)를 참고하세요.
-
+- **이식성** — `.agents/`가 프로젝트와 함께 이동, 특정 IDE에 종속되지 않음
+- **역할 기반** — 프롬프트 뭉치가 아니라 실제 엔지니어링 팀처럼 모델링
+- **토큰 효율적** — 2레이어 스킬 설계로 토큰 ~75% 절약
+- **품질 우선** — Charter preflight, quality gate, 리뷰 워크플로우 내장
+- **멀티 벤더** — 에이전트 유형별로 Gemini, Claude, Codex, Qwen 혼용 가능
+- **관찰 가능** — 터미널과 웹 대시보드로 실시간 모니터링
 
 ## 아키텍처
 
 ```mermaid
 flowchart TD
-    subgraph Workflows["워크플로우"]
+    subgraph Workflows["Workflows"]
         direction TB
         W0["/brainstorm"]
         W1["/coordinate"]
@@ -179,13 +119,13 @@ flowchart TD
         W7["/design"]
     end
 
-    subgraph Orchestration["오케스트레이션"]
+    subgraph Orchestration["Orchestration"]
         direction TB
         PM[oma-pm]
-        ORC[orchestrator]
+        ORC[oma-orchestrator]
     end
 
-    subgraph Domain["도메인 에이전트"]
+    subgraph Domain["Domain Agents"]
         direction TB
         FE[oma-frontend]
         BE[oma-backend]
@@ -195,35 +135,38 @@ flowchart TD
         TF[oma-tf-infra]
     end
 
-    subgraph Quality["품질"]
+    subgraph Quality["Quality"]
         direction TB
         QA[oma-qa]
         DBG[oma-debug]
     end
 
-
     Workflows --> Orchestration
     Orchestration --> Domain
     Domain --> Quality
-    Quality --> CMT([commit])
+    Quality --> CMT([oma-commit])
 ```
 
+## 더 알아보기
 
+- **[상세 문서](./AGENTS_SPEC.md)** — 전체 기술 스펙과 아키텍처
+- **[지원 에이전트](./SUPPORTED_AGENTS.md)** — IDE별 에이전트 지원 현황
+- **[웹 문서](https://oh-my-agent.dev)** — 가이드, 튜토리얼, CLI 레퍼런스
 
-## 후원하기
+## 스폰서
 
-이 프로젝트는 후원자분들 덕분에 유지됩니다.
+이 프로젝트는 든든한 스폰서분들 덕분에 유지됩니다.
 
-> **마음에 드셨나요?** 스타 눌러주세요!
+> **마음에 드셨나요?** 스타를 눌러주세요!
 >
 > ```bash
 > gh api --method PUT /user/starred/first-fluke/oh-my-agent
 > ```
 >
-> 스타터 템플릿도 있습니다: [fullstack-starter](https://github.com/first-fluke/fullstack-starter)
+> 최적화된 스타터 템플릿도 확인해보세요: [fullstack-starter](https://github.com/first-fluke/fullstack-starter)
 
 <a href="https://github.com/sponsors/first-fluke">
-  <img src="https://img.shields.io/badge/후원하기-♥-ea4aaa?style=for-the-badge" alt="Sponsor" />
+  <img src="https://img.shields.io/badge/Sponsor-♥-ea4aaa?style=for-the-badge" alt="Sponsor" />
 </a>
 <a href="https://buymeacoffee.com/firstfluke">
   <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-☕-FFDD00?style=for-the-badge" alt="Buy Me a Coffee" />
@@ -231,22 +174,22 @@ flowchart TD
 
 ### 🚀 Champion
 
-<!-- Champion ($100/월) 로고 -->
+<!-- Champion tier ($100/mo) logos here -->
 
 ### 🛸 Booster
 
-<!-- Booster ($30/월) 로고 -->
+<!-- Booster tier ($30/mo) logos here -->
 
 ### ☕ Contributor
 
-<!-- Contributor ($10/월) 이름 -->
+<!-- Contributor tier ($10/mo) names here -->
 
-[후원자 되기 →](https://github.com/sponsors/first-fluke)
+[스폰서 되기 →](https://github.com/sponsors/first-fluke)
 
-전체 후원자 목록은 [SPONSORS.md](./SPONSORS.md)를 참고하세요.
+전체 후원자 목록은 [SPONSORS.md](../SPONSORS.md)를 참고하세요.
+
 
 
 ## 라이선스
 
 MIT
-

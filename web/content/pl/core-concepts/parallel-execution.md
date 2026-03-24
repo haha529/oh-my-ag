@@ -1,11 +1,13 @@
 ---
-title: Wykonywanie równoległe
-description: Wzorce orkiestracji CLI do jednoczesnego uruchamiania wielu agentów.
+title: Wykonywanie Rownolegle
+description: Uruchom wielu agentow jednoczesnie -- bo czekanie az jeden skonczy przed uruchomieniem nastepnego jest wolne.
 ---
 
-# Wykonywanie równoległe
+# Wykonywanie Rownolegle
 
-## Wzorzec podstawowy
+Prawdziwa sila oh-my-agent to jednoczesne uruchamianie wielu agentow. Podczas gdy agent backendowy buduje Twoje API, agent frontendowy juz tworzy UI.
+
+## Podstawowy Wzorzec
 
 ```bash
 oma agent:spawn backend "Implement auth API" session-01 &
@@ -13,47 +15,77 @@ oma agent:spawn frontend "Create login form" session-01 &
 wait
 ```
 
-## Wzorzec z uwzględnieniem przestrzeni roboczych
+`&` uruchamia kazdego agenta w tle. `wait` blokuje az oba sie ukoncza.
+
+## Wzorzec z Workspace
+
+Daj kazdemu agentowi wlasny katalog aby uniknac konfliktow merge:
 
 ```bash
 oma agent:spawn backend "Auth + DB migration" session-02 -w ./apps/api
 oma agent:spawn frontend "Login + token refresh" session-02 -w ./apps/web
+oma agent:spawn mobile "Auth screens" session-02 -w ./apps/mobile
 ```
 
-## Wzorzec monitorowania
+## Uzywanie `agent:parallel`
+
+Dla czystszej skladni:
 
 ```bash
-bunx oh-my-agent dashboard:web
-# open http://localhost:9847
+oma agent:parallel -i backend:"Implement auth API" frontend:"Build login form" mobile:"Auth screens"
 ```
 
-## Konfiguracja wielu CLI
+Dodaj `--no-wait` aby uruchomic i zapomniec:
 
-Skonfiguruj różne CLI dla poszczególnych typów agentów w `.agents/config/user-preferences.yaml`:
+```bash
+oma agent:parallel -i backend:"task" frontend:"task" --no-wait
+```
+
+## Monitoruj Podczas Pracy
+
+Otworz oddzielny terminal:
+
+```bash
+# Dashboard w terminalu
+oma dashboard
+
+# Lub dashboard webowy
+oma dashboard:web
+# → http://localhost:9847
+```
+
+Dashboard pokazuje status na zywo kazdego agenta -- wykonane tury, biezace zadanie, stan ukonczenia.
+
+## Konfiguracja Multi-CLI
+
+Nie wszystkie narzedzia AI sa rowne. Kieruj agentow do CLI ktore najlepiej radzi sobie z ich domena:
 
 ```yaml
-# Response language
-language: ko  # ko, en, ja, zh, ...
-
-# Default CLI (single tasks)
+# .agents/config/user-preferences.yaml
 default_cli: gemini
 
-# Per-agent CLI mapping (multi-CLI mode)
 agent_cli_mapping:
-  frontend: gemini
-  backend: codex
+  frontend: claude      # Zlzone rozumowanie UI
+  backend: gemini       # Szybkie generowanie API
   mobile: gemini
-  pm: claude
-  qa: claude
-  debug: gemini
+  qa: claude            # Dokladny przeglad bezpieczenstwa
+  debug: claude         # Gleboka analiza przyczyn zrodlowych
+  pm: gemini            # Szybka dekompozycja
 ```
 
-Uruchom `/setup`, aby skonfigurować interaktywnie.
+## Rozwiazywanie CLI Vendor
 
-## Priorytet rozwiązywania dostawcy CLI
+Przy uruchamianiu agenta CLI jest wybierane w tej kolejnosci:
 
-1. Argument wiersza poleceń `--vendor`
-2. `agent_cli_mapping` z user-preferences.yaml
-3. `default_cli` z user-preferences.yaml
-4. `active_vendor` z cli-config.yaml (przestarzałe)
-5. Domyślna wartość zakodowana na stałe: `gemini`
+1. Flaga `--vendor` (najwyzszy priorytet)
+2. `agent_cli_mapping` dla tego konkretnego agenta
+3. Ustawienie `default_cli`
+4. `active_vendor` z `cli-config.yaml`
+5. `gemini` (domyslny)
+
+## Wskazowki do Rownolegnych Uruchomien
+
+- **Uzywaj jednego session ID na feature** -- grupuje wyniki agentow
+- **Zablokuj kontrakty API najpierw** -- uruchom `/plan` przed uruchomieniem agentow implementacyjnych
+- **Oddzielne workspace** -- unikaj sytuacji gdy agenci nadpisuja swoje pliki nawzajem
+- **Monitoruj aktywnie** -- wychwytuj problemy wczesnie przez dashboard zamiast znajdowac je przy merge

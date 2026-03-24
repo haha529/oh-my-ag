@@ -1,57 +1,87 @@
 ---
 title: 技能
-description: 渐进式披露与 Token 优化的技能架构。
+description: 两层技能架构如何让智能体既聪明又不浪费 token。
 ---
 
 # 技能
 
-## 渐进式披露
+技能是让每个智能体成为专家的关键。它们是结构化的知识 —— 不只是提示词，还包括执行协议、代码模板、错误处理手册和质量检查清单。
 
-技能通过 /command 调用或代理 skills 字段显式加载。
+## 两层设计
 
-## 双层设计
+巧妙之处在于：技能不会一次性加载所有内容。它们使用渐进式披露，节省约 75% 的 token。
 
-每个技能采用 **Token 优化的双层设计**：
+### 第一层：SKILL.md（约 800 字节）
 
-| 层级 | 内容 | 大小 |
-|------|------|------|
-| `SKILL.md` | 身份标识、路由条件、核心规则 | 约 40 行（约 800B） |
-| `resources/` | 执行协议、示例、检查清单、手册、代码片段、技术栈 | 按需加载 |
+始终加载。包含：
+- 智能体身份和角色
+- 激活条件（路由规则）
+- 核心规则和约束
+- 不应该做什么
 
-这在初始技能加载时实现了 **约 75% 的 Token 节省**（每个技能从 3-7KB 降至约 800B）。
+### 第二层：resources/（按需加载）
 
-## 共享资源层（`_shared/`）
+只有当智能体实际工作时才加载。包含深层内容：
 
-跨所有技能去重的公共资源：
+| 资源 | 作用 |
+|------|------|
+| `execution-protocol.md` | 分步工作流：分析 → 规划 → 实现 → 验证 |
+| `tech-stack.md` | 详细的技术规格和版本信息 |
+| `error-playbook.md` | 出错时怎么办（含"三振出局"升级机制） |
+| `checklist.md` | 领域专属的质量检查项 |
+| `snippets.md` | 即用型代码模式 |
+| `examples/` | 少样本输入/输出示例 |
+
+### 目录结构
+
+```
+.agents/skills/oma-frontend/
+├── SKILL.md                          ← 始终加载（约 800 字节）
+└── resources/
+    ├── execution-protocol.md         ← 按需加载
+    ├── tech-stack.md
+    ├── tailwind-rules.md
+    ├── component-template.tsx
+    ├── snippets.md
+    ├── error-playbook.md
+    ├── checklist.md
+    └── examples/
+```
+
+## 共享资源
+
+所有智能体共用 `.agents/skills/_shared/` 中的基础资源：
 
 | 资源 | 用途 |
 |------|------|
-| `reasoning-templates.md` | 用于多步推理的结构化填空模板 |
-| `clarification-protocol.md` | 何时询问与何时假设、歧义等级 |
-| `context-budget.md` | 按模型层级的 Token 高效文件读取策略 |
-| `context-loading.md` | 任务类型到资源的映射，用于编排器提示构建 |
-| `skill-routing.md` | 技能到代理的映射与并行执行规则 |
-| `difficulty-guide.md` | 简单/中等/复杂评估与协议分支 |
-| `lessons-learned.md` | 跨会话积累的领域经验教训 |
-| `verify.sh` | 代理完成后运行的自动化验证脚本 |
-| `api-contracts/` | PM 创建契约，backend 实现，frontend/mobile 消费 |
-| `serena-memory-protocol.md` | CLI 模式下的记忆读写协议 |
-| `common-checklist.md` | 通用代码质量检查 |
+| `skill-routing.md` | 将任务映射到合适的智能体 |
+| `context-loading.md` | 根据任务类型决定加载哪些资源 |
+| `prompt-structure.md` | 目标 → 上下文 → 约束 → 完成条件 |
+| `clarification-protocol.md` | 何时该问、何时该直接假设 |
+| `context-budget.md` | 按模型层级高效读取文件 |
+| `difficulty-guide.md` | 简单 / 中等 / 复杂任务评估 |
+| `reasoning-templates.md` | 结构化推理的填空模板 |
+| `quality-principles.md` | 通用质量标准 |
+| `vendor-detection.md` | 检测正在运行的 IDE/CLI |
 
-## 技能专属资源
+## 条件资源
 
-每个技能提供领域特定的资源：
+某些资源仅在特定条件触发时加载：
 
-| 资源 | 用途 |
-|------|------|
-| `execution-protocol.md` | 四步思维链工作流（分析 → 规划 → 实现 → 验证） |
-| `examples.md` | 2-3 个少样本输入/输出示例 |
-| `checklist.md` | 领域特定的自验证检查清单 |
-| `error-playbook.md` | 带有"三振出局"升级规则的故障恢复手册 |
-| `tech-stack.md` | 详细的技术规格说明 |
-| `snippets.md` | 可直接复制粘贴的代码模式 |
-| `variants/` | 语言专属预设（如 `python/`、`node/`、`rust/`）-- 用于 `oma-backend` |
+| 资源 | 加载时机 |
+|------|---------|
+| `quality-score.md` | 请求质量评估时 |
+| `experiment-ledger.md` | 尝试实验性方案时 |
+| `exploration-loop.md` | 迭代探索进行中 |
 
-## 为何如此重要
+## 供应商专属执行
 
-这使初始上下文保持精简，同时在需要时仍支持深度执行。
+每个支持的 CLI 在 `.agents/skills/_shared/runtime/execution-protocols/` 下有自己的执行协议：
+- `claude.md` —— Claude 专属模式
+- `gemini.md` —— Gemini 专属模式
+- `codex.md` —— Codex 专属模式
+- `qwen.md` —— Qwen 专属模式
+
+## 为什么这很重要
+
+如果没有渐进式披露，加载 5 个智能体就会在开始工作前耗尽你的上下文窗口。有了它，初始加载轻量高效，真正执行时才加载深层内容。

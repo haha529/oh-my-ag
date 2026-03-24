@@ -1,29 +1,29 @@
 ---
-title: Central Registry for Multi-Repo Setup
-description: Operate this repository as a versioned central registry and safely sync consumer projects via PR-based updates.
+title: Central Registry
+description: Use oh-my-agent as a versioned registry to keep multiple projects in sync.
 ---
 
 # Central Registry for Multi-Repo Setup
 
-This repository can serve as a **central registry** for agent skills so multiple consumer repositories stay aligned with versioned updates.
+Got multiple projects using oh-my-agent? You can treat this repo as a **central registry** — version your skills, and all consumer projects stay in sync.
 
-## Architecture
+## How It Works
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  Central Registry (this repo)                           │
+│  Central Registry (oh-my-agent repo)                    │
 │  • release-please for automatic versioning              │
 │  • CHANGELOG.md auto-generation                         │
-│  • prompt-manifest.json (version/files/checksums)       │
+│  • prompt-manifest.json (versions + checksums)          │
 │  • agent-skills.tar.gz release artifact                 │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Consumer Repo                                          │
-│  • .agent-registry.yml for version pinning             │
-│  • New version detection → PR (no auto-merge)           │
-│  • Inline workflow for file sync                        │
+│  Your Project                                           │
+│  • .agent-registry.yml pins version                     │
+│  • GitHub Action detects new versions → opens PR        │
+│  • Review and merge to update                           │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -31,38 +31,45 @@ This repository can serve as a **central registry** for agent skills so multiple
 
 Releases are automated via [release-please](https://github.com/googleapis/release-please):
 
-1. Use Conventional Commits (`feat:`, `fix:`, `chore:`, ...).
-2. Push to `main` to create/update the Release PR.
-3. Merge the Release PR to publish GitHub Release assets:
-   - `CHANGELOG.md` (auto-generated)
+1. Use Conventional Commits (`feat:`, `fix:`, `chore:`)
+2. Push to `main` → Release PR is created/updated
+3. Merge the Release PR → GitHub Release published with:
+   - `CHANGELOG.md`
    - `prompt-manifest.json` (file list + SHA256 checksums)
-   - `agent-skills.tar.gz` (compressed `.agents/` directory)
+   - `agent-skills.tar.gz` (compressed `.agents/`)
 
 ## For Consumer Projects
 
-Copy templates from `docs/consumer-templates/` into your project:
+Copy the templates into your project:
 
 ```bash
-# Configuration file
-cp docs/consumer-templates/.agent-registry.yml /path/to/your-project/
-
-# GitHub workflows
-cp docs/consumer-templates/check-registry-updates.yml /path/to/your-project/.github/workflows/
-cp docs/consumer-templates/sync-agent-registry.yml /path/to/your-project/.github/workflows/
+cp docs/consumer-templates/.agent-registry.yml your-project/
+cp docs/consumer-templates/check-registry-updates.yml your-project/.github/workflows/
+cp docs/consumer-templates/sync-agent-registry.yml your-project/.github/workflows/
 ```
 
-Then pin your desired version in `.agent-registry.yml`:
+Pin your version:
 
 ```yaml
+# .agent-registry.yml
 registry:
   repo: first-fluke/oh-my-agent
-  version: "1.2.0"
+  version: "4.7.0"
 ```
 
-Workflow roles:
+The workflows:
+- `check-registry-updates.yml` — Checks for new versions, opens a PR
+- `sync-agent-registry.yml` — Syncs `.agents/` when you update the pinned version
 
-- `check-registry-updates.yml`: checks for new versions and opens a PR.
-- `sync-agent-registry.yml`: syncs `.agents/` when pinned version changes.
+**Auto-merge is disabled on purpose.** All updates get human review.
 
-**Important**: Auto-merge is intentionally disabled. All updates should be manually reviewed.
+## Central Registry vs. GitHub Action
 
+| | GitHub Action | Central Registry |
+|:--|:--:|:--:|
+| Setup effort | 1 workflow file | 3 files |
+| Update method | `oma update` CLI | Tarball download |
+| Version control | Always latest | Explicit pin |
+| Best for | Most projects | Strict version control |
+
+Most teams should use the [GitHub Action](./automated-updates) approach. Use Central Registry if you need strict version pinning or can't use third-party actions.

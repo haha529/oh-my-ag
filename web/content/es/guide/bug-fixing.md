@@ -1,76 +1,70 @@
 ---
-title: "Caso de uso: Correccion de errores"
-description: Ciclo estructurado de reproducir-diagnosticar-corregir-verificar regresion con escalacion basada en severidad.
+title: "Caso de Uso: Correccion de Bugs"
+description: Depuracion estructurada — desde reproducir el problema hasta escribir tests de regresion.
 ---
 
-# Caso de uso: Correccion de errores
+# Caso de Uso: Correccion de Bugs
 
-## Formato de recepcion
+## Empieza Con un Buen Reporte
 
-Comience con un informe reproducible:
+Mientras mejor sea tu reporte de bug, mas rapida la correccion:
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## Triaje de severidad
+## Prioriza Primero
 
-Clasifique temprano para elegir la velocidad de respuesta:
+| Severidad | Que Significa | Respuesta |
+|-----------|--------------|-----------|
+| **P0** | Perdida de datos, bypass de auth, caida en produccion | Deja todo, involucra QA/seguridad |
+| **P1** | Flujo principal de usuario roto | Corregir en el sprint actual |
+| **P2** | Degradado pero tiene workaround | Programar correccion |
+| **P3** | Menor, no bloquea | Backlog |
 
-- `P0`: perdida de datos, evasion de autenticacion, interrupcion en produccion
-- `P1`: flujo principal de usuario afectado
-- `P2`: comportamiento degradado con solucion alternativa
-- `P3`: menor/no bloqueante
+## El Ciclo de Depuracion
 
-`P0/P1` siempre deben incluir revision de QA/seguridad.
+1. **Reproducir** — exactamente, en un entorno minimo
+2. **Aislar** — encontrar la causa raiz (no solo el sintoma)
+3. **Corregir** — el cambio seguro mas pequeno
+4. **Testear** — test de regresion para el camino fallido
+5. **Escanear** — revisar codigo adyacente por el mismo patron
 
-## Ciclo de ejecucion
-
-1. Reproducir exactamente en un entorno minimo.
-2. Aislar la causa raiz (no solo parchear el sintoma).
-3. Implementar la correccion segura mas pequena.
-4. Agregar pruebas de regresion para la ruta que falla.
-5. Verificar rutas adyacentes que probablemente compartan el mismo modo de fallo.
-
-## Plantilla de prompt para oma-debug
+## Plantilla de Prompt
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## Senales comunes de escalacion
+## Cuando Escalar
 
-Escalar a QA o seguridad cuando el error afecta:
+Involucra QA o seguridad cuando el bug toca:
 
-- autenticacion/sesion/renovacion de tokens
-- limites de permisos
-- consistencia de pagos/transacciones
-- regresiones de rendimiento bajo carga
+- Autenticacion / sesion / refresh de token
+- Limites de permisos
+- Consistencia de pagos / transacciones
+- Rendimiento bajo carga
 
-## Validacion posterior a la correccion
+## Despues de la Correccion
 
-- la reproduccion original ya no falla
-- no hay errores nuevos en flujos relacionados
-- las pruebas fallan antes de la correccion y pasan despues
-- la ruta de reversion es clara si se requiere un hotfix
-
-## Criterios de finalizacion
-
-La correccion de errores esta completa cuando:
-
-- la causa raiz esta identificada y documentada
-- la correccion esta verificada mediante comprobaciones reproducibles
-- la cobertura de regresion esta implementada
+Verifica:
+- La reproduccion original ya no falla
+- No hay errores nuevos en flujos relacionados
+- Los tests fallan antes de la correccion, pasan despues
+- El camino de rollback esta claro si se necesita

@@ -1,164 +1,112 @@
-# oh-my-agent: 便携式多代理 Harness
+# oh-my-agent: Portable Multi-Agent Harness
 
 [![npm version](https://img.shields.io/npm/v/oh-my-agent?color=cb3837&logo=npm)](https://www.npmjs.com/package/oh-my-agent) [![npm downloads](https://img.shields.io/npm/dm/oh-my-agent?color=cb3837&logo=npm)](https://www.npmjs.com/package/oh-my-agent) [![GitHub stars](https://img.shields.io/github/stars/first-fluke/oh-my-agent?style=flat&logo=github)](https://github.com/first-fluke/oh-my-agent) [![License](https://img.shields.io/github/license/first-fluke/oh-my-agent)](https://github.com/first-fluke/oh-my-agent/blob/main/LICENSE) [![Last Updated](https://img.shields.io/github/last-commit/first-fluke/oh-my-agent?label=updated&logo=git)](https://github.com/first-fluke/oh-my-agent/commits/main)
 
 [English](../README.md) | [한국어](./README.ko.md) | [Português](./README.pt.md) | [日本語](./README.ja.md) | [Français](./README.fr.md) | [Español](./README.es.md) | [Nederlands](./README.nl.md) | [Polski](./README.pl.md) | [Русский](./README.ru.md) | [Deutsch](./README.de.md)
 
-专为严谨的 AI 辅助工程打造的便携式、基于角色的代理 Harness。
+有没有想过，要是你的 AI 助手有同事就好了？oh-my-agent 就是干这个的。
 
-适用于所有主流 AI IDE，包括 Antigravity、Claude Code、Cursor、Gemini、OpenCode 等。它将基于角色的代理、显式工作流、实时可观测性和标准化指导融为一体，帮助团队告别粗制滥造的 AI 代码，走向更有纪律的工程执行。
+与其让一个 AI 包揽一切（然后做到一半就迷路），oh-my-agent 把工作分配给**专业 agent** — frontend、backend、QA、PM、DB、mobile、infra、debug、design 等等。每个 agent 深耕自己的领域，拥有专属工具和检查清单，各司其职。
 
-## 目录
-
-- [这是什么？](#这是什么)
-- [为何不同](#为何不同)
-- [快速开始](#快速开始)
-- [架构](#架构)
-- [赞助商](#赞助商)
-- [许可证](#许可证)
-
-## 这是什么？
-
-一套 **Agent 技能**集合，支持协作式多代理开发。工作按明确的角色、工作流和验证边界分配给各专业代理：
-
-| 代理 | 专业领域 | 触发条件 |
-|------|---------|---------|
-| **Brainstorm** | 规划前的设计优先构思 | "brainstorm", "ideate", "explore idea" |
-| **PM Agent** | 需求分析、任务分解、架构设计 | "plan", "break down", "what should we build" |
-| **Frontend Agent** | React/Next.js、TypeScript、Tailwind CSS | "UI", "component", "styling" |
-| **Backend Agent** | Backend (Python, Node.js, Rust, ...) | "API", "database", "authentication" |
-| **DB Agent** | SQL/NoSQL 建模、规范化、完整性、备份、容量规划 | "ERD", "schema", "database design", "index tuning" |
-| **Mobile Agent** | Flutter 跨平台开发 | "mobile app", "iOS/Android" |
-| **QA Agent** | OWASP Top 10 安全、性能、可访问性 | "review security", "audit", "check performance" |
-| **Debug Agent** | Bug 诊断、根因分析、回归测试 | "bug", "error", "crash" |
-| **Developer Workflow** | 单仓库任务自动化、mise 任务、CI/CD、迁移、发布 | "dev workflow", "mise tasks", "CI/CD pipeline" |
-| **TF Infra Agent** | 多云 IaC 基础设施配置（AWS、GCP、Azure、OCI） | "infrastructure", "terraform", "cloud setup" |
-| **Orchestrator** | 基于 CLI 的并行代理执行 | "spawn agent", "parallel execution" |
-| **Commit** | 遵循项目特定规则的 Conventional Commits | "commit", "save changes" |
-
-
-
-## 为何不同
-
-- **`.agents/` 是权威来源**：技能、工作流、共享资源和配置都存放在一个可移植的项目结构中，而不是锁死在某个 IDE 插件里。
-- **角色化代理团队**：PM、QA、DB、Infra、Frontend、Backend、Mobile、Debug 和 Workflow 代理按工程组织的模式建模，而不只是一堆提示词。
-- **工作流优先的编排**：规划、审查、调试和协调执行都是一等公民的工作流，而非事后补丁。
-- **内建标准意识**：代理携带针对 ISO 驱动规划、QA、数据库连续性/安全及基础设施治理的专项指导。
-- **为验证而设计**：仪表盘、清单生成、共享执行协议和结构化输出以可追溯性为先，而不是凭感觉生成。
-
-
+支持所有主流 AI IDE：Antigravity、Claude Code、Cursor、Gemini CLI、Codex CLI、OpenCode 等。
 
 ## 快速开始
 
-### 前置条件
-
-- **AI IDE** (Antigravity、Claude Code、Codex、Gemini 等)
-
-### 选项 1：一键安装（推荐）
-
 ```bash
+# 一行搞定（自动安装 bun & uv）
 curl -fsSL https://raw.githubusercontent.com/first-fluke/oh-my-agent/main/cli/install.sh | bash
-```
 
-
-### 选项 2：手动安装
-
-```bash
-# bun이 없으면:
-# curl -fsSL https://bun.sh/install | bash
-
-# uv가 없으면:
-# curl -LsSf https://astral.sh/uv/install.sh | sh
-
+# 或者手动运行
 bunx oh-my-agent
 ```
 
-选择项目类型后，skills 将安装到 `.agents/skills/`。
+选个预设就能开始：
 
-| 预设 | Skills |
-|--------|--------|
-| ✨ All | 全部 |
-| 🌐 Fullstack | oma-brainstorm, oma-frontend, oma-backend, oma-db, oma-pm, oma-qa, oma-debug, oma-commit |
-| 🎨 Frontend | oma-brainstorm, oma-frontend, oma-pm, oma-qa, oma-debug, oma-commit |
-| ⚙️ Backend | oma-brainstorm, oma-backend, oma-db, oma-pm, oma-qa, oma-debug, oma-commit |
-| 📱 Mobile | oma-brainstorm, oma-mobile, oma-pm, oma-qa, oma-debug, oma-commit |
-| 🚀 DevOps | oma-brainstorm, oma-tf-infra, oma-dev-workflow, oma-pm, oma-qa, oma-debug, oma-commit |
+| 预设 | 包含内容 |
+|------|---------|
+| ✨ All | 所有 agent 和 skill |
+| 🌐 Fullstack | frontend + backend + db + pm + qa + debug + brainstorm + commit |
+| 🎨 Frontend | frontend + pm + qa + debug + brainstorm + commit |
+| ⚙️ Backend | backend + db + pm + qa + debug + brainstorm + commit |
+| 📱 Mobile | mobile + pm + qa + debug + brainstorm + commit |
+| 🚀 DevOps | tf-infra + dev-workflow + pm + qa + debug + brainstorm + commit |
 
+## Agent 团队
 
+| Agent | 职责 |
+|-------|------|
+| **oma-brainstorm** | 动手之前先探索想法 |
+| **oma-pm** | 任务规划、需求拆解、API 契约定义 |
+| **oma-frontend** | React/Next.js、TypeScript、Tailwind CSS v4、shadcn/ui |
+| **oma-backend** | 用 Python、Node.js 或 Rust 开发 API |
+| **oma-db** | Schema 设计、迁移、索引、vector DB |
+| **oma-mobile** | Flutter 跨平台应用 |
+| **oma-design** | 设计系统、token、无障碍、响应式 |
+| **oma-qa** | OWASP 安全、性能、无障碍审查 |
+| **oma-debug** | 根因分析、修复、回归测试 |
+| **oma-tf-infra** | 多云 Terraform IaC |
+| **oma-dev-workflow** | CI/CD、发布、monorepo 自动化 |
+| **oma-translator** | 自然的多语言翻译 |
+| **oma-orchestrator** | 通过 CLI 并行执行 agent |
+| **oma-commit** | 干净的 conventional commit |
+
+## 工作原理
+
+直接聊就行。描述你想要什么，oh-my-agent 会自动选择合适的 agent。
+
+```
+You: "做一个带用户认证的 TODO 应用"
+→ PM 规划任务
+→ Backend 构建认证 API
+→ Frontend 构建 React UI
+→ DB 设计 schema
+→ QA 审查全部代码
+→ 完成：协调一致、经过审查的代码
+```
+
+也可以用斜杠命令执行结构化工作流：
+
+| 命令 | 说明 |
+|------|------|
+| `/plan` | PM 把功能拆解成任务 |
+| `/coordinate` | 逐步执行多 agent 协作 |
+| `/orchestrate` | 自动并行 agent 调度 |
+| `/ultrawork` | 含 11 个审查门禁的 5 阶段质量工作流 |
+| `/review` | 安全 + 性能 + 无障碍审计 |
+| `/debug` | 结构化根因调试 |
+| `/design` | 7 阶段设计系统工作流 |
+| `/brainstorm` | 自由发散想法 |
+| `/commit` | 带 type/scope 分析的 conventional commit |
+
+**自动检测**：不用斜杠命令也行 — 在消息里写"计划"、"审查"、"调试"之类的关键词（支持 11 种语言！），就会自动激活对应的工作流。
+
+## CLI
 
 ```bash
-# Homebrew (macOS/Linux)
-brew install oh-my-agent
+# 全局安装
+bun install --global oh-my-agent   # 或者: brew install oh-my-agent
 
-# npm/bun
-bun install --global oh-my-agent
+# 随处使用
+oma doctor                  # 健康检查
+oma dashboard               # 实时 agent 监控
+oma agent:spawn backend "Build auth API" session-01
+oma agent:parallel -i backend:"Auth API" frontend:"Login form"
 ```
 
+## 为什么选 oh-my-agent？
 
-| CLI | 安装 | 认证 |
-|-----|------|------|
-| Gemini | `bun install --global @google/gemini-cli` | Auto on first `gemini` run |
-| Claude | `curl -fsSL https://claude.ai/install.sh \| bash` | Auto on first `claude` run |
-| Codex | `bun install --global @openai/codex` | `codex login` |
-| Qwen | `bun install --global @qwen-code/qwen-code` | `/auth` inside CLI |
-
-
-在项目根目录运行此命令以自动安装 skills 和 workflows：
-
-```bash
-bunx oh-my-agent
-```
-
-> **提示：** 安装后运行 `bunx oh-my-agent doctor` 验证配置是否正确。
-
-### 2. 使用으로 쓰기
-
-**复杂项目**（/coordinate 工作流）：
-
-```
-"做个带用户认证的 TODO 应用"
-→ /coordinate → PM Agent가 기획 → Agent Manager에서 에이전트 실행
-```
-
-**最大部署**（/ultrawork 工作流）：
-
-```
-"重构认证模块、添加 API 测试、更新文档"
-→ /ultrawork → 独立任务在 agents 间并行执行
-```
-
-**简单任务**（直接调用域技能）：
-
-```
-"Tailwind CSS로 로그인 폼 만들어줘"
-→ oma-frontend 스킬
-```
-
-**提交更改**（conventional commits）：
-
-```
-/commit
-→ 변경 분석, 커밋 타입/스코프 제안, Co-Author 포함 커밋
-```
-
-**设计系统** (DESIGN.md + 反模式 + 可选 Stitch MCP):
-
-```
-/design
-→ 7阶段工作流: 设置 → 提取 → 增强 → 提议 → 生成 → 审核 → 交接
-```
-
-### 3. 仪表盘监控
-
-有关仪表盘设置和使用详情，请参阅 [`web/content/en/guide/usage.md`](./web/content/en/guide/usage.md#real-time-dashboards)。
-
-
+- **可移植** — `.agents/` 跟着项目走，不被任何 IDE 绑定
+- **角色化** — 像真正的工程团队一样建模，而不是一堆 prompt 的堆砌
+- **省 token** — 双层 skill 设计节省约 75% 的 token
+- **质量优先** — 内置 Charter preflight、quality gate 和审查工作流
+- **多厂商** — 按 agent 类型混用 Gemini、Claude、Codex、Qwen
+- **可观测** — 终端和 Web 仪表盘实时监控
 
 ## 架构
 
 ```mermaid
 flowchart TD
-    subgraph Workflows["工作流"]
+    subgraph Workflows["Workflows"]
         direction TB
         W0["/brainstorm"]
         W1["/coordinate"]
@@ -171,13 +119,13 @@ flowchart TD
         W7["/design"]
     end
 
-    subgraph Orchestration["编排"]
+    subgraph Orchestration["Orchestration"]
         direction TB
         PM[oma-pm]
-        ORC[orchestrator]
+        ORC[oma-orchestrator]
     end
 
-    subgraph Domain["领域代理"]
+    subgraph Domain["Domain Agents"]
         direction TB
         FE[oma-frontend]
         BE[oma-backend]
@@ -187,31 +135,35 @@ flowchart TD
         TF[oma-tf-infra]
     end
 
-    subgraph Quality["质量"]
+    subgraph Quality["Quality"]
         direction TB
         QA[oma-qa]
         DBG[oma-debug]
     end
 
-
     Workflows --> Orchestration
     Orchestration --> Domain
     Domain --> Quality
-    Quality --> CMT([commit])
+    Quality --> CMT([oma-commit])
 ```
 
+## 了解更多
 
-## 赞助商
+- **[详细文档](./AGENTS_SPEC.md)** — 完整技术规格和架构
+- **[支持的 Agent](./SUPPORTED_AGENTS.md)** — 各 IDE 的 agent 支持情况
+- **[Web 文档](https://oh-my-agent.dev)** — 指南、教程和 CLI 参考
 
-本项目得益于慷慨的赞助商支持。
+## 赞助
 
-> **喜欢这个项目吗？** 请给它一颗星！
+本项目由慷慨的赞助者们支持维护。
+
+> **喜欢这个项目？** 给个 star 吧！
 >
 > ```bash
 > gh api --method PUT /user/starred/first-fluke/oh-my-agent
 > ```
 >
-> 查看我们优化的启动模板：[fullstack-starter](https://github.com/first-fluke/fullstack-starter)
+> 试试我们优化过的入门模板：[fullstack-starter](https://github.com/first-fluke/fullstack-starter)
 
 <a href="https://github.com/sponsors/first-fluke">
   <img src="https://img.shields.io/badge/Sponsor-♥-ea4aaa?style=for-the-badge" alt="Sponsor" />
@@ -220,26 +172,24 @@ flowchart TD
   <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-☕-FFDD00?style=for-the-badge" alt="Buy Me a Coffee" />
 </a>
 
-### 🚀 冠军
+### 🚀 Champion
 
 <!-- Champion tier ($100/mo) logos here -->
 
-### 🛸 助推者
+### 🛸 Booster
 
 <!-- Booster tier ($30/mo) logos here -->
 
-### ☕ 贡献者
+### ☕ Contributor
 
 <!-- Contributor tier ($10/mo) names here -->
 
-[Become a sponsor →](https://github.com/sponsors/first-fluke)
+[成为赞助者 →](https://github.com/sponsors/first-fluke)
 
-See [SPONSORS.md](./SPONSORS.md) for a full list of supporters.
+完整赞助者列表请查看 [SPONSORS.md](../SPONSORS.md)。
 
 
 
 ## 许可证
 
 MIT
-
-

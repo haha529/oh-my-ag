@@ -1,67 +1,67 @@
 ---
-title: "Anwendungsfall: Dashboard-Überwachung"
-description: Orchestrator-Sitzungen mit Terminal-/Web-Dashboards und umsetzbaren Runbook-Signalen betreiben.
+title: Dashboard-Ueberwachung
+description: Beobachte deine Agenten in Echtzeit bei der Arbeit mit Terminal- und Web-Dashboards.
 ---
 
-# Anwendungsfall: Dashboard-Überwachung
+# Dashboard-Ueberwachung
 
-## Startbefehle
+Wenn du mehrere Agenten parallel laufen hast, willst du im Blick behalten, was passiert. Dafuer sind Dashboards da.
+
+## Ein Dashboard Starten
 
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+# Terminal-UI
+oma dashboard
+
+# Web-UI
+oma dashboard:web
+# → http://localhost:9847
 ```
 
-Standard-URL des Web-Dashboards: `http://localhost:9847`
+## Empfohlenes Setup
 
-## Empfohlenes Terminal-Layout
+Verwende 3 Terminals nebeneinander:
 
-Verwenden Sie mindestens 3 Terminals:
+| Terminal | Zweck |
+|----------|-------|
+| 1 | `oma dashboard` — Live-Agentenstatus |
+| 2 | Agenten-Spawn-Befehle |
+| 3 | Test- und Build-Logs |
 
-1. Terminal-Dashboard (`oma dashboard`)
-2. Agent-Spawn-Befehle
-3. Test-/Build-Logs
+Halte das Web-Dashboard in einem Browser offen fuer gemeinsame Sichtbarkeit waehrend Team-Sessions.
 
-Lassen Sie das Web-Dashboard für gemeinsame Sichtbarkeit während Team-Sitzungen geöffnet.
+## Was Du Siehst
 
-## Was die Dashboards überwachen
+Dashboards ueberwachen `.serena/memories/` und zeigen:
 
-Datenquelle: `.serena/memories/`
+- **Sitzungsstatus** — laufend, abgeschlossen oder fehlgeschlagen
+- **Aufgabentafel** — welcher Agent welche Aufgabe hat
+- **Agentenfortschritt** — Zuganzahl, aktuelle Aktivitaet
+- **Ergebnisse** — Endausgaben, sobald sie eintreffen
 
-Primäre Signale:
+Updates sind ereignisgesteuert (Dateiaenderungserkennung) — keine Polling-Schleifen, die deine CPU fressen.
 
-- Sitzungsstatus (`running`, `completed`, `failed`)
-- Taskboard-Zuweisung und Statusänderungen
-- Fortschrittsschritte pro Agent
-- Ergebnisveröffentlichungs-Ereignisse
+## Problemsignale
 
-Updates sind ereignisgesteuert durch geänderte Dateien; eine vollständige Verzeichnis-Polling-Schleife ist nicht erforderlich.
+| Was Du Siehst | Was Zu Tun Ist |
+|--------------|---------------|
+| "No agents detected" | Pruefe, ob Agenten mit derselben `session-id` gestartet wurden. Pruefe, ob `.serena/memories/` beschrieben wird. |
+| Sitzung haengt bei "running" | Pruefe Zeitstempel der `progress-*`-Dateien. Starte blockierte Agenten mit klareren Prompts neu. |
+| Haeufige Reconnects (Web) | Pruefe Firewall/Proxy. Starte `dashboard:web` neu und aktualisiere die Seite. |
+| Fehlende Aktivitaet | Pruefe, ob der Orchestrator in das richtige Workspace-Verzeichnis schreibt. |
 
-## Runbook: Signal → Aktion
+## Vor dem Merge
 
-- `No agents detected`
-  - Überprüfen Sie, ob die Agenten mit derselben `session-id` gestartet wurden
-  - Bestätigen Sie, dass in `.serena/memories/` geschrieben wird
-- `Session stuck in running`
-  - Prüfen Sie die Zeitstempel der neuesten `progress-*`-Dateien
-  - Starten Sie den fehlgeschlagenen oder blockierten Agenten mit einem klareren Prompt neu
-- `Frequent reconnects (web)`
-  - Firewall/Proxy lokal prüfen
-  - `dashboard:web` neu starten und die Seite erneut öffnen
-- `Missing activity while agents are active`
-  - Überprüfen Sie, ob die Orchestrator-Schreibvorgänge nicht in einen anderen Workspace umgeleitet werden
+Schnell-Checkliste vom Dashboard:
 
-## Pre-Merge-Überwachungs-Checkliste
+- Alle Agenten haben Status "completed" erreicht
+- Keine ungeloesten QA-Befunde mit hohem Schweregrad
+- Ergebnisdateien fuer jeden Agenten vorhanden
+- Integrationstests nach den Endausgaben durchgefuehrt
 
-- Alle erforderlichen Agenten haben den Status „completed" erreicht
-- Keine ungelösten QA-Befunde mit hohem Schweregrad
-- Aktuelle Ergebnisdateien sind für jeden Agenten vorhanden
-- Integrationstests wurden nach den finalen Agentenausgaben ausgeführt
+## Wenn Du Fertig Bist
 
-## Abschlusskriterien
-
-Die Überwachungsphase ist abgeschlossen, wenn:
-
-- Die Sitzung den Endzustand erreicht hat (`completed` oder absichtlich gestoppt)
-- Der Aktivitätsverlauf die Herkunft der finalen Ausgabe erklärt
-- Die Release-/Merge-Entscheidung mit vollständiger Statusübersicht getroffen wurde
+Die Ueberwachungsphase ist abgeschlossen, wenn:
+- Die Sitzung einen Endzustand zeigt (completed oder stopped)
+- Der Aktivitaetsverlauf erklaert, was passiert ist
+- Du deine Merge-/Release-Entscheidung mit voller Sichtbarkeit getroffen hast

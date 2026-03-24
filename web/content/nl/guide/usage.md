@@ -1,333 +1,222 @@
 ---
 title: Gebruiksgids
-description: Volledige gebruiksgids met voorbeelden, workflows, dashboardbewerkingen en probleemoplossing.
+description: Praktijkvoorbeelden die laten zien hoe je oh-my-agent gebruikt — van simpele taken tot volledige multi-agent orkestratie.
 ---
 
-# Hoe Antigravity Multi-Agent Skills te gebruiken
+# Hoe oh-my-agent Te Gebruiken
 
-## Snel starten
+> Weet je niet waar te beginnen? Typ `/coordinate` gevolgd door wat je wilt bouwen.
 
-1. **Open in Antigravity IDE**
-   ```bash
-   antigravity open /path/to/oh-my-agent
-   ```
+## Snelstart
 
-2. **Skills worden automatisch gedetecteerd.** Antigravity scant `.agents/skills/` en indexeert alle beschikbare skills.
+1. Open je project in een AI-IDE (Claude Code, Gemini, Cursor, etc.)
+2. Skills worden automatisch gedetecteerd uit `.agents/skills/`
+3. Begin te chatten — beschrijf wat je wilt
 
-3. **Chat in de IDE.** Beschrijf wat je wilt bouwen.
+Dat is het. oh-my-agent regelt de rest.
 
 ---
 
-## Gebruiksvoorbeelden
-
-### Voorbeeld 1: Eenvoudige enkele-domein taak
+## Voorbeeld 1: Simpele Enkele Taak
 
 **Je typt:**
 ```
-"Maak een loginformulier component met email en wachtwoord velden met Tailwind CSS"
+"Maak een loginformulier-component met e-mail- en wachtwoordvelden met Tailwind CSS"
 ```
 
-**Wat gebeurt er:**
-- Je roept `oma-frontend` aan via /command of agent skills-veld
-- De skill laadt op aanvraag (Progressive Disclosure)
-- Je krijgt een React component met TypeScript, Tailwind, formuliervalidatie
+**Wat er gebeurt:**
+- De `oma-frontend` skill activeert
+- Laadt zijn uitvoeringsprotocol en tech-stack resources on-demand
+- Je krijgt een React-component met TypeScript, Tailwind, formuliervalidatie en tests
 
-### Voorbeeld 2: Complex multi-domein project
+Geen slash-commando's nodig. Beschrijf gewoon wat je wilt.
+
+## Voorbeeld 2: Multi-Domein Project
 
 **Je typt:**
 ```
-"Bouw een TODO app met gebruikersauthenticatie"
+"Bouw een TODO-app met gebruikersauthenticatie"
 ```
 
-**Wat gebeurt er:**
+**Wat er gebeurt:**
 
-1. **Workflow Guide activeert** — detecteert multi-domein complexiteit
-2. **PM Agent plant** — creëert taak breakdown met prioriteiten
-3. **Je spawnt agents via CLI**:
+1. Trefwoorddetectie ziet dat dit multi-domein is → stelt `/coordinate` voor
+2. **PM-agent** plant het werk: auth API, database-schema, frontend UI, QA-scope
+3. **Je start agents:**
    ```bash
-   oma agent:spawn backend "JWT authenticatie API" session-01 &
-   oma agent:spawn frontend "Login en TODO UI" session-01 &
+   oma agent:spawn backend "JWT authentication API" session-01 -w ./apps/api &
+   oma agent:spawn frontend "Login and TODO UI" session-01 -w ./apps/web &
    wait
    ```
-4. **Agents werken parallel** — slaan outputs op in Knowledge Base
-5. **Jij coördineert** — review `.agents/brain/` voor consistentie
-6. **QA Agent reviewt** — beveiliging/prestatie audit
-7. **Repareren & itereren** — re-spawn agents met correcties
+4. **Agents werken parallel** — elk in hun eigen workspace
+5. **QA-agent reviewt** — beveiligingsaudit, integratiecheck
+6. **Je itereert** — herstart agents met verfijningen indien nodig
 
-### Voorbeeld 3: Bug repareren
+## Voorbeeld 3: Bugfix
 
 **Je typt:**
 ```
 "Er is een bug — klikken op login toont 'Cannot read property map of undefined'"
 ```
 
-**Wat gebeurt er:**
+**Wat er gebeurt:**
 
-1. **oma-debug activeert** — analyseert fout
-2. **Root cause gevonden** — component mapt over `todos` voordat data laadt
-3. **Fix geleverd** — loading states en null checks toegevoegd
-4. **Regressietest geschreven** — zorgt dat bug niet terugkeert
-5. **Vergelijkbare patronen gevonden** — proactief 3 andere components gerepareerd
+1. `oma-debug` activeert automatisch (trefwoord: "bug")
+2. Root cause gevonden — component mapt over `todos` voordat data geladen is
+3. Fix toegepast — laadstatussen en null-checks
+4. Regressietest geschreven
+5. Vergelijkbare patronen gevonden en proactief gefixed in 3 andere componenten
 
-### Voorbeeld: Ontwerpsysteem aanmaken
+## Voorbeeld 4: Design System
 
-**U typt:**
+**Je typt:**
 ```
 "Ontwerp een donkere premium landingspagina voor mijn SaaS-product"
 ```
 
 **Wat er gebeurt:**
 
-1. **oma-design wordt geactiveerd** — controleert `.design-context.md`
-2. **Context verzameld** — vraagt naar doelgroep, merk, esthetische richting
-3. **Prompt verbeterd** — vaag verzoek wordt omgezet in sectie-voor-sectie specificatie
-4. **2-3 richtingen voorgesteld** — kleur-, typografie-, lay-out-, bewegingsopties
-5. **DESIGN.md gegenereerd** — 6-secties ontwerpsysteem + tokens
-6. **Audit uitgevoerd** — responsief, WCAG, Nielsen-heuristieken, AI-slop-controle
-7. **Overdracht** — klaar voor oma-frontend implementatie
+1. `oma-design` activeert (trefwoord: "ontwerp", "landingspagina")
+2. Verzamelt context — publiek, merk, esthetische richting
+3. Stelt 2-3 designrichtingen voor met kleur-, typografie- en lay-outopties
+4. Genereert `DESIGN.md` met tokens, componentpatronen en toegankelijkheidsregels
+5. Voert audit uit — responsive, WCAG, Nielsen-heuristieken
+6. Klaar voor `oma-frontend` om te implementeren
 
-### Voorbeeld 4: CLI-gebaseerde parallelle uitvoering
+## Voorbeeld 5: CLI Parallelle Uitvoering
 
 ```bash
-# Enkele agent (workspace automatisch gedetecteerd)
-oma agent:spawn backend "Implementeer JWT auth API" session-01
+# Enkele agent
+oma agent:spawn backend "Implement JWT auth API" session-01
 
-# Parallelle agents
-oma agent:spawn backend "Implementeer auth API" session-01 &
-oma agent:spawn frontend "Maak loginformulier" session-01 &
-oma agent:spawn mobile "Bouw auth schermen" session-01 &
+# Meerdere agents parallel
+oma agent:spawn backend "Auth API + DB migration" session-01 -w ./apps/api &
+oma agent:spawn frontend "Login form + error states" session-01 -w ./apps/web &
+oma agent:spawn mobile "Auth screens + biometrics" session-01 -w ./apps/mobile &
 wait
+
+# Realtime monitoren
+oma dashboard        # terminal UI
+oma dashboard:web    # web UI op http://localhost:9847
 ```
 
-**Monitor in realtime:**
-```bash
-# Terminal (apart terminal venster)
-bunx oh-my-agent dashboard
+---
 
-# Of browser
-bunx oh-my-agent dashboard:web
+## Workflow-Commando's
+
+Typ deze in je AI-IDE om gestructureerde processen te starten:
+
+| Commando | Wat Het Doet | Wanneer Te Gebruiken |
+|----------|-------------|---------------------|
+| `/brainstorm` | Vrije ideevorming en verkenning | Voordat je een aanpak kiest |
+| `/plan` | PM-taakontleding → `.agents/plan.json` | Voor elke complexe feature |
+| `/exec-plan` | Voer een bestaand plan stap voor stap uit | Na `/plan` |
+| `/coordinate` | Stapsgewijze multi-domein coördinatie | Features die meerdere agents beslaan |
+| `/orchestrate` | Geautomatiseerde parallelle agent-uitvoering | Grote projecten, maximaal parallellisme |
+| `/ultrawork` | 5-fasen kwaliteitsworkflow (11 review-poorten) | Maximale kwaliteitslevering |
+| `/review` | Beveiliging + prestatie + toegankelijkheidsaudit | Voor het mergen |
+| `/debug` | Gestructureerd root-cause debuggen | Bugs onderzoeken |
+| `/design` | 7-fasen design workflow → `DESIGN.md` | Design systems bouwen |
+| `/commit` | Conventional commit met type/scope analyse | Wijzigingen committen |
+| `/setup` | Projectconfiguratie | Eerste configuratie |
+| `/tools` | MCP-serverbeheer | Externe tools toevoegen |
+| `/stack-set` | Tech stack configuratie | Taal/framework voorkeuren instellen |
+| `/deepinit` | Volledige projectinitialisatie | Setup in bestaande codebase |
+
+---
+
+## Auto-Detectie (Geen Slash-Commando's Nodig)
+
+oh-my-agent detecteert trefwoorden in 11 talen en activeert workflows automatisch:
+
+| Je Zegt | Workflow Die Activeert |
+|---------|----------------------|
+| "plan the auth feature" | `/plan` |
+| "버그 수정해줘" | `/debug` |
+| "do everything in parallel" | `/orchestrate` |
+| "レビューして" | `/review` |
+| "diseña la página" | `/design` |
+| "brainstorm some ideas" | `/brainstorm` |
+
+Vragen zoals "what is orchestrate?" worden gefilterd — ze triggeren geen workflows per ongeluk.
+
+---
+
+## Beschikbare Skills
+
+| Skill | Het Beste Voor | Output |
+|-------|---------------|--------|
+| oma-pm | "plan dit", "ontleed" | `.agents/plan.json` |
+| oma-frontend | UI, componenten, styling | React-componenten, tests |
+| oma-backend | API's, databases, auth | Endpoints, modellen, tests |
+| oma-db | Schema, ERD, migraties | Schema-ontwerp, query-optimalisatie |
+| oma-mobile | Mobiele apps | Flutter-schermen, state management |
+| oma-design | UI/UX, design systems | `DESIGN.md` met tokens |
+| oma-brainstorm | Ideevorming, verkenning | Ontwerpdocument |
+| oma-qa | Beveiliging, prestaties, a11y | QA-rapport met geprioriteerde fixes |
+| oma-debug | Bugs, fouten, crashes | Gefixte code + regressietests |
+| oma-tf-infra | Cloud-infrastructuur | Terraform-modules |
+| oma-dev-workflow | CI/CD, automatisering | Pipeline-configuraties |
+| oma-translator | Vertaling | Natuurlijke meertalige content |
+| oma-orchestrator | Parallelle uitvoering | Agent-resultaten |
+| oma-commit | Git-commits | Conventional commits |
+
+---
+
+## Dashboards
+
+### Terminal Dashboard
+
+```bash
+oma dashboard
+```
+
+Live tabel met sessiestatus, agent-statussen, beurten en laatste activiteit. Monitort `.serena/memories/` voor realtime updates.
+
+### Web Dashboard
+
+```bash
+oma dashboard:web
 # → http://localhost:9847
 ```
 
----
+Functies:
+- Realtime updates via WebSocket
+- Auto-reconnect bij verbindingsonderbrekingen
+- Sessiestatus met gekleurde agent-indicatoren
+- Activiteitenlog uit voortgangs- en resultaatbestanden
 
-## Realtime dashboards
+### Aanbevolen Layout
 
-### Terminal dashboard
-
-```bash
-bunx oh-my-agent dashboard
-```
-
-Monitort `.serena/memories/` met `fswatch` (macOS) of `inotifywait` (Linux). Toont een live tabel met sessie status, agent states, turns en laatste activiteit. Update automatisch wanneer memory bestanden veranderen.
-
-**Vereisten:**
-- macOS: `brew install fswatch`
-- Linux: `apt install inotify-tools`
-
-### Web dashboard
-
-```bash
-npm install          # alleen eerste keer
-bunx oh-my-agent dashboard:web
-```
-
-Open `http://localhost:9847` in je browser. Functies:
-
-- **Realtime updates** via WebSocket (event-driven, geen polling)
-- **Auto-reconnect** als de verbinding verbreekt
-- **Serena-themed UI** met paarse accent kleuren
-- **Sessie status** — ID en running/completed/failed state
-- **Agent tabel** — naam, status (met gekleurde stippen), turn count, taak beschrijving
-- **Activiteiten log** — laatste wijzigingen uit progress en result bestanden
-
-De server monitort `.serena/memories/` met chokidar met debounce (100ms). Alleen gewijzigde bestanden triggeren reads — geen volledige re-scan.
-
----
-
-## Belangrijke concepten
-
-### Progressive Disclosure
-Skills worden expliciet aangeroepen via /command of geladen via het agent skills-veld. Alleen de benodigde skill laadt in context.
-
-### Token-geoptimaliseerd skill ontwerp
-Elke skill gebruikt een twee-laags architectuur voor maximale token efficiëntie:
-- **SKILL.md** (~40 regels): Identiteit, routing, kernregels — direct geladen
-- **resources/**: Uitvoeringsprotocollen, voorbeelden, checklists, error playbooks — on-demand geladen
-
-Gedeelde resources leven in `_shared/` (geen skill) en worden gerefereerd door alle agents:
-- Chain-of-thought uitvoeringsprotocollen met 4-staps workflow
-- Few-shot input/output voorbeelden voor mid-tier model begeleiding
-- Error recovery playbooks met "3 strikes" escalatie
-- Redenerings templates voor gestructureerde multi-step analyse
-- Context budget management voor Flash/Pro model tiers
-- Geautomatiseerde verificatie via `verify.sh`
-- Cross-session lessen geleerd accumulatie
-
-### CLI agent spawning
-Gebruik `oma agent:spawn` om agents via CLI uit te voeren. Respecteert `agent_cli_mapping` in `user-preferences.yaml` om de juiste CLI (gemini, claude, codex, qwen) per agent type te selecteren. Workspace wordt automatisch gedetecteerd uit gemeenschappelijke monorepo conventies, of kan expliciet worden ingesteld met `-w`.
-
-### Knowledge Base
-Agent outputs opgeslagen op `.agents/brain/`. Bevat plannen, code, rapporten en coördinatie notities.
-
-### Serena Memory
-Gestructureerde runtime state op `.serena/memories/`. De orchestrator schrijft sessie info, task boards, per-agent progress en resultaten. Dashboards monitoren deze bestanden voor monitoring.
-
-### Workspaces
-Agents kunnen werken in aparte directories om conflicten te vermijden. Workspace wordt automatisch gedetecteerd uit gemeenschappelijke monorepo conventies:
-```
-./apps/api   of ./backend   → Backend Agent workspace
-./apps/web   of ./frontend  → Frontend Agent workspace
-./apps/mobile of ./mobile   → Mobile Agent workspace
-```
-
----
-
-## Beschikbare skills
-
-| Skill | Gebruiksgeval | Output |
-|-------|---------------------------|--------|
-| oma-coordination | Complexe multi-domein projecten | Stap-voor-stap agent coördinatie |
-| oma-pm | "plan dit", "onderverdelen" | `.agents/plan.json` |
-| oma-frontend | UI, components, styling | React components, tests |
-| oma-backend | APIs, databases, auth | API endpoints, modellen, tests |
-| oma-mobile | Mobiele apps, iOS/Android | Flutter schermen, state management |
-| oma-brainstorm | Ideevorming, conceptverkenning | Ontwerpdocument |
-| oma-db | Database, schema, ERD, migratie | Schemaontwerp, queryoptimalisatie |
-| oma-dev-workflow | CI/CD, git hooks, monorepo-setup | Workflowconfiguraties, automatisering |
-| oma-tf-infra | Terraform, cloudinfrastructuur | IaC-modules, state-management |
-| oma-translator | Vertaling, meertalige content | Vertaalde tekst met behoud van toon |
-| oma-qa | "review beveiliging", "audit" | QA rapport met geprioritiseerde fixes |
-| oma-debug | Bug rapporten, foutmeldingen | Gerepareerde code, regressietests |
-| oma-orchestrator | CLI sub-agent uitvoering | Resultaten in `.agents/results/` |
-| oma-commit | "commit", "wijzigingen opslaan" | Git commits (auto-splits per feature) |
-
----
-
-## Workflow commando's
-
-Typ deze in Antigravity IDE chat om stap-voor-stap workflows te triggeren:
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `/brainstorm` | Design-first ideevorming en conceptverkenning |
-| `/coordinate` | Multi-agent orkestratie via CLI met stap-voor-stap begeleiding |
-| `/deepinit` | Diepgaande projectinitialisatie met hiërarchische AGENTS.md |
-| `/exec-plan` | Planuitvoering en inline planbeheer |
-| `/orchestrate` | Geautomatiseerde CLI-gebaseerde parallelle agent uitvoering |
-| `/plan` | PM taak decompositie met API contracten |
-| `/review` | Volledige QA pipeline (beveiliging, prestaties, toegankelijkheid, code kwaliteit) |
-| `/debug` | Gestructureerd bug repareren (reproduceren → diagnosticeren → repareren → regressietest) |
-| `/setup` | CLI- en MCP-configuratie |
-| `/tools` | MCP tool management |
-| `/ultrawork` | Maximale parallelle uitvoering via 5-fase gate-lus |
-| `/stack-set` | Backend taalstack van oma-backend instellen (Python, Node.js, Rust) |
-
-Deze zijn gescheiden van **skills** (aangeroepen via /command of agent skills-veld). Workflows geven je expliciete controle over multi-step processen.
-
----
-
-## Typische workflows
-
-### Workflow A: Enkele skill
-
-```
-Jij: "Maak een knop component"
-  → Antigravity laadt oma-frontend
-  → Krijg component direct
-```
-
-### Workflow B: Multi-agent project (automatisch)
-
-```
-Jij: "Bouw een TODO app met authenticatie"
-  → gebruik /coordinate om oma-coordination te starten
-  → PM Agent creëert plan
-  → Jij spawnt agents via CLI (oma agent:spawn)
-  → Agents werken parallel
-  → QA Agent reviewt
-  → Repareer problemen, itereer
-```
-
-### Workflow B-2: Multi-agent project (expliciet)
-
-```
-Jij: /coordinate
-  → Stap-voor-stap begeleide workflow
-  → PM planning → plan review → agent spawning → monitoring → QA review
-```
-
-### Workflow C: Bug repareren
-
-```
-Jij: "Login knop gooit TypeError"
-  → oma-debug activeert
-  → Root cause analyse
-  → Fix + regressietest
-  → Vergelijkbare patronen gecontroleerd
-```
-
-### Workflow D: CLI orkestratie met dashboard
-
-```
-Terminal 1: bunx oh-my-agent dashboard:web
-Terminal 2: oma agent:spawn backend "taak" session-01 &
-            oma agent:spawn frontend "taak" session-01 &
-Browser:    http://localhost:9847 → realtime status
-```
+Gebruik 3 terminals:
+1. Dashboard (`oma dashboard`)
+2. Agent spawn-commando's
+3. Test/build logs
 
 ---
 
 ## Tips
 
-1. **Wees specifiek** — "Bouw een TODO app met JWT auth, React frontend, Express backend" is beter dan "maak een app"
-2. **Gebruik CLI spawning** voor multi-domein projecten — probeer niet alles in één chat te doen
-3. **Review Knowledge Base** — controleer `.agents/brain/` voor API consistentie
-4. **Itereer met re-spawns** — verfijn instructies, begin niet opnieuw
-5. **Gebruik dashboards** — `bunx oh-my-agent dashboard` of `bunx oh-my-agent dashboard:web` om orchestrator sessies te monitoren
-6. **Aparte workspaces** — wijs elke agent zijn eigen directory toe
+1. **Wees specifiek** — "Bouw een TODO-app met JWT auth, React frontend, Express backend" is beter dan "maak een app"
+2. **Gebruik workspaces** — `-w ./apps/api` voorkomt dat agents in elkaars bestanden werken
+3. **Vergrendel contracten eerst** — voer `/plan` uit voor parallelle agents
+4. **Monitor actief** — dashboards vangen problemen voor het mergen
+5. **Itereer met re-spawns** — verfijn agent-prompts in plaats van opnieuw te beginnen
+6. **Begin met `/coordinate`** — als je niet zeker weet welke workflow
 
 ---
 
 ## Probleemoplossing
 
 | Probleem | Oplossing |
-|----------|-----------|
-| Skills laden niet | `antigravity open .`, controleer `.agents/skills/`, herstart IDE |
-| CLI niet gevonden | Controleer `which gemini` / `which claude`, installeer ontbrekende CLIs |
-| Incompatibele agent outputs | Review beide in Knowledge Base, re-spawn met correcties |
-| Dashboard: "No agents" | Memory bestanden nog niet aangemaakt, voer orchestrator eerst uit |
-| Web dashboard start niet | Voer `npm install` uit om chokidar en ws te installeren |
-| fswatch niet gevonden | macOS: `brew install fswatch`, Linux: `apt install inotify-tools` |
-| QA rapport heeft 50+ problemen | Focus op CRITICAL/HIGH eerst, documenteer rest voor later |
+|---------|----------|
+| Skills niet gedetecteerd in IDE | Controleer of `.agents/skills/` bestaat met `SKILL.md` bestanden, herstart IDE |
+| CLI niet gevonden | `which gemini` / `which claude` — installeer ontbrekende |
+| Agents produceren conflicterende code | Gebruik aparte workspaces (`-w`), review outputs, herstart met correcties |
+| Dashboard toont "No agents detected" | Agents hebben nog niet naar `.serena/memories/` geschreven — wacht of controleer session ID |
+| Web-dashboard start niet | Voer eerst `bun install` uit |
+| QA-rapport heeft 50+ problemen | Focus op CRITICAL/HIGH eerst, documenteer de rest voor later |
 
 ---
 
-## CLI commando's
-
-```bash
-bunx oh-my-agent                # Interactieve skill installer
-bunx oh-my-agent doctor         # Controleer setup & repareer ontbrekende skills
-bunx oh-my-agent doctor --json  # JSON output voor CI/CD
-bunx oh-my-agent update         # Update skills naar laatste versie
-bunx oh-my-agent stats          # Bekijk productiviteitsmetrieken
-bunx oh-my-agent stats --reset  # Reset metrieken
-bunx oh-my-agent retro          # Sessie retrospective (lessen & volgende stappen)
-bunx oh-my-agent dashboard      # Terminal realtime dashboard
-bunx oh-my-agent dashboard:web  # Web dashboard (http://localhost:9847)
-bunx oh-my-agent help           # Toon help
-```
-
----
-
-## Voor ontwikkelaars (integratiegids)
-
-Als je deze skills wilt integreren in je bestaande Antigravity project, zie [AGENT_GUIDE.md](../AGENT_GUIDE.md) voor:
-- Snelle 3-staps integratie
-- Volledige dashboard integratie
-- Skills aanpassen voor jouw tech stack
-- Probleemoplossing en best practices
-
----
-
-**Chat gewoon in Antigravity IDE.** Voor monitoring, gebruik de dashboards. Voor CLI uitvoering, gebruik de orchestrator scripts. Om te integreren in je bestaande project, zie [AGENT_GUIDE.md](../AGENT_GUIDE.md).
+Voor integratie in bestaande projecten, zie [Integratiegids](./integration).

@@ -1,57 +1,87 @@
 ---
 title: Skills
-description: Progressive Offenlegung und Token-optimierte Skill-Architektur.
+description: Wie die Zwei-Schichten-Skill-Architektur Agenten schlau haelt, ohne Tokens zu verschwenden.
 ---
 
 # Skills
 
-## Progressive Offenlegung
+Skills sind das, was jeden Agenten zum Experten macht. Sie sind strukturiertes Wissen — nicht nur Prompts, sondern Ausfuehrungsprotokolle, Code-Templates, Fehler-Playbooks und Qualitaets-Checklisten.
 
-Skills werden explizit über /command oder das Agent-Skills-Feld geladen.
+## Das Zwei-Schichten-Design
 
-## Zwei-Schichten-Design
+Hier ist der clevere Teil: Skills laden nicht alles auf einmal. Sie nutzen progressive Offenlegung, um ~75% der Tokens zu sparen.
 
-Jeder Skill verwendet ein **Token-optimiertes Zwei-Schichten-Design**:
+### Schicht 1: SKILL.md (~800 Bytes)
 
-| Schicht | Inhalt | Größe |
-|---------|--------|-------|
-| `SKILL.md` | Identität, Routing-Bedingungen, Kernregeln | ~40 Zeilen (~800B) |
-| `resources/` | Ausführungsprotokolle, Beispiele, Checklisten, Playbooks, Snippets, Tech-Stack | Bei Bedarf geladen |
+Immer geladen. Enthaelt:
+- Agenten-Identitaet und Rolle
+- Wann aktivieren (Routing-Bedingungen)
+- Kernregeln und Einschraenkungen
+- Was NICHT zu tun ist
 
-Dies erreicht **~75 % Token-Einsparung** beim initialen Laden eines Skills (3-7KB → ~800B pro Skill).
+### Schicht 2: resources/ (bei Bedarf geladen)
 
-## Gemeinsame Ressourcenschicht (`_shared/`)
+Wird nur geladen, wenn der Agent tatsaechlich arbeitet. Enthaelt das Tiefergehende:
 
-Gemeinsame Ressourcen, die über alle Skills hinweg dedupliziert werden:
+| Ressource | Was Sie Tut |
+|-----------|-----------|
+| `execution-protocol.md` | Schritt-fuer-Schritt-Ablauf: Analysieren → Planen → Implementieren → Verifizieren |
+| `tech-stack.md` | Detaillierte Technologie-Specs und Versionen |
+| `error-playbook.md` | Was zu tun ist, wenn etwas schiefgeht (mit "3 Strikes"-Eskalation) |
+| `checklist.md` | Domainspezifische Qualitaetspruefungen |
+| `snippets.md` | Einsatzbereite Code-Muster |
+| `examples/` | Few-Shot-Eingabe/Ausgabe-Beispiele |
+
+### So Sieht Es Aus
+
+```
+.agents/skills/oma-frontend/
+├── SKILL.md                          ← Immer geladen (~800 Bytes)
+└── resources/
+    ├── execution-protocol.md         ← Bei Bedarf
+    ├── tech-stack.md
+    ├── tailwind-rules.md
+    ├── component-template.tsx
+    ├── snippets.md
+    ├── error-playbook.md
+    ├── checklist.md
+    └── examples/
+```
+
+## Geteilte Ressourcen
+
+Alle Agenten teilen gemeinsame Grundlagen aus `.agents/skills/_shared/`:
 
 | Ressource | Zweck |
 |-----------|-------|
-| `reasoning-templates.md` | Strukturierte Lückentext-Vorlagen für mehrstufiges Reasoning |
-| `clarification-protocol.md` | Wann fragen vs. annehmen, Mehrdeutigkeitsstufen |
-| `context-budget.md` | Token-effiziente Dateilesetrategien pro Modellstufe |
-| `context-loading.md` | Aufgabentyp-zu-Ressource-Zuordnung für die Orchestrator-Prompt-Konstruktion |
-| `skill-routing.md` | Skill-zu-Agent-Zuordnung und Regeln für parallele Ausführung |
-| `difficulty-guide.md` | Einfach/Mittel/Komplex-Bewertung mit Protokollverzweigung |
-| `lessons-learned.md` | Sitzungsübergreifend gesammelte domänenspezifische Stolperfallen |
-| `verify.sh` | Automatisiertes Verifizierungsskript nach Agentenabschluss |
-| `api-contracts/` | PM erstellt Verträge, Backend implementiert, Frontend/Mobile konsumiert |
-| `serena-memory-protocol.md` | Speicher-Lese-/Schreibprotokoll im CLI-Modus |
-| `common-checklist.md` | Universelle Codequalitätsprüfungen |
+| `skill-routing.md` | Ordnet Aufgaben dem richtigen Agenten zu |
+| `context-loading.md` | Welche Ressourcen fuer welchen Aufgabentyp laden |
+| `prompt-structure.md` | Ziel → Kontext → Einschraenkungen → Fertig Wenn |
+| `clarification-protocol.md` | Wann fragen vs. einfach annehmen |
+| `context-budget.md` | Token-effizientes Dateilesen pro Modell-Tier |
+| `difficulty-guide.md` | Einfache / Mittlere / Komplexe Aufgabenbewertung |
+| `reasoning-templates.md` | Strukturierte Denkvorlagen zum Ausfuellen |
+| `quality-principles.md` | Universelle Qualitaetsstandards |
+| `vendor-detection.md` | Erkennen, welche IDE/welches CLI laeuft |
 
-## Skill-spezifische Ressourcen
+## Bedingte Ressourcen
 
-Jeder Skill stellt domänenspezifische Ressourcen bereit:
+Einige Ressourcen werden nur bei bestimmten Bedingungen geladen:
 
-| Ressource | Zweck |
-|-----------|-------|
-| `execution-protocol.md` | 4-Schritte-Chain-of-Thought-Workflow (Analysieren → Planen → Implementieren → Verifizieren) |
-| `examples.md` | 2-3 Few-Shot-Eingabe-/Ausgabebeispiele |
-| `checklist.md` | Domänenspezifische Selbstverifizierungs-Checkliste |
-| `error-playbook.md` | Fehlerbehebung mit „3-Strikes"-Eskalationsregel |
-| `tech-stack.md` | Detaillierte Technologiespezifikationen |
-| `snippets.md` | Sofort einsetzbare Code-Muster |
-| `variants/` | Sprachspezifische Presets (z.B. `python/`, `node/`, `rust/`) -- von `oma-backend` verwendet |
+| Ressource | Wann Sie Geladen Wird |
+|-----------|----------------------|
+| `quality-score.md` | Qualitaetsbewertung angefordert |
+| `experiment-ledger.md` | Experimenteller Ansatz wird ausprobiert |
+| `exploration-loop.md` | Iterative Erkundung im Gange |
 
-## Warum das wichtig ist
+## Vendor-Spezifische Ausfuehrung
 
-Dies hält den initialen Kontext schlank und unterstützt gleichzeitig eine tiefgehende Ausführung bei Bedarf.
+Jedes unterstuetzte CLI hat sein eigenes Ausfuehrungsprotokoll in `.agents/skills/_shared/runtime/execution-protocols/`:
+- `claude.md` — Claude-spezifische Muster
+- `gemini.md` — Gemini-spezifische Muster
+- `codex.md` — Codex-spezifische Muster
+- `qwen.md` — Qwen-spezifische Muster
+
+## Warum Das Wichtig Ist
+
+Ohne progressive Offenlegung wuerde das Laden von 5 Agenten dein Kontextfenster aufbrauchen, bevor irgendeine Arbeit beginnt. Mit ihr bekommst du schlankes initiales Laden und tiefe Ausfuehrung, wenn es darauf ankommt.

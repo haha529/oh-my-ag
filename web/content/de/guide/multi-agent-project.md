@@ -1,76 +1,77 @@
 ---
 title: "Anwendungsfall: Multi-Agenten-Projekt"
-description: End-to-End-Ablauf für komplexe domänenübergreifende Lieferung mit expliziten Koordinations-Gates.
+description: Wie man mehrere Agenten fuer Features koordiniert, die Frontend, Backend, Datenbank und QA umfassen.
 ---
 
 # Anwendungsfall: Multi-Agenten-Projekt
 
-## Wann dieser Weg geeignet ist
+## Wann Dies Verwenden
 
-Verwenden Sie diesen Weg, wenn ein Feature mehrere Domänen umfasst (zum Beispiel Backend + Frontend + QA) und parallele Ausführung vorteilhaft ist.
+Dein Feature umfasst mehrere Domains — Backend-API + Frontend-UI + Datenbankschema + QA-Review. Ein Agent kann nicht alles bewältigen, und du willst, dass sie parallel arbeiten.
 
-## Koordinationsmodell
+## Die Koordinations-Sequenz
 
-Empfohlene Reihenfolge:
+```text
+/plan → /coordinate → agent:spawn (parallel) → /review → merge
+```
 
-1. `/plan` für Aufgabenzerlegung und Abhängigkeits-Mapping
-2. `/coordinate` für Ausführungsreihenfolge und Zuständigkeiten
-3. Paralleles `agent:spawn` pro Domäne
-4. `/review` für QA-/Sicherheits-/Performance-Gate
+1. **`/plan`** — PM-Agent zerlegt das Feature in Domain-Aufgaben
+2. **`/coordinate`** — Legt Ausfuehrungsreihenfolge und Verantwortlichkeiten fest
+3. **`agent:spawn`** — Agenten fuehren parallel aus
+4. **`/review`** — QA prueft domainuebergreifende Konsistenz
 
-## Sitzungs- und Workspace-Strategie
+## Session-Strategie
 
-Verwenden Sie eine Sitzungs-ID pro Feature-Stream:
+Verwende eine Session-ID pro Feature:
 
 ```text
 session-auth-v2
 ```
 
-Weisen Sie isolierte Workspaces pro Domäne zu, um Merge-Konflikte zu reduzieren:
+Weise Workspaces pro Domain zu:
 
-- Backend: `./apps/api`
-- Frontend: `./apps/web`
-- Mobile: `./apps/mobile`
+| Agent | Workspace |
+|-------|-----------|
+| backend | `./apps/api` |
+| frontend | `./apps/web` |
+| mobile | `./apps/mobile` |
 
 ## Spawn-Beispiel
 
 ```bash
-oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api
-oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web
-oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2
+oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api &
+oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web &
+oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2 &
+wait
 ```
 
-## Contract-First-Regel
+## Die Vertraege-Zuerst-Regel
 
-Legen Sie vor der parallelen Implementierung gemeinsame Verträge fest:
+Bevor Agenten parallel mit dem Coden beginnen, **sperre deine API-Vertraege**:
 
-- Request-/Response-Schemata
-- Fehlercodes und Meldungen
-- Auth-/Sitzungs-Lebenszyklus-Annahmen
+- Request/Response-Schemata
+- Fehlercodes und Nachrichten
+- Auth-/Session-Lebenszyklus-Annahmen
 
-Wenn sich Verträge während der Ausführung ändern, pausieren Sie nachgelagerte Agenten und senden Sie die Prompts mit dem aktualisierten Vertrag erneut.
+Wenn sich Vertraege mitten im Lauf aendern, pausiere nachgelagerte Agenten und stelle ihre Prompts mit aktualisierten Vertraegen neu aus.
 
 ## Merge-Gates
 
-Mergen Sie nicht, es sei denn, alle Gates werden bestanden:
+Merge nicht, bis:
 
-1. Domänenspezifische Tests bestehen
-2. Integrationspunkte entsprechen den vereinbarten Verträgen
-3. QA-Befunde mit hoher/kritischer Priorität sind gelöst oder explizit akzeptiert
-4. Changelog oder Release Notes sind aktualisiert, wenn sich extern sichtbares Verhalten ändert
+1. Tests auf Domain-Ebene bestehen
+2. Integrationspunkte mit vereinbarten Vertraegen uebereinstimmen
+3. High/Critical QA-Probleme geloest sind (oder explizit akzeptiert)
+4. Changelog aktualisiert ist, falls sich extern sichtbares Verhalten geaendert hat
 
-## Operative Anti-Patterns
+## Was NICHT Tun
 
-Vermeiden Sie:
+- Einen Workspace fuer alle Agenten teilen (Merge-Konflikt-Albtraum)
+- Vertraege aendern, ohne andere Agenten zu informieren
+- Backend und Frontend unabhaengig mergen, bevor die Kompatibilitaet geprueft ist
 
-- Einen Workspace für alle Agenten gemeinsam nutzen
-- Verträge ändern, ohne andere Agenten zu benachrichtigen
-- Backend/Frontend unabhängig mergen, bevor die Kompatibilität geprüft wurde
+## Wann Es Fertig Ist
 
-## Abschlusskriterien
-
-Die Multi-Agenten-Ausführung ist abgeschlossen, wenn:
-
-- Geplante Aufgaben über alle Domänen hinweg erledigt sind
-- Die domänenübergreifende Integration validiert ist
-- Die QA-Freigabe (oder eine dokumentierte Risikoakzeptanz) vorliegt
+- Alle geplanten Aufgaben in allen Domains abgeschlossen
+- Domainuebergreifende Integration validiert
+- QA-Freigabe protokolliert

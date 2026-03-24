@@ -1,31 +1,31 @@
 ---
 title: "Use Case: Single Skill"
-description: Fast path for focused, single-domain work with clear scope and quick feedback loops.
+description: When you just need one agent for a focused task — the fast path.
 ---
 
 # Use Case: Single Skill
 
-## When to use this path
+## When to Use This
 
-Use this when the output is narrowly scoped and mostly owned by one domain:
+Use this when your task is narrowly scoped and owned by one domain:
 
-- one UI component
-- one API endpoint
-- one bug in one layer
-- one refactor in one module
+- One UI component
+- One API endpoint
+- One bug in one layer
+- One refactor in one module
 
-If the task requires cross-domain coordination (API contract + UI + QA), use [`Multi-Agent Project`](./multi-agent-project.md).
+If the task needs cross-domain coordination (API + UI + QA), switch to [Multi-Agent Project](./multi-agent-project).
 
-## Preflight checklist
+## Before You Prompt
 
-Before prompting, define:
+Quick checklist:
 
-1. exact output (file or behavior)
-2. target stack and versions
-3. acceptance criteria
-4. test expectations
+1. **What's the output?** — specific file or behavior
+2. **What stack?** — framework, language, versions
+3. **What's "done"?** — acceptance criteria
+4. **What tests?** — critical cases to cover
 
-## Prompt template
+## Prompt Template
 
 ```text
 Build <specific artifact> using <stack>.
@@ -36,7 +36,7 @@ Acceptance criteria:
 Add tests for: <critical cases>.
 ```
 
-## Example prompt
+## Real Example
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Expected execution flow
+## What Happens
 
-1. The relevant skill is auto-selected.
-2. The agent proposes implementation and assumptions.
-3. You confirm or adjust assumptions.
-4. The agent ships code and tests.
-5. You run local verification and request small follow-ups.
+1. The right skill auto-activates based on your prompt
+2. Agent declares its assumptions (charter preflight)
+3. You confirm or adjust
+4. Agent writes code and tests
+5. You run local verification
 
-## Quality gate before merge
+## Before You Merge
 
-- behavior matches acceptance criteria
-- tests cover happy path and core edge cases
-- no unrelated file changes
-- no hidden breaking changes to shared modules
+Check that:
+- Behavior matches your acceptance criteria
+- Tests cover happy path and key edge cases
+- No unrelated file changes snuck in
+- Shared modules aren't broken
 
-## Escalation signals
+## When to Escalate
 
 Switch to multi-agent flow when:
-
-- UI work requires new API contracts
-- one fix creates cascading changes across layers
-- scope grows beyond one domain after first iteration
-
-## Done criteria
-
-Single-skill execution is done when:
-
-- target artifact is implemented
-- acceptance criteria are demonstrably satisfied
-- tests are added or updated for the changed behavior
+- UI work needs a new API contract
+- One fix cascades across layers
+- Scope grows beyond one domain after the first iteration

@@ -1,129 +1,104 @@
 ---
 title: 既存プロジェクトへの統合
-description: 既存の Antigravity プロジェクトに oh-my-agent スキルを追加するための安全で非破壊的な統合ワークフロー。
+description: 既に進行中のプロジェクトにoh-my-agentを追加する — 安全で非破壊的に。
 ---
 
 # 既存プロジェクトへの統合
 
-このガイドは、レガシーのルート `AGENT_GUIDE.md` ワークフローを置き換え、現在のワークスペース構成（`cli` + `web`）と CLI の動作を反映しています。
+既にプロジェクトがありますか？ 何も壊さずにoh-my-agentを追加する方法を説明します。
 
-## 目的
+## 簡単な方法（CLI）
 
-既存のアセットを上書きせずに、既存プロジェクトに `oh-my-agent` スキルを追加します。
-
-## 推奨パス（CLI）
-
-対象プロジェクトのルートで以下を実行します:
+プロジェクトルートで実行してください：
 
 ```bash
 bunx oh-my-agent
 ```
 
-実行内容:
+実行内容：
+- `.agents/skills/` にスキルをインストール
+- `.agents/skills/_shared/` に共有リソースをコピー
+- IDE用のシンボリックリンクを作成（`.claude/skills/` など）
+- `.agents/workflows/` にワークフローをインストール
+- `.agents/config/user-preferences.yaml` にデフォルト設定を作成
 
-- `.agents/skills/*` をインストールまたは更新
-- `.agents/skills/_shared` に共有リソースをインストール
-- `.agents/workflows/*` をインストール
-- `.agents/config/user-preferences.yaml` をインストール
-- オプションで `~/.gemini/antigravity/global_workflows` にグローバルワークフローをインストール
+## 手動で行う方法
 
-## 安全な手動パス
-
-コピーするディレクトリを完全に制御したい場合に使用します。
+何をコピーするか完全にコントロールしたい場合：
 
 ```bash
 cd /path/to/your-project
 
-mkdir -p .agents/skills .agents/workflows .agents/config
+mkdir -p .agents/skills .agents/workflows .agents/config .claude/skills
 
-# Copy only missing skill directories (example)
-for skill in oma-coordination oma-pm oma-frontend oma-backend oma-mobile oma-qa oma-debug oma-orchestrator oma-commit; do
-  if [ ! -d ".agents/skills/$skill" ]; then
-    cp -r /path/to/oh-my-agent/.agents/skills/$skill .agents/skills/$skill
-  fi
+# 必要なスキルをコピー
+for skill in oma-pm oma-frontend oma-backend oma-qa oma-debug oma-commit; do
+  [ -d ".agents/skills/$skill" ] || cp -r /path/to/oh-my-agent/.agents/skills/$skill .agents/skills/
 done
 
-# Copy shared resources if missing
-[ -d .agents/skills/_shared ] || cp -r /path/to/oh-my-agent/.agents/skills/_shared .agents/skills/_shared
+# 共有リソースをコピー
+[ -d .agents/skills/_shared ] || cp -r /path/to/oh-my-agent/.agents/skills/_shared .agents/skills/
 
-# Copy workflows if missing
-for wf in coordinate.md orchestrate.md plan.md review.md debug.md setup.md tools.md; do
-  [ -f ".agents/workflows/$wf" ] || cp /path/to/oh-my-agent/.agents/workflows/$wf .agents/workflows/$wf
+# ワークフローをコピー
+for wf in coordinate.md plan.md review.md debug.md commit.md setup.md; do
+  [ -f ".agents/workflows/$wf" ] || cp /path/to/oh-my-agent/.agents/workflows/$wf .agents/workflows/
 done
 
-# Copy default user preferences only if missing
-[ -f .agents/config/user-preferences.yaml ] || cp /path/to/oh-my-agent/.agents/config/user-preferences.yaml .agents/config/user-preferences.yaml
+# デフォルト設定（未作成の場合のみ）
+[ -f .agents/config/user-preferences.yaml ] || cp /path/to/oh-my-agent/.agents/config/user-preferences.yaml .agents/config/
 ```
 
-## 検証チェックリスト
+## 動作確認
 
 ```bash
-# 9 installable skills (excluding _shared)
-find .agents/skills -mindepth 1 -maxdepth 1 -type d ! -name '_shared' | wc -l
-
-# Shared resources
-[ -d .agents/skills/_shared ] && echo ok
-
-# 7 workflows
-find .agents/workflows -maxdepth 1 -name '*.md' | wc -l
-
-# Basic command health
-bunx oh-my-agent doctor
+oma doctor
 ```
 
-## オプションのダッシュボード
-
-ダッシュボードはオプションで、インストール済みの CLI を使用します:
-
+または手動で確認：
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+ls .agents/skills/          # スキルディレクトリが表示されるはず
+ls .agents/workflows/       # ワークフローの.mdファイルが表示されるはず
+cat .agents/config/user-preferences.yaml  # 設定が表示されるはず
 ```
 
-Web ダッシュボードのデフォルト URL: `http://localhost:9847`
+## マルチIDEシンボリックリンク
 
-## ロールバック戦略
-
-統合前に、プロジェクトでチェックポイントコミットを作成してください:
-
-```bash
-git add -A
-git commit -m "chore: checkpoint before oh-my-agent integration"
-```
-
-元に戻す必要がある場合は、チームの通常のプロセスでそのコミットを取り消してください。
-
-## マルチ CLI シンボリックリンクサポート
-
-`bunx oh-my-agent` を実行すると、スキル選択後に以下のプロンプトが表示されます:
+`bunx oh-my-agent` の実行中に聞かれます：
 
 ```text
-Also develop with other CLI tools?
-  ○ Claude Code (.claude/skills/)
-  ○ OpenCode, Amp, Codex (.agents/skills/)
+Also create symlinks for other CLI tools?
+  ○ Cursor (.cursor/skills/)
   ○ GitHub Copilot (.github/skills/)
 ```
 
-Antigravity と併用する追加の CLI ツールを選択してください。インストーラーは以下を行います:
+情報源は1つ（`.agents/skills/`）で、複数のIDEがそこから読み取ります：
 
-1. `.agents/skills/`（Antigravity のネイティブロケーション）にスキルをインストール
-2. 選択した各 CLI のスキルディレクトリから `.agents/skills/` へのシンボリックリンクを作成
-
-これにより、単一の正式なソースを維持しつつ、複数の CLI ツールでスキルを利用できます。
-
-### シンボリックリンク構成
-
-```
-.agents/skills/oma-frontend/      ← ソース（SSOT）
-.claude/skills/oma-frontend/     → ../../.agents/skills/oma-frontend/
-.agents/skills/oma-frontend/     → ../../.agents/skills/oma-frontend/ (OpenCode, Amp, Codex)
-.github/skills/oma-frontend/     → ../../.agents/skills/oma-frontend/ (GitHub Copilot)
+```text
+.agents/skills/oma-frontend/     ← ソース（SSOT）
+.claude/skills/oma-frontend/     → symlink
+.cursor/skills/oma-frontend/     → symlink
+.github/skills/oma-frontend/     → symlink
 ```
 
-インストーラーは既存のシンボリックリンクをスキップし、ターゲットの場所に実ディレクトリが存在する場合は警告します。
+## 安全のためのヒント
 
-## 注意事項
+**統合前に**チェックポイントを作成しましょう：
 
-- カスタマイズされたスキルを置き換える意図がない限り、既存の `.agents/skills/*` フォルダを上書きしないでください。
-- プロジェクト固有のポリシーファイル（`.agents/config/*`）はリポジトリの所有下に保持してください。
-- マルチエージェントオーケストレーションパターンについては、[`使用ガイド`](./usage.md) に進んでください。
+```bash
+git add -A && git commit -m "chore: checkpoint before oh-my-agent"
+```
+
+- CLIは既存のスキルフォルダを上書きしません
+- プロジェクト固有の設定はあなたの管理下です
+- `oma doctor` が問題をフラグします
+
+## オプション: ダッシュボード
+
+```bash
+oma dashboard        # ターミナル監視
+oma dashboard:web    # Web UIで http://localhost:9847
+```
+
+## 次のステップ
+
+AI IDEでチャットを始めるか、[使い方ガイド](./usage)でワークフローの例を確認してください。

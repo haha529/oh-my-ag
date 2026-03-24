@@ -1,73 +1,90 @@
 ---
 title: Structure du Projet
-description: Arborescence mise à jour après la séparation des workspaces CLI et docs web.
+description: Ou tout se trouve et pourquoi c'est organise ainsi.
 ---
 
-# Structure du projet
+# Structure du Projet
 
-Arborescence détaillée des répertoires pour ce dépôt.
+oh-my-agent organise tout dans quelques repertoires cles. Voici ce que vous verrez apres l'installation.
+
+## La Vue d'Ensemble
 
 ```text
-.
-├── .agents/
-│   ├── config/
-│   │   └── user-preferences.yaml   # Langue, fuseau horaire, mappage CLI
-│   ├── workflows/
-│   │   ├── brainstorm.md           # /brainstorm (idéation et exploration de concepts)
-│   │   ├── coordinate.md           # /coordinate (orchestration multi-agents via UI)
-│   │   ├── deepinit.md             # /deepinit (initialisation profonde du projet)
-│   │   ├── exec-plan.md            # /exec-plan (exécution et gestion de plan)
-│   │   ├── orchestrate.md          # /orchestrate (exécution parallèle CLI automatisée)
-│   │   ├── plan.md                 # /plan (décomposition tâches PM)
-│   │   ├── review.md               # /review (pipeline QA complet)
-│   │   ├── debug.md                # /debug (correction bugs structurée)
-│   │   ├── setup.md                # /setup (configuration CLI & MCP)
-│   │   ├── tools.md                # /tools (gestion outils MCP)
-│   │   └── ultrawork.md            # /ultrawork (exécution maximale parallèle)
-│   └── skills/
-│       ├── _shared/                    # Ressources communes (pas une compétence)
-│       │   ├── serena-memory-protocol.md
-│       │   ├── common-checklist.md
-│       │   ├── skill-routing.md
-│       │   ├── context-loading.md
-│       │   ├── context-budget.md
-│       │   ├── reasoning-templates.md
-│       │   ├── clarification-protocol.md
-│       │   ├── difficulty-guide.md
-│       │   ├── lessons-learned.md
-│       │   ├── verify.sh
-│       │   └── api-contracts/
-│       ├── oma-backend/              # Backend (multi-stack : Python, Node.js, Rust, ...)
-│       ├── oma-brainstorm/                 # Idéation et exploration de concepts
-│       ├── oma-commit/                     # Compétence commits conventionnels
-│       ├── oma-db/                   # Base de données, schémas, requêtes
-│       ├── oma-debug/                # Correction bugs
-│       ├── oma-dev-workflow/               # Workflows de développement et CI/CD
-│       ├── oma-frontend/             # React/Next.js
-│       ├── oma-mobile/               # Flutter
-│       ├── oma-orchestrator/               # Générateur sous-agents basé CLI
-│       ├── oma-pm/                   # Chef de projet
-│       ├── oma-qa/                   # Sécurité & QA
-│       ├── oma-tf-infra/             # Infrastructure as code Terraform
-│       ├── oma-translator/                 # Traduction multilingue
-│       └── oma-coordination/             # Coordination multi-agents
-│       # Chaque compétence contient :
-│       #   SKILL.md              (~40 lignes, optimisé tokens)
-│       #   resources/
-│       #     ├── execution-protocol.md  (étapes chaîne de pensée)
-│       #     ├── examples.md            (entrée/sortie few-shot)
-│       #     ├── checklist.md           (auto-vérification)
-│       #     ├── error-playbook.md      (récupération échec)
-│       #     ├── tech-stack.md          (spécifications tech détaillées)
-│       #     └── snippets.md            (modèles copier-coller)
-├── .serena/
-│   └── memories/                   # État d'exécution (gitignored)
-├── package.json
-├── docs/
-│   ├── USAGE.md                    # Guide utilisation détaillé (Anglais)
-│   ├── USAGE.ko.md                 # Guide utilisation détaillé (Coréen)
-│   ├── project-structure.md        # Référence structure complète (Anglais)
-│   └── project-structure.ko.md     # Référence structure complète (Coréen)
-├── README.md                       # Ce fichier (Anglais)
-└── README.ko.md                    # Guide coréen
+votre-projet/
+├── .agents/              ← Source Unique de Verite
+│   ├── config/           ← Vos preferences
+│   ├── skills/           ← Capacites des agents
+│   ├── workflows/        ← Definitions des commandes slash
+│   ├── agents/           ← Definitions des sous-agents
+│   ├── plan.json         ← Sortie du plan genere
+│   ├── state/            ← Etat actif du workflow
+│   ├── results/          ← Fichiers de resultats des agents
+│   └── mcp.json          ← Config serveur MCP
+│
+├── .claude/              ← Couche d'integration IDE
+│   ├── settings.json     ← Hooks et permissions
+│   ├── hooks/            ← Detection de mots-cles, HUD
+│   ├── skills/           ← Symlinks vers .agents/skills/
+│   └── agents/           ← Definitions sous-agents pour IDE
+│
+└── .serena/              ← Etat d'execution
+    └── memories/         ← Fichiers memoire d'orchestration
+```
+
+## `.agents/` — La Source de Verite
+
+C'est le coeur. Tout ce dont les agents ont besoin vit ici.
+
+### `config/`
+- **`user-preferences.yaml`** — Votre langue, fuseau horaire, CLI par defaut, mappage CLI par agent
+
+### `skills/`
+Ou vit l'expertise des agents. Chaque skill a un `SKILL.md` et un repertoire `resources/`.
+
+- **`_shared/`** — Ressources communes utilisees par tous les agents (routage, templates, checklists)
+- **`oma-frontend/`**, **`oma-backend/`**, etc. — Skills specifiques au domaine
+
+### `workflows/`
+Fichiers Markdown qui definissent le comportement des commandes slash. Ce sont les scripts que les agents suivent quand vous tapez `/plan`, `/coordinate`, `/review`, etc.
+
+### `agents/`
+Definitions des sous-agents — les specs pour lancer des agents via le CLI ou l'outil Task.
+
+## `.claude/` — Integration IDE
+
+Ceci connecte oh-my-agent a Claude Code (et d'autres IDEs via symlinks).
+
+### `hooks/`
+- **`triggers.json`** — Mappage mots-cles vers workflows en 11 langues
+- **`keyword-detector.ts`** — La logique qui auto-detecte les workflows depuis votre saisie
+- **`persistent-mode.ts`** — Maintient les workflows persistants en execution jusqu'a completion
+- **`hud.ts`** — L'indicateur `[OMA]` dans la barre d'etat
+
+### `skills/` et `agents/`
+Symlinks pointant vers `.agents/` — maintient une source unique de verite tout en rendant les skills visibles pour l'IDE.
+
+## `.serena/memories/` — Etat d'Execution
+
+Ou les agents ecrivent leur progression pendant l'execution :
+
+| Fichier | Ce Qu'il Contient |
+|---------|-------------------|
+| `orchestrator-session.md` | ID de session, statut, heure de debut |
+| `task-board.md` | Quel agent a quelle tache |
+| `progress-{agent}.md` | Mises a jour de progression tour par tour |
+| `result-{agent}.md` | Sortie finale de chaque agent |
+
+Les dashboards surveillent ce repertoire pour les mises a jour en temps reel.
+
+## Pour le Depot Source d'oh-my-agent
+
+Si vous travaillez sur oh-my-agent lui-meme (pas juste l'utiliser), le depot est un monorepo :
+
+```text
+oh-my-agent/
+├── cli/              ← Source de l'outil CLI (TypeScript)
+├── web/              ← Site de documentation (Next.js)
+├── action/           ← GitHub Action pour mises a jour automatiques
+├── docs/             ← READMEs traduits + specs
+└── .agents/          ← Modifiable (CECI EST la source)
 ```

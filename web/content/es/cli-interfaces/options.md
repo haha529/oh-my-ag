@@ -1,63 +1,108 @@
 ---
-title: Opciones
-description: Todas las opciones de comandos expuestas actualmente por la CLI.
+title: Opciones del CLI
+description: Todos los flags y opciones para los comandos del CLI de oh-my-agent.
 ---
 
-# Opciones
+# Opciones del CLI
 
-## Globales
+## Opciones Globales
 
-- `-h, --help`
-- `-V, --version`
+Disponibles en cada comando:
 
-## usage:anti
+| Opcion | Que Hace |
+|--------|----------|
+| `-h, --help` | Mostrar ayuda |
+| `-V, --version` | Mostrar numero de version |
 
-- `--json`
-- `--raw`
+## Opciones de Salida
 
-## doctor
+Muchos comandos soportan salida legible por maquinas:
 
-- `--json`
+| Opcion | Que Hace |
+|--------|----------|
+| `--json` | Salida en JSON |
+| `--output <format>` | Formato de salida: `text` o `json` |
 
-## stats
+Tambien puedes establecer `OH_MY_AG_OUTPUT_FORMAT=json` como variable de entorno.
 
-- `--json`
-- `--reset`
+**Soportado por:** `doctor`, `stats`, `retro`, `cleanup`, `auth:status`, `usage:anti`, `memory:init`, `verify`, `visualize`
 
-## retro
+## Opciones Por Comando
 
-- `--json`
-- `--interactive`
+### `update`
+| Opcion | Que Hace |
+|--------|----------|
+| `-f, --force` | Sobreescribir archivos de configuracion personalizados |
+| `--ci` | Modo no interactivo (omitir todos los prompts) |
 
-## cleanup
+### `stats`
+| Opcion | Que Hace |
+|--------|----------|
+| `--reset` | Resetear todos los datos de metricas |
 
-- `--dry-run`
-- `--json`
+### `retro`
+| Opcion | Que Hace |
+|--------|----------|
+| `--interactive` | Modo de entrada manual |
+| `--compare` | Comparar ventana actual vs. ventana previa de la misma duracion |
 
-## agent:spawn
+### `cleanup`
+| Opcion | Que Hace |
+|--------|----------|
+| `--dry-run` | Mostrar que se limpiaria sin hacerlo |
+| `-y, --yes` | Omitir prompts de confirmacion |
 
-- `-v, --vendor <vendor>`
-- `-w, --workspace <path>`
+### `usage:anti`
+| Opcion | Que Hace |
+|--------|----------|
+| `--raw` | Volcar respuesta RPC sin procesar |
 
-## agent:status
+### `agent:spawn`
+| Opcion | Que Hace |
+|--------|----------|
+| `-v, --vendor <vendor>` | Sobreescribir CLI vendor (`gemini`/`claude`/`codex`/`qwen`) |
+| `-w, --workspace <path>` | Directorio de trabajo para el agente |
 
-- `-r, --root <path>`
+### `agent:status`
+| Opcion | Que Hace |
+|--------|----------|
+| `-r, --root <path>` | Ruta raiz para verificaciones de memoria |
 
-## memory:init
+### `agent:parallel`
+| Opcion | Que Hace |
+|--------|----------|
+| `-v, --vendor <vendor>` | Sobreescribir CLI vendor |
+| `-i, --inline` | Especificar tareas como argumentos `agent:task` |
+| `--no-wait` | No esperar a que completen (modo background) |
 
-- `--json`
-- `--force`
+### `memory:init`
+| Opcion | Que Hace |
+|--------|----------|
+| `--force` | Sobreescribir archivos de schema existentes |
 
-## verify
+### `verify`
+| Opcion | Que Hace |
+|--------|----------|
+| `-w, --workspace <path>` | Ruta del workspace a verificar |
 
-- `-w, --workspace <path>`
-- `--json`
-
-## Ejemplo practico
+## Ejemplos Practicos
 
 ```bash
-oma usage:anti --json
+# Salida JSON para pipeline CI
+oma doctor --json
+
+# Resetear metricas de productividad
 oma stats --reset
+
+# Vista previa de limpieza sin ejecutar
 oma cleanup --dry-run
-oma agent:spawn backend "Implement auth API" session-01 -v codex -w ./apps/api
+
+# Lanzar con CLI y workspace especificos
+oma agent:spawn backend "Auth API" session-01 -v codex -w ./apps/api
+
+# Actualizacion no interactiva en CI
+oma update --ci --force
+
+# Comparar ultimos 7 dias vs. 7 dias previos
+oma retro 7 --compare
 ```

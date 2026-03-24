@@ -1,67 +1,67 @@
 ---
-title: "Gebruiksscenario: Dashboardmonitoring"
-description: Beheer orkestratiesessies met terminal-/webdashboards en bruikbare runbook-signalen.
+title: Dashboard Monitoring
+description: Bekijk je agents in realtime werken met terminal- en web-dashboards.
 ---
 
-# Gebruiksscenario: Dashboardmonitoring
+# Dashboard Monitoring
 
-## Startcommando's
+Wanneer je meerdere agents parallel draait, wil je zien wat er gebeurt. Daar zijn dashboards voor.
+
+## Start een Dashboard
 
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+# Terminal UI
+oma dashboard
+
+# Web UI
+oma dashboard:web
+# → http://localhost:9847
 ```
 
-Standaard URL webdashboard: `http://localhost:9847`
+## Aanbevolen Setup
 
-## Aanbevolen terminalindeling
+Gebruik 3 terminals naast elkaar:
 
-Gebruik minimaal 3 terminals:
+| Terminal | Doel |
+|---------|-----|
+| 1 | `oma dashboard` — live agent-status |
+| 2 | Agent spawn-commando's |
+| 3 | Test- en build-logs |
 
-1. Terminaldashboard (`oma dashboard`)
-2. Agent-spawncommando's
-3. Test-/buildlogs
+Houd het web-dashboard open in een browser voor gedeelde zichtbaarheid tijdens teamsessies.
 
-Houd het webdashboard open voor gedeelde zichtbaarheid tijdens teamsessies.
+## Wat Je Ziet
 
-## Wat de dashboards bewaken
+Dashboards monitoren `.serena/memories/` en tonen:
 
-Gegevensbron: `.serena/memories/`
+- **Sessiestatus** — draaiend, voltooid of gefaald
+- **Takenbord** — welke agent welke taak heeft
+- **Agent-voortgang** — beurtentelling, huidige activiteit
+- **Resultaten** — eindresultaten zodra ze binnenkomen
 
-Primaire signalen:
+Updates zijn event-driven (bestandswijzigingsdetectie) — geen polling-loops die je CPU opeten.
 
-- Sessiestatus (`running`, `completed`, `failed`)
-- Taakbordtoewijzing en statuswijzigingen
-- Voortgangsbeurten per agent
-- Resultaatpublicatiegebeurtenissen
+## Probleemoplossingssignalen
 
-Updates zijn gebeurtenisgestuurd op basis van gewijzigde bestanden; er is geen volledige directory-pollinglus nodig.
+| Je Ziet | Wat Te Doen |
+|---------|-----------|
+| "No agents detected" | Controleer of agents zijn gespawned met hetzelfde `session-id`. Verifieer dat `.serena/memories/` wordt beschreven. |
+| Sessie vast op "running" | Controleer `progress-*` bestandstijdstempels. Herstart geblokkeerde agents met duidelijkere prompts. |
+| Frequente reconnects (web) | Controleer firewall/proxy. Herstart `dashboard:web` en ververs de pagina. |
+| Ontbrekende activiteit | Verifieer dat de orchestrator naar de juiste workspace-map schrijft. |
 
-## Runbook: signaal naar actie
+## Voordat Je Mergt
 
-- `No agents detected`
-  - Controleer of agents zijn gestart met hetzelfde `session-id`
-  - Bevestig dat `.serena/memories/` wordt beschreven
-- `Session stuck in running`
-  - Inspecteer de tijdstempels van het meest recente `progress-*`-bestand
-  - Herstart de mislukte of geblokkeerde agent met een duidelijkere prompt
-- `Frequent reconnects (web)`
-  - Controleer lokale firewall/proxy
-  - Herstart `dashboard:web` en open de pagina opnieuw
-- `Missing activity while agents are active`
-  - Controleer of orkestrator-schrijfbewerkingen niet naar een andere werkruimte worden omgeleid
+Snelle checklist vanuit het dashboard:
 
-## Pre-merge monitoringchecklist
-
-- Alle vereiste agents hebben de status voltooid bereikt
+- Alle agents hebben "completed" status bereikt
 - Geen onopgeloste QA-bevindingen met hoge ernst
-- Meest recente resultaatbestanden zijn aanwezig voor elke agent
-- Integratietests zijn uitgevoerd na de laatste agentuitvoer
+- Resultaatbestanden aanwezig voor elke agent
+- Integratietests uitgevoerd na eindresultaten
 
-## Gereedcriteria
+## Wanneer Je Klaar Bent
 
-De monitoringfase is gereed wanneer:
-
-- De sessie een eindstatus heeft bereikt (`completed` of opzettelijk gestopt)
-- De activiteitengeschiedenis de herkomst van de uiteindelijke uitvoer verklaart
-- De release-/mergebeslissing is genomen met volledig statusoverzicht
+De monitoringfase is compleet wanneer:
+- Sessie toont eindstatus (completed of stopped)
+- Activiteitengeschiedenis verklaart wat er is gebeurd
+- Je hebt je merge/release-beslissing genomen met volledige zichtbaarheid

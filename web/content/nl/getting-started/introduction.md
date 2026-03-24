@@ -1,48 +1,56 @@
 ---
 title: Introductie
-description: Wat oh-my-agent is en hoe multi-agentsamenwerking werkt.
+description: Wat oh-my-agent is en waarom je een team van AI-agents zou willen die samenwerken.
 ---
 
 # Introductie
 
-oh-my-agent is een multi-agentorkestrator voor Antigravity IDE. Het routeert verzoeken naar gespecialiseerde skills en coördineert agents via gedeeld geheugen-geheugens.
+Ooit gewenst dat je AI-assistent collega's had? Dat is precies wat oh-my-agent doet.
 
-## Wat u krijgt
+In plaats van één AI die alles doet (en halverwege in de war raakt), verdeelt oh-my-agent het werk over **gespecialiseerde agents** — een frontend-expert, een backend-expert, een QA-reviewer, een PM-planner en meer. Elke agent kent zijn domein diepgaand en heeft eigen tools, checklists en fout-playbooks.
 
-- Expliciete skillaanroep via /command of agent skills-veld
-- Werkstroomgebaseerde uitvoering voor planning/review/debugging
-- CLI-orkestratie voor parallelle agentruns
-- Realtime dashboards voor sessiemonitoring
+## Wat Je Echt Krijgt
 
-## Agentrollen
+- **14 gespecialiseerde agents** — elk gemodelleerd naar een echte engineering-teamrol
+- **Slash-commando's** zoals `/plan`, `/coordinate`, `/review` die gestructureerde workflows activeren
+- **Automatische detectie** — beschrijf gewoon wat je wilt in natuurlijke taal en de juiste workflow activeert (in 11 talen!)
+- **Parallelle uitvoering** — start meerdere agents die tegelijkertijd aan verschillende onderdelen werken
+- **Realtime dashboards** — terminal en web-UI om te monitoren wat je agents doen
+- **Werkt overal** — Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode en meer
 
-| Agent | Verantwoordelijkheid |
-|---|---|
-| oma-coordination | Coördineert complexe multidomain-projecten |
-| oma-pm | Planning en architectuuropsplitsing |
-| oma-frontend | React/Next.js-implementatie |
-| oma-backend | Backend API-implementatie (Python, Node.js, Rust, ...) |
-| oma-mobile | Flutter/mobiele implementatie |
-| oma-brainstorm | Design-first ideevorming en conceptverkenning |
-| oma-db | Databasemodellering, schemaontwerp en queryoptimalisatie |
-| oma-dev-workflow | Ontwikkelworkflow-optimalisatie en CI/CD |
-| oma-tf-infra | Terraform infrastructure-as-code provisioning |
-| oma-translator | Contextbewuste meertalige vertaling |
-| oma-qa | Beveiligings-/prestatie-/toegankelijkheidsreview |
-| oma-debug | Hoofdoorzaakanalyse en regressieveilige fixes |
-| oma-orchestrator | CLI-gebaseerde subagentorkestratie |
-| oma-commit | Conventionele commitworkflow |
+## Ontmoet Je Team
 
-## Projectstructuur
+| Agent | Wat Ze Doen |
+|-------|------------|
+| **oma-brainstorm** | Verkent ideeën voordat je je committeert aan iets bouwen |
+| **oma-pm** | Ontleedt requirements, plant taken, definieert API-contracten |
+| **oma-frontend** | Bouwt React/Next.js UI met TypeScript en Tailwind CSS |
+| **oma-backend** | Maakt API's in Python, Node.js of Rust |
+| **oma-db** | Ontwerpt database-schema's, beheert migraties, optimaliseert queries |
+| **oma-mobile** | Bouwt cross-platform apps met Flutter |
+| **oma-design** | Maakt design systems met tokens, toegankelijkheid en responsive regels |
+| **oma-qa** | Reviewt beveiliging (OWASP), prestaties en toegankelijkheid |
+| **oma-debug** | Vindt root causes, schrijft fixes en regressietests |
+| **oma-tf-infra** | Richt cloud-infrastructuur in met Terraform |
+| **oma-dev-workflow** | Automatiseert CI/CD, releases en monorepo-taken |
+| **oma-translator** | Vertaalt content natuurlijk tussen talen |
+| **oma-orchestrator** | Voert meerdere agents parallel uit via CLI |
+| **oma-commit** | Maakt schone conventional commits |
 
-- `.agents/skills/`: skilldefinities en resources
-- `.agents/workflows/`: expliciete workflowcommando's
-- `.serena/memories/`: runtime-orkestratiestatus
-- `cli/cli.ts`: bron van waarheid voor commandointerfaces
+## Hoe Het Werkt (De 30-Seconden Versie)
 
-## Progressieve ontsluiting
+1. Je beschrijft wat je wilt bouwen
+2. oh-my-agent bepaalt welke agents nodig zijn
+3. Agents voeren uit met hun gespecialiseerde kennis
+4. Kwaliteitspoorten controleren het werk voordat het klaar is
+5. Je krijgt productie-klare code, geen suggesties
 
-1. Verzoekintentie identificeren
-2. Alleen benodigde skillresources laden
-3. Uitvoeren met gespecialiseerde agents
-4. Verifiëren en itereren via QA-/debuglussen
+## Het Kernidee
+
+Alles leeft in `.agents/` — één draagbare map in je project. Skills, workflows, configs, alles. Wissel van IDE wanneer je wilt. Je agent-setup reist mee met je code.
+
+## Wat Nu?
+
+- **[Installatie](./installation)** — Aan de slag in 60 seconden
+- **[Gebruiksgids](/guide/usage)** — Bekijk echte voorbeelden van agents in actie
+- **[Workflows](/core-concepts/workflows)** — Leer over slash-commando's

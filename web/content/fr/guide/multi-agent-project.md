@@ -1,76 +1,77 @@
 ---
-title: "Cas d'usage : Projet multi-agent"
-description: Flux de bout en bout pour une livraison complexe inter-domaines avec des points de contrôle de coordination explicites.
+title: "Cas d'Usage : Projet Multi-Agent"
+description: Comment coordonner plusieurs agents pour des fonctionnalites couvrant frontend, backend, base de donnees et QA.
 ---
 
-# Cas d'usage : Projet multi-agent
+# Cas d'Usage : Projet Multi-Agent
 
-## Quand utiliser ce chemin
+## Quand L'Utiliser
 
-Utilisez-le lorsqu'une fonctionnalité couvre plusieurs domaines (par exemple backend + frontend + QA) et que l'exécution parallèle est bénéfique.
+Votre fonctionnalite couvre plusieurs domaines — API backend + UI frontend + schema de base de donnees + revue QA. Un seul agent ne peut pas tout gerer, et vous voulez qu'ils travaillent en parallele.
 
-## Modèle de coordination
+## La Sequence de Coordination
 
-Séquence recommandée :
+```text
+/plan → /coordinate → agent:spawn (parallele) → /review → merge
+```
 
-1. `/plan` pour la décomposition et la cartographie des dépendances
-2. `/coordinate` pour l'ordre d'exécution et l'attribution
-3. `agent:spawn` en parallèle par domaine
-4. `/review` pour le contrôle QA/sécurité/performance
+1. **`/plan`** — L'Agent PM decompose la fonctionnalite en taches par domaine
+2. **`/coordinate`** — Definit l'ordre d'execution et les responsabilites
+3. **`agent:spawn`** — Les agents s'executent en parallele
+4. **`/review`** — QA verifie la coherence inter-domaines
 
-## Stratégie de session et d'espace de travail
+## Strategie de Session
 
-Utilisez un identifiant de session unique par flux fonctionnel :
+Utilisez un session ID par fonctionnalite :
 
 ```text
 session-auth-v2
 ```
 
-Attribuez des espaces de travail isolés par domaine pour réduire les conflits de fusion :
+Attribuez des workspaces par domaine :
 
-- backend : `./apps/api`
-- frontend : `./apps/web`
-- mobile : `./apps/mobile`
+| Agent | Workspace |
+|-------|-----------|
+| backend | `./apps/api` |
+| frontend | `./apps/web` |
+| mobile | `./apps/mobile` |
 
-## Exemple de lancement
+## Exemple de Spawn
 
 ```bash
-oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api
-oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web
-oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2
+oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api &
+oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web &
+oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2 &
+wait
 ```
 
-## Règle du contrat d'abord
+## La Regle Contrats D'Abord
 
-Avant le développement en parallèle, verrouillez les contrats partagés :
+Avant que les agents commencent a coder en parallele, **verrouillez vos contrats d'API** :
 
-- schémas de requête/réponse
-- codes et messages d'erreur
-- hypothèses sur le cycle de vie authentification/session
+- Schemas request/response
+- Codes d'erreur et messages
+- Hypotheses du cycle de vie auth/session
 
-Si les contrats changent en cours d'exécution, mettez en pause les agents en aval et réémettez les prompts avec le contrat mis à jour.
+Si les contrats changent en cours de route, mettez en pause les agents en aval et relancez leurs prompts avec les contrats mis a jour.
 
-## Points de contrôle de fusion
+## Portes de Merge
 
-Ne fusionnez que si tous les contrôles sont validés :
+Ne mergez pas tant que :
 
-1. les tests au niveau du domaine passent
-2. les points d'intégration correspondent aux contrats convenus
-3. les problèmes QA de haute/critique sévérité sont résolus ou explicitement acceptés
-4. le changelog ou les notes de release sont mis à jour lorsque le comportement visible de l'extérieur change
+1. Les tests au niveau du domaine passent
+2. Les points d'integration correspondent aux contrats convenus
+3. Les problemes high/critical de QA sont resolus (ou explicitement acceptes)
+4. Le changelog est mis a jour si le comportement visible a change
 
-## Anti-patterns opérationnels
+## Ce Qu'il Ne Faut PAS Faire
 
-A éviter :
+- Partager un workspace entre tous les agents (cauchemar de conflits de merge)
+- Changer les contrats sans prevenir les autres agents
+- Merger backend et frontend independamment avant verification de compatibilite
 
-- partager un seul espace de travail entre tous les agents
-- modifier les contrats sans notifier les autres agents
-- fusionner backend/frontend indépendamment avant la vérification de compatibilité
+## Quand C'est Termine
 
-## Critères de terminaison
-
-L'exécution multi-agent est terminée lorsque :
-
-- les tâches planifiées sont complétées dans tous les domaines
-- l'intégration inter-domaines est validée
-- l'approbation QA (ou l'acceptation documentée du risque) est enregistrée
+- Toutes les taches planifiees sont terminees dans tous les domaines
+- L'integration inter-domaines est validee
+- L'approbation QA est enregistree

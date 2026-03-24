@@ -1,48 +1,56 @@
 ---
 title: 소개
-description: oh-my-agent와 멀티 에이전트 협업 동작 방식을 설명합니다.
+description: oh-my-agent가 무엇이고, AI 에이전트 팀이 함께 일하면 왜 좋은지 알아봅니다.
 ---
 
 # 소개
 
-oh-my-agent는 AI IDE용 멀티 에이전트 오케스트레이터입니다. 요청을 스킬에 라우팅하고 Serena 메모리로 조율 상태를 관리합니다.
+AI 어시스턴트에게 동료가 있으면 좋겠다고 생각한 적 있나요? oh-my-agent가 바로 그걸 해줍니다.
 
-## 핵심 기능
+하나의 AI가 모든 걸 처리하다가 중간에 헤매는 대신, oh-my-agent는 작업을 **전문 에이전트**들에게 분배합니다 — 프론트엔드 전문가, 백엔드 전문가, QA 리뷰어, PM 플래너 등이 있죠. 각 에이전트는 자기 도메인을 깊이 이해하고, 전용 도구와 체크리스트, 에러 플레이북을 갖고 있습니다.
 
-- /command 또는 에이전트 skills 필드를 통한 명시적 스킬 호출
-- 기획/리뷰/디버깅 워크플로우 실행
-- CLI 기반 병렬 에이전트 오케스트레이션
-- 실시간 대시보드 모니터링
+## 실제로 뭘 얻을 수 있나요
 
-## 에이전트 역할
+- **14개의 전문 에이전트** — 실제 엔지니어링 팀 역할을 모델링
+- **슬래시 커맨드** — `/plan`, `/coordinate`, `/review` 같은 명령으로 구조화된 워크플로우 실행
+- **자동 감지** — 자연어로 원하는 걸 설명하면 적절한 워크플로우가 자동 활성화 (11개 언어 지원!)
+- **병렬 실행** — 여러 에이전트가 동시에 각자 다른 파트를 작업
+- **실시간 대시보드** — 터미널과 웹 UI로 에이전트 상태 모니터링
+- **어디서든 동작** — Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode 등 지원
 
-| 에이전트 | 역할 |
-|---|---|
-| oma-coordination | 복잡한 멀티 도메인 프로젝트 조율 |
-| oma-pm | 기획, 태스크 분해, 아키텍처 |
-| oma-frontend | React/Next.js 구현 |
-| oma-backend | 백엔드 API 구현 (Python, Node.js, Rust, ...) |
-| oma-mobile | Flutter/모바일 구현 |
-| oma-qa | 보안/성능/접근성 리뷰 |
-| oma-debug | 원인 분석 및 회귀 방지 수정 |
-| oma-brainstorm | 설계 우선 아이디어 발굴 및 컨셉 탐색 |
-| oma-db | 데이터베이스 모델링, 스키마 설계, 쿼리 튜닝 |
-| oma-dev-workflow | 개발 워크플로우 최적화 및 CI/CD |
-| oma-tf-infra | Terraform 인프라 코드 프로비저닝 |
-| oma-translator | 컨텍스트 인식 다국어 번역 |
-| oma-orchestrator | CLI 기반 서브에이전트 오케스트레이션 |
-| oma-commit | Conventional Commit 워크플로우 |
+## 팀을 만나보세요
 
-## 프로젝트 구조
+| 에이전트 | 하는 일 |
+|-------|-------------|
+| **oma-brainstorm** | 구현 전 아이디어 탐색 |
+| **oma-pm** | 요구사항 분석, 태스크 계획, API 계약 정의 |
+| **oma-frontend** | React/Next.js UI를 TypeScript와 Tailwind CSS로 구현 |
+| **oma-backend** | Python, Node.js, Rust로 API 생성 |
+| **oma-db** | 데이터베이스 스키마 설계, 마이그레이션, 쿼리 튜닝 |
+| **oma-mobile** | Flutter 크로스플랫폼 앱 구현 |
+| **oma-design** | 토큰, 접근성, 반응형 규칙이 포함된 디자인 시스템 생성 |
+| **oma-qa** | 보안(OWASP), 성능, 접근성 리뷰 |
+| **oma-debug** | 근본 원인 분석, 수정, 회귀 테스트 작성 |
+| **oma-tf-infra** | Terraform으로 클라우드 인프라 프로비저닝 |
+| **oma-dev-workflow** | CI/CD, 릴리스, 모노레포 자동화 |
+| **oma-translator** | 자연스러운 다국어 번역 |
+| **oma-orchestrator** | CLI를 통한 멀티 에이전트 병렬 실행 |
+| **oma-commit** | 깔끔한 Conventional Commit 생성 |
 
-- `.agents/skills/`: 스킬 정의와 리소스
-- `.agents/workflows/`: 명시적 워크플로우 명령
-- `.serena/memories/`: 런타임 조율 상태
-- `cli/cli.ts`: 커맨드 인터페이스 기준 소스
+## 동작 방식 (30초 버전)
 
-## Progressive Disclosure
+1. 만들고 싶은 것을 설명합니다
+2. oh-my-agent가 필요한 에이전트를 파악합니다
+3. 에이전트들이 전문 지식을 활용해 실행합니다
+4. 품질 게이트가 완료 전 작업을 검증합니다
+5. 제안이 아닌 프로덕션 레디 코드를 받습니다
 
-1. 요청 의도 식별
-2. 필요한 리소스만 로드
-3. 전문 에이전트 실행
-4. QA/디버그 루프로 검증 및 반복
+## 핵심 아이디어
+
+모든 것이 `.agents/`에 있습니다 — 프로젝트 안의 이식 가능한 단일 디렉토리죠. 스킬, 워크플로우, 설정 전부요. IDE를 언제든 바꿔도 됩니다. 에이전트 설정이 코드와 함께 이동합니다.
+
+## 다음 단계
+
+- **[설치](./installation)** — 60초 만에 시작하기
+- **[사용 가이드](/guide/usage)** — 에이전트 실제 사용 예시
+- **[워크플로우](/core-concepts/workflows)** — 슬래시 커맨드 알아보기

@@ -1,76 +1,70 @@
 ---
-title: "Anwendungsfall: Fehlerbehebung"
-description: Strukturierte Reproduzieren-Diagnostizieren-Beheben-Regressionstesten-Schleife mit schweregradbasierter Eskalation.
+title: "Anwendungsfall: Bugfixing"
+description: Strukturiertes Debugging — vom Reproduzieren des Problems bis zum Schreiben von Regressionstests.
 ---
 
-# Anwendungsfall: Fehlerbehebung
+# Anwendungsfall: Bugfixing
 
-## Aufnahmeformat
+## Starte Mit Einem Guten Bericht
 
-Beginnen Sie mit einem reproduzierbaren Bericht:
+Je besser dein Fehlerbericht, desto schneller der Fix:
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## Schweregrad-Triage
+## Erst Priorisieren
 
-Klassifizieren Sie frühzeitig, um die Reaktionsgeschwindigkeit zu wählen:
+| Schweregrad | Was Es Bedeutet | Reaktion |
+|-------------|----------------|----------|
+| **P0** | Datenverlust, Auth-Bypass, Produktionsausfall | Alles stehen lassen, QA/Security einbeziehen |
+| **P1** | Hauptbenutzerfluss kaputt | Im aktuellen Sprint beheben |
+| **P2** | Beeintraechtigt, aber Workaround vorhanden | Fix einplanen |
+| **P3** | Geringfuegig, nicht blockierend | Backlog |
 
-- `P0`: Datenverlust, Auth-Bypass, Produktionsausfall
-- `P1`: Wichtiger Benutzerablauf gestört
-- `P2`: Eingeschränktes Verhalten mit Workaround
-- `P3`: Geringfügig/nicht blockierend
+## Die Debug-Schleife
 
-`P0/P1` sollten immer ein QA-/Sicherheits-Review beinhalten.
+1. **Reproduzieren** — genau, in einer minimalen Umgebung
+2. **Isolieren** — die Grundursache finden (nicht nur das Symptom)
+3. **Beheben** — kleinstmoegliche sichere Aenderung
+4. **Testen** — Regressionstest fuer den fehlschlagenden Pfad
+5. **Scannen** — angrenzenden Code auf dasselbe Muster pruefen
 
-## Ausführungsschleife
-
-1. Exakt in einer minimalen Umgebung reproduzieren.
-2. Ursache isolieren (nicht nur Symptombehandlung).
-3. Kleinstmögliche sichere Korrektur implementieren.
-4. Regressionstests für den fehlgeschlagenen Pfad hinzufügen.
-5. Angrenzende Pfade prüfen, die wahrscheinlich denselben Fehlermodus aufweisen.
-
-## Prompt-Vorlage für oma-debug
+## Prompt-Template
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## Häufige Eskalationssignale
+## Wann Eskalieren
 
-Eskalieren Sie an QA oder Sicherheit, wenn der Fehler folgende Bereiche betrifft:
+Beziehe QA oder Security ein, wenn der Bug betrifft:
 
-- Authentifizierung/Sitzung/Token-Aktualisierung
+- Authentifizierung / Session / Token-Refresh
 - Berechtigungsgrenzen
-- Zahlungs-/Transaktionskonsistenz
-- Performance-Regressionen unter Last
+- Zahlungs- / Transaktionskonsistenz
+- Performance unter Last
 
-## Validierung nach der Behebung
+## Nach Dem Fix
 
-- Ursprüngliche Reproduktion schlägt nicht mehr fehl
-- Keine neuen Fehler in verwandten Abläufen
-- Tests schlagen vor der Korrektur fehl und bestehen danach
-- Rollback-Pfad ist klar, falls ein Hotfix erforderlich ist
-
-## Abschlusskriterien
-
-Die Fehlerbehebung ist abgeschlossen, wenn:
-
-- Die Ursache identifiziert und dokumentiert ist
-- Die Korrektur durch reproduzierbare Prüfungen verifiziert ist
-- Die Regressionsabdeckung gewährleistet ist
+Verifiziere:
+- Die urspruengliche Reproduktion schlaegt nicht mehr fehl
+- Keine neuen Fehler in verwandten Ablaeufen
+- Tests schlagen vor dem Fix fehl, bestehen danach
+- Rollback-Pfad ist klar, falls noetig

@@ -1,76 +1,70 @@
 ---
 title: "Gebruiksscenario: Bugfixing"
-description: Gestructureerde reproduceren-diagnosticeren-fixen-regressielus met escalatie op basis van ernst.
+description: Gestructureerd debuggen — van het reproduceren van het probleem tot het schrijven van regressietests.
 ---
 
 # Gebruiksscenario: Bugfixing
 
-## Intakeformaat
+## Begin Met Een Goed Rapport
 
-Begin met een reproduceerbaar rapport:
+Hoe beter je bugrapport, hoe sneller de fix:
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## Ernsttriage
+## Triage Eerst
 
-Classificeer vroegtijdig om de reactiesnelheid te bepalen:
+| Ernst | Wat Het Betekent | Reactie |
+|-------|-----------------|---------|
+| **P0** | Dataverlies, auth-bypass, productie-uitval | Laat alles vallen, betrek QA/beveiliging |
+| **P1** | Belangrijke gebruikersstroom kapot | Fix in huidige sprint |
+| **P2** | Verminderd maar heeft workaround | Plan fix |
+| **P3** | Klein, niet-blokkerend | Backlog |
 
-- `P0`: dataverlies, authenticatieomzeiling, productie-uitval
-- `P1`: belangrijke gebruikersstroom onderbroken
-- `P2`: verslechterd gedrag met omweg
-- `P3`: klein/niet-blokkerend
+## De Debug-Loop
 
-`P0/P1` vereisen altijd QA-/beveiligingsreview.
+1. **Reproduceren** — exact, in een minimale omgeving
+2. **Isoleren** — vind de root cause (niet alleen het symptoom)
+3. **Fixen** — kleinste veilige wijziging
+4. **Testen** — regressietest voor het falende pad
+5. **Scannen** — controleer aangrenzende code op hetzelfde patroon
 
-## Uitvoeringslus
-
-1. Reproduceer exact in een minimale omgeving.
-2. Isoleer de hoofdoorzaak (niet alleen symptoombestrijding).
-3. Implementeer de kleinste veilige fix.
-4. Voeg regressietests toe voor het falende pad.
-5. Controleer aangrenzende paden die waarschijnlijk dezelfde foutmodus delen.
-
-## Promptsjabloon voor oma-debug
+## Prompt-Sjabloon
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## Veelvoorkomende escalatiesignalen
+## Wanneer Escaleren
 
-Escaleer naar QA of beveiliging wanneer de bug raakt aan:
+Betrek QA of beveiliging wanneer de bug raakt aan:
 
-- authenticatie/sessie/tokenvernieuwing
-- permissiegrenzen
-- betaling/transactieconsistentie
-- prestatieregressies onder belasting
+- Authenticatie / sessie / token-verversing
+- Permissiegrenzen
+- Betaling / transactieconsistentie
+- Prestaties onder belasting
 
-## Validatie na de fix
+## Na De Fix
 
-- Oorspronkelijke reproductie faalt niet meer
+Verifieer:
+- Originele reproductie faalt niet meer
 - Geen nieuwe fouten in gerelateerde stromen
-- Tests falen voor de fix en slagen na de fix
-- Terugdraaipad is duidelijk als een hotfix nodig is
-
-## Gereedcriteria
-
-Bugfixing is gereed wanneer:
-
-- de hoofdoorzaak is geïdentificeerd en gedocumenteerd
-- de fix is geverifieerd door reproduceerbare controles
-- regressiedekking aanwezig is
+- Tests falen voor fix, slagen erna
+- Rollback-pad is duidelijk indien nodig

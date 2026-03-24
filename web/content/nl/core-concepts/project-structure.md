@@ -1,76 +1,90 @@
 ---
 title: Projectstructuur
-description: Bijgewerkte directorystructuur na het splitsen van CLI en web docs workspaces.
+description: Waar alles zich bevindt en waarom het zo georganiseerd is.
 ---
 
-# Project structuur
+# Projectstructuur
 
-Gedetailleerde directory tree voor deze repository.
+oh-my-agent organiseert alles in een paar belangrijke mappen. Dit is wat je ziet na installatie.
+
+## Het Grote Plaatje
 
 ```text
-.
-├── .agents/
-│   ├── config/
-│   │   └── user-preferences.yaml   # Taal, tijdzone, CLI mapping
-│   ├── workflows/
-│   │   ├── brainstorm.md           # /brainstorm (design-first ideevorming)
-│   │   ├── coordinate.md           # /coordinate (multi-agent orkestratie via UI)
-│   │   ├── deepinit.md             # /deepinit (diepgaande projectinitialisatie)
-│   │   ├── exec-plan.md            # /exec-plan (planuitvoering en -beheer)
-│   │   ├── orchestrate.md          # /orchestrate (geautomatiseerde CLI parallelle uitvoering)
-│   │   ├── plan.md                 # /plan (PM taak decompositie)
-│   │   ├── review.md               # /review (volledige QA pipeline)
-│   │   ├── debug.md                # /debug (gestructureerd bug repareren)
-│   │   ├── setup.md                # /setup (CLI & MCP configuratie)
-│   │   ├── tools.md                # /tools (MCP tool management)
-│   │   └── ultrawork.md            # /ultrawork (maximale parallelle uitvoering)
-│   └── skills/
-│       ├── _shared/                    # Gemeenschappelijke resources (geen skill)
-│       │   ├── serena-memory-protocol.md
-│       │   ├── common-checklist.md
-│       │   ├── skill-routing.md
-│       │   ├── context-loading.md
-│       │   ├── context-budget.md
-│       │   ├── reasoning-templates.md
-│       │   ├── clarification-protocol.md
-│       │   ├── difficulty-guide.md
-│       │   ├── lessons-learned.md
-│       │   ├── verify.sh
-│       │   └── api-contracts/
-│       ├── oma-backend/              # Backend (multi-stack: Python, Node.js, Rust, ...)
-│       ├── oma-brainstorm/                 # Design-first ideevorming
-│       ├── oma-commit/                     # Conventional commits skill
-│       ├── oma-db/                   # Databasemodellering & queryoptimalisatie
-│       ├── oma-debug/                # Bug repareren
-│       ├── oma-dev-workflow/               # CI/CD & ontwikkelworkflow
-│       ├── oma-frontend/             # React/Next.js
-│       ├── oma-mobile/               # Flutter
-│       ├── oma-orchestrator/               # CLI-gebaseerde sub-agent spawner
-│       ├── oma-pm/                   # Product manager
-│       ├── oma-qa/                   # Beveiliging & QA
-│       ├── oma-tf-infra/             # Terraform infrastructure-as-code
-│       ├── oma-translator/                 # Contextbewuste meertalige vertaling
-│       └── oma-coordination/             # Multi-agent coördinatie
-│       # Elke skill heeft:
-│       #   SKILL.md              (~40 regels, token-geoptimaliseerd)
-│       #   resources/
-│       #     ├── execution-protocol.md  (chain-of-thought stappen)
-│       #     ├── examples.md            (few-shot input/output)
-│       #     ├── checklist.md           (zelf-verificatie)
-│       #     ├── error-playbook.md      (foutherstel)
-│       #     ├── tech-stack.md          (gedetailleerde tech specs)
-│       #     └── snippets.md            (copy-paste patronen)
-├── .serena/
-│   └── memories/                   # Runtime state (gitignored)
-├── package.json
-├── docs/
-│   ├── USAGE.md                    # Gedetailleerde gebruiksgids (Engels)
-│   ├── USAGE.ko.md                 # Gedetailleerde gebruiksgids (Koreaans)
-│   ├── USAGE.nl.md                 # Gedetailleerde gebruiksgids (Nederlands)
-│   ├── project-structure.md        # Volledige structuur referentie (Engels)
-│   ├── project-structure.ko.md     # Volledige structuur referentie (Koreaans)
-│   └── project-structure.nl.md     # Volledige structuur referentie (Nederlands)
-├── README.md                       # Dit bestand (Engels)
-├── README.ko.md                    # Koreaanse gids
-└── README.nl.md                    # Nederlandse gids
+your-project/
+├── .agents/              ← Enige Bron van Waarheid
+│   ├── config/           ← Jouw voorkeuren
+│   ├── skills/           ← Agent-capaciteiten
+│   ├── workflows/        ← Slash-commando definities
+│   ├── agents/           ← Subagent-definities
+│   ├── plan.json         ← Gegenereerd plan-output
+│   ├── state/            ← Actieve workflow-status
+│   ├── results/          ← Agent-resultaatbestanden
+│   └── mcp.json          ← MCP-serverconfiguratie
+│
+├── .claude/              ← IDE-integratielaag
+│   ├── settings.json     ← Hooks en permissies
+│   ├── hooks/            ← Trefwoorddetectie, HUD
+│   ├── skills/           ← Symlinks naar .agents/skills/
+│   └── agents/           ← Subagent-definities voor IDE
+│
+└── .serena/              ← Runtime-status
+    └── memories/         ← Orkestratiegeheugenbestanden
+```
+
+## `.agents/` — De Bron van Waarheid
+
+Dit is de kern. Alles wat agents nodig hebben leeft hier.
+
+### `config/`
+- **`user-preferences.yaml`** — Je taal, tijdzone, standaard CLI, per-agent CLI-mapping
+
+### `skills/`
+Waar agent-expertise leeft. Elke skill heeft een `SKILL.md` en een `resources/` map.
+
+- **`_shared/`** — Gemeenschappelijke resources voor alle agents (routering, sjablonen, checklists)
+- **`oma-frontend/`**, **`oma-backend/`**, etc. — Domeinspecifieke skills
+
+### `workflows/`
+Markdown-bestanden die slash-commando gedrag definiëren. Dit zijn de scripts die agents volgen als je `/plan`, `/coordinate`, `/review`, etc. typt.
+
+### `agents/`
+Subagent-definities — de specs voor het spawnen van agents via CLI of Task tool.
+
+## `.claude/` — IDE-Integratie
+
+Dit verbindt oh-my-agent met Claude Code (en andere IDE's via symlinks).
+
+### `hooks/`
+- **`triggers.json`** — Trefwoord-naar-workflow mapping in 11 talen
+- **`keyword-detector.ts`** — De logica die workflows automatisch detecteert uit je input
+- **`persistent-mode.ts`** — Houdt persistente workflows draaiend tot ze klaar zijn
+- **`hud.ts`** — De `[OMA]` statusbalk-indicator
+
+### `skills/` en `agents/`
+Symlinks die naar `.agents/` wijzen — houdt één bron van waarheid terwijl skills zichtbaar blijven voor de IDE.
+
+## `.serena/memories/` — Runtime Status
+
+Waar agents hun voortgang schrijven tijdens uitvoering:
+
+| Bestand | Wat Erin Staat |
+|---------|---------------|
+| `orchestrator-session.md` | Sessie-ID, status, starttijd |
+| `task-board.md` | Welke agent welke taak heeft |
+| `progress-{agent}.md` | Beurt-voor-beurt voortgangsupdates |
+| `result-{agent}.md` | Eindresultaat van elke agent |
+
+Dashboards monitoren deze map voor live updates.
+
+## Voor de oh-my-agent Broncode Repo
+
+Als je aan oh-my-agent zelf werkt (niet alleen het gebruikt), is de repo een monorepo:
+
+```text
+oh-my-agent/
+├── cli/              ← CLI-broncode (TypeScript)
+├── web/              ← Documentatiesite (Next.js)
+├── action/           ← GitHub Action voor auto-updates
+├── docs/             ← Vertaalde READMEs + specs
+└── .agents/          ← Bewerkbaar (dit IS de broncode)
 ```

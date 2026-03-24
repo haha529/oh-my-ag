@@ -1,76 +1,77 @@
 ---
-title: "Gebruiksscenario: Multi-agentproject"
-description: End-to-end-stroom voor complexe cross-domainlevering met expliciete coördinatiepoorten.
+title: "Gebruiksscenario: Multi-Agent Project"
+description: Hoe meerdere agents te coördineren voor features die frontend, backend, database en QA beslaan.
 ---
 
-# Gebruiksscenario: Multi-agentproject
+# Gebruiksscenario: Multi-Agent Project
 
-## Wanneer dit pad te gebruiken
+## Wanneer Dit Te Gebruiken
 
-Gebruik dit wanneer een feature meerdere domeinen beslaat (bijvoorbeeld backend + frontend + QA) en parallelle uitvoering voordelig is.
+Je feature beslaat meerdere domeinen — backend API + frontend UI + database-schema + QA-review. Eén agent kan het niet allemaal aan, en je wilt dat ze parallel werken.
 
-## Coördinatiemodel
+## De Coördinatiesequentie
 
-Aanbevolen volgorde:
+```text
+/plan → /coordinate → agent:spawn (parallel) → /review → merge
+```
 
-1. `/plan` voor taakopsplitsing en afhankelijkheidstoewijzing
-2. `/coordinate` voor uitvoeringsvolgorde en eigenaarschap
-3. Parallelle `agent:spawn` per domein
-4. `/review` voor QA-/beveiligings-/prestatiecontrole
+1. **`/plan`** — PM-agent ontleedt de feature in domeintaken
+2. **`/coordinate`** — Stelt uitvoeringsvolgorde en eigenaarschap in
+3. **`agent:spawn`** — Agents voeren parallel uit
+4. **`/review`** — QA reviewt cross-domein consistentie
 
-## Sessie- en werkruimtestrategie
+## Sessiestrategie
 
-Gebruik een sessie-ID per featurestroom:
+Gebruik één session ID per feature:
 
 ```text
 session-auth-v2
 ```
 
-Wijs geïsoleerde werkruimten toe per domein om mergeconflicten te verminderen:
+Wijs workspaces toe per domein:
 
-- backend: `./apps/api`
-- frontend: `./apps/web`
-- mobile: `./apps/mobile`
+| Agent | Workspace |
+|-------|-----------|
+| backend | `./apps/api` |
+| frontend | `./apps/web` |
+| mobile | `./apps/mobile` |
 
-## Spawnvoorbeeld
+## Spawn-Voorbeeld
 
 ```bash
-oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api
-oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web
-oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2
+oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api &
+oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web &
+oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2 &
+wait
 ```
 
-## Contract-firstregel
+## De Contract-Eerst Regel
 
-Vergrendel gedeelde contracten voordat er parallel wordt gecodeerd:
+Voordat agents parallel beginnen te coderen, **vergrendel je API-contracten**:
 
-- Request-/responseschema's
-- Foutcodes en -berichten
-- Authenticatie-/sessielevenscyclusaannames
+- Request/response-schema's
+- Foutcodes en berichten
+- Auth/sessie-levenscyclus aannames
 
-Als contracten tijdens de uitvoering wijzigen, pauzeer dan downstreamagents en geef prompts opnieuw uit met het bijgewerkte contract.
+Als contracten halverwege veranderen, pauzeer downstream agents en hergeef hun prompts met bijgewerkte contracten.
 
-## Mergepoorten
+## Merge-Poorten
 
-Merge niet tenzij alle poorten zijn gepasseerd:
+Merge niet voordat:
 
-1. Domeinniveautests slagen
-2. Integratiepunten komen overeen met afgesproken contracten
-3. Hoge/kritieke QA-bevindingen zijn opgelost of expliciet geaccepteerd
-4. Changelog of releasenotes zijn bijgewerkt wanneer extern zichtbaar gedrag wijzigt
+1. Domein-niveau tests slagen
+2. Integratiepunten overeenkomen met afgesproken contracten
+3. QA high/critical problemen zijn opgelost (of expliciet afgewezen)
+4. Changelog bijgewerkt als extern zichtbaar gedrag is veranderd
 
-## Operationele antipatronen
+## Wat NIET Te Doen
 
-Vermijd:
-
-- Een werkruimte delen over alle agents
+- Eén workspace delen over alle agents (merge-conflict nachtmerrie)
 - Contracten wijzigen zonder andere agents te informeren
-- Backend/frontend onafhankelijk mergen voor compatibiliteitscontrole
+- Backend en frontend onafhankelijk mergen voor compatibiliteitscheck
 
-## Gereedcriteria
+## Wanneer Het Klaar Is
 
-Multi-agentuitvoering is gereed wanneer:
-
-- Geplande taken zijn voltooid over alle domeinen
-- Cross-domainintegratie is gevalideerd
-- QA-aftekening (of gedocumenteerde risicoacceptatie) is vastgelegd
+- Alle geplande taken compleet over alle domeinen
+- Cross-domein integratie gevalideerd
+- QA-goedkeuring vastgelegd

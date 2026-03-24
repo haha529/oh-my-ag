@@ -1,76 +1,70 @@
 ---
-title: "Cas d'usage : Correction de bugs"
-description: Boucle structurée reproduire-diagnostiquer-corriger-tester avec escalade basée sur la sévérité.
+title: "Cas d'Usage : Correction de Bugs"
+description: Debogage structure — de la reproduction du probleme a l'ecriture de tests de regression.
 ---
 
-# Cas d'usage : Correction de bugs
+# Cas d'Usage : Correction de Bugs
 
-## Format de prise en charge
+## Commencez Par un Bon Rapport
 
-Commencez par un rapport reproductible :
+Meilleur est votre rapport de bug, plus rapide sera la correction :
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## Triage par sévérité
+## Triez D'Abord
 
-Classifiez rapidement pour choisir la vitesse de réponse :
+| Severite | Ce Que Ca Signifie | Reponse |
+|----------|-------------------|---------|
+| **P0** | Perte de donnees, bypass d'auth, panne production | Tout lacher, impliquer QA/securite |
+| **P1** | Flux utilisateur principal casse | Corriger dans le sprint en cours |
+| **P2** | Degrade mais a un contournement | Planifier la correction |
+| **P3** | Mineur, non bloquant | Backlog |
 
-- `P0` : perte de données, contournement d'authentification, panne en production
-- `P1` : flux utilisateur majeur cassé
-- `P2` : comportement dégradé avec solution de contournement
-- `P3` : mineur/non bloquant
+## La Boucle de Debogage
 
-`P0/P1` doivent toujours impliquer une revue QA/sécurité.
+1. **Reproduire** — exactement, dans un environnement minimal
+2. **Isoler** — trouver la cause racine (pas juste le symptome)
+3. **Corriger** — le plus petit changement sur
+4. **Tester** — test de regression pour le chemin en echec
+5. **Scanner** — verifier le code adjacent pour le meme pattern
 
-## Boucle d'exécution
-
-1. Reproduire exactement dans un environnement minimal.
-2. Isoler la cause racine (pas seulement un correctif de symptôme).
-3. Implémenter le correctif le plus petit et le plus sûr.
-4. Ajouter des tests de régression pour le chemin défaillant.
-5. Revérifier les chemins adjacents susceptibles de partager le même mode de défaillance.
-
-## Modèle de prompt pour oma-debug
+## Template de Prompt
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## Signaux d'escalade courants
+## Quand Escalader
 
-Escaladez vers le QA ou la sécurité lorsque le bug touche :
+Impliquez QA ou securite quand le bug touche :
 
-- authentification/session/rafraîchissement de token
-- limites de permissions
-- cohérence des paiements/transactions
-- régressions de performance sous charge
+- Authentification / session / refresh de token
+- Limites de permissions
+- Coherence de paiements / transactions
+- Performance sous charge
 
-## Validation post-correctif
+## Apres la Correction
 
-- la reproduction originale n'échoue plus
-- aucune nouvelle erreur dans les flux connexes
-- les tests échouent avant le correctif et réussissent après
-- le chemin de retour arrière est clair si un correctif d'urgence est nécessaire
-
-## Critères de terminaison
-
-La correction de bugs est terminée lorsque :
-
-- la cause racine est identifiée et documentée
-- le correctif est vérifié par des contrôles reproductibles
-- la couverture de régression est en place
+Verifiez :
+- La reproduction originale ne echoue plus
+- Pas de nouvelles erreurs dans les flux lies
+- Les tests echouent avant la correction, passent apres
+- Le chemin de rollback est clair si necessaire

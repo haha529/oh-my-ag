@@ -1,76 +1,77 @@
 ---
-title: "Caso de uso: Proyecto multi-agente"
-description: Flujo de extremo a extremo para entregas complejas entre dominios con compuertas de coordinacion explicitas.
+title: "Caso de Uso: Proyecto Multi-Agente"
+description: Como coordinar multiples agentes para funcionalidades que abarcan frontend, backend, base de datos y QA.
 ---
 
-# Caso de uso: Proyecto multi-agente
+# Caso de Uso: Proyecto Multi-Agente
 
-## Cuando usar esta ruta
+## Cuando Usar Esto
 
-Use esta opcion cuando una funcionalidad abarca multiples dominios (por ejemplo backend + frontend + QA) y la ejecucion paralela es beneficiosa.
+Tu funcionalidad abarca multiples dominios — API backend + UI frontend + esquema de base de datos + revision QA. Un solo agente no puede con todo, y quieres que trabajen en paralelo.
 
-## Modelo de coordinacion
+## La Secuencia de Coordinacion
 
-Secuencia recomendada:
+```text
+/plan → /coordinate → agent:spawn (paralelo) → /review → merge
+```
 
-1. `/plan` para la descomposicion y mapeo de dependencias
-2. `/coordinate` para el orden de ejecucion y asignacion de responsabilidades
-3. `agent:spawn` en paralelo por dominio
-4. `/review` para la compuerta de QA/seguridad/rendimiento
+1. **`/plan`** — El Agente PM descompone la funcionalidad en tareas por dominio
+2. **`/coordinate`** — Establece orden de ejecucion y responsabilidades
+3. **`agent:spawn`** — Los agentes ejecutan en paralelo
+4. **`/review`** — QA revisa consistencia entre dominios
 
-## Estrategia de sesion y espacios de trabajo
+## Estrategia de Sesion
 
-Use un ID de sesion por flujo de funcionalidad:
+Usa un session ID por funcionalidad:
 
 ```text
 session-auth-v2
 ```
 
-Asigne espacios de trabajo aislados por dominio para reducir conflictos de merge:
+Asigna workspaces por dominio:
 
-- backend: `./apps/api`
-- frontend: `./apps/web`
-- mobile: `./apps/mobile`
+| Agente | Workspace |
+|--------|-----------|
+| backend | `./apps/api` |
+| frontend | `./apps/web` |
+| mobile | `./apps/mobile` |
 
-## Ejemplo de creacion de agentes
+## Ejemplo de Spawn
 
 ```bash
-oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api
-oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web
-oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2
+oma agent:spawn backend "Implement JWT auth API + refresh flow" session-auth-v2 -w ./apps/api &
+oma agent:spawn frontend "Build login + refresh UX with error states" session-auth-v2 -w ./apps/web &
+oma agent:spawn qa "Review auth risks, test matrix, and regression scope" session-auth-v2 &
+wait
 ```
 
-## Regla de contratos primero
+## La Regla de Contratos Primero
 
-Antes de codificar en paralelo, fije los contratos compartidos:
+Antes de que los agentes empiecen a codificar en paralelo, **bloquea tus contratos de API**:
 
-- Esquemas de solicitud/respuesta
+- Schemas de request/response
 - Codigos de error y mensajes
-- Suposiciones del ciclo de vida de autenticacion/sesion
+- Supuestos del ciclo de vida de auth/sesion
 
-Si los contratos cambian durante la ejecucion, pause los agentes dependientes y reemita los prompts con el contrato actualizado.
+Si los contratos cambian a mitad de ejecucion, pausa los agentes downstream y re-emite sus prompts con los contratos actualizados.
 
-## Compuertas de merge
+## Puertas de Merge
 
-No haga merge a menos que todas las compuertas pasen:
+No hagas merge hasta que:
 
-1. Las pruebas a nivel de dominio pasan
-2. Los puntos de integracion coinciden con los contratos acordados
-3. Los problemas de QA altos/criticos estan resueltos o explicitamente exceptuados
-4. El changelog o notas de release estan actualizados cuando hay cambios visibles externamente
+1. Los tests a nivel de dominio pasen
+2. Los puntos de integracion coincidan con los contratos acordados
+3. Los problemas high/critical de QA esten resueltos (o explicitamente descartados)
+4. El changelog este actualizado si cambio el comportamiento visible externamente
 
-## Anti-patrones operacionales
+## Lo Que NO Hacer
 
-Evite:
+- Compartir un workspace entre todos los agentes (pesadilla de conflictos de merge)
+- Cambiar contratos sin avisar a otros agentes
+- Hacer merge de backend y frontend independientemente antes de verificar compatibilidad
 
-- Compartir un espacio de trabajo entre todos los agentes
-- Cambiar contratos sin notificar a los demas agentes
-- Hacer merge de backend/frontend de forma independiente antes de verificar la compatibilidad
+## Cuando Esta Terminado
 
-## Criterios de finalizacion
-
-La ejecucion multi-agente esta completa cuando:
-
-- Las tareas planificadas estan completas en todos los dominios
-- La integracion entre dominios esta validada
-- La aprobacion de QA (o la aceptacion documentada de riesgos) esta registrada
+- Todas las tareas planificadas completas en todos los dominios
+- Integracion entre dominios validada
+- Aprobacion de QA registrada

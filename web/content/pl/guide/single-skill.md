@@ -1,31 +1,31 @@
 ---
-title: "Przypadek użycia: Pojedyncza umiejętność"
-description: Szybka ścieżka dla skupionej pracy w jednej domenie z jasnym zakresem i krótkimi pętlami informacji zwrotnej.
+title: "Przypadek Uzycia: Pojedyncza Umiejetnosc"
+description: Gdy potrzebujesz tylko jednego agenta do skoncentrowanego zadania -- szybka sciezka.
 ---
 
-# Przypadek użycia: Pojedyncza umiejętność
+# Przypadek Uzycia: Pojedyncza Umiejetnosc
 
-## Kiedy używać tej ścieżki
+## Kiedy Tego Uzywac
 
-Użyj tego, gdy wynik ma wąski zakres i jest w głównej mierze własnością jednej domeny:
+Uzywaj gdy zadanie ma waski zakres i nalezy do jednej domeny:
 
-- jeden komponent UI
-- jeden endpoint API
-- jeden błąd w jednej warstwie
-- jedna refaktoryzacja w jednym module
+- Jeden komponent UI
+- Jeden endpoint API
+- Jeden blad w jednej warstwie
+- Jeden refaktoring w jednym module
 
-Jeśli zadanie wymaga koordynacji między domenami (kontrakt API + UI + QA), użyj [`Projektu wieloagentowego`](./multi-agent-project.md).
+Jesli zadanie wymaga koordynacji miedzydomenowej (API + UI + QA), przejdz do [Projekt Wieloagentowy](./multi-agent-project).
 
-## Lista kontrolna przed rozpoczęciem
+## Zanim Zrobisz Prompt
 
-Przed sformułowaniem promptu zdefiniuj:
+Szybka lista kontrolna:
 
-1. Dokładny wynik (plik lub zachowanie)
-2. Docelowy stos technologiczny i wersje
-3. Kryteria akceptacji
-4. Oczekiwania testowe
+1. **Jaki jest wynik?** -- konkretny plik lub zachowanie
+2. **Jaki stack?** -- framework, jezyk, wersje
+3. **Co to jest "gotowe"?** -- kryteria akceptacji
+4. **Jakie testy?** -- krytyczne przypadki do pokrycia
 
-## Szablon promptu
+## Szablon Prompta
 
 ```text
 Build <specific artifact> using <stack>.
@@ -36,7 +36,7 @@ Acceptance criteria:
 Add tests for: <critical cases>.
 ```
 
-## Przykładowy prompt
+## Prawdziwy Przyklad
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Oczekiwany przepływ wykonania
+## Co Sie Dzieje
 
-1. Odpowiednia umiejętność jest wybierana automatycznie.
-2. Agent proponuje implementację i założenia.
-3. Potwierdzasz lub korygasz założenia.
-4. Agent dostarcza kod i testy.
-5. Uruchamiasz lokalną weryfikację i prosisz o drobne poprawki.
+1. Odpowiednia umiejetnosc aktywuje sie automatycznie na podstawie prompta
+2. Agent deklaruje swoje zalozenia (charter preflight)
+3. Potwierdzasz lub korygjesz
+4. Agent pisze kod i testy
+5. Uruchamiasz lokalna weryfikacje
 
-## Bramka jakości przed scaleniem
+## Przed Mergem
 
-- Zachowanie odpowiada kryteriom akceptacji
-- Testy pokrywają ścieżkę główną i kluczowe przypadki brzegowe
-- Brak niezwiązanych zmian w plikach
-- Brak ukrytych zmian powodujących regresję we współdzielonych modułach
+Sprawdz ze:
+- Zachowanie odpowiada Twoim kryteriom akceptacji
+- Testy pokrywaja szczesliwa sciezke i kluczowe przypadki brzegowe
+- Zadne niezwiazane zmiany plikow sie nie wkradly
+- Wspoldzielone moduly nie sa zepsute
 
-## Sygnały eskalacji
+## Kiedy Eskalowac
 
-Przejdź do przepływu wieloagentowego, gdy:
-
-- Praca nad UI wymaga nowych kontraktów API
-- Jedna poprawka powoduje kaskadowe zmiany w wielu warstwach
-- Zakres rozrasta się poza jedną domenę po pierwszej iteracji
-
-## Kryteria zakończenia
-
-Wykonywanie pojedynczej umiejętności jest zakończone, gdy:
-
-- Docelowy artefakt jest zaimplementowany
-- Kryteria akceptacji są wymiernie spełnione
-- Testy są dodane lub zaktualizowane dla zmienionego zachowania
+Przejdz do wieloagentowego przeplywu gdy:
+- Praca UI wymaga nowego kontraktu API
+- Jedna poprawka kaskaduje przez warstwy
+- Zakres rosnie poza jedna domene po pierwszej iteracji

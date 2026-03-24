@@ -1,57 +1,87 @@
 ---
 title: Skills
-description: Progressieve ontsluiting en tokengeoptimaliseerde skillarchitectuur.
+description: Hoe de twee-laags skill-architectuur agents slim houdt zonder tokens te verspillen.
 ---
 
 # Skills
 
-## Progressieve ontsluiting
+Skills zijn wat elke agent tot een expert maakt. Het is gestructureerde kennis — niet alleen prompts, maar uitvoeringsprotocollen, codesjablonen, fout-playbooks en kwaliteitschecklists.
 
-Skills worden expliciet geladen via /command of via het agent skills-veld.
+## Het Twee-Laags Ontwerp
 
-## Tweelaags ontwerp
+Hier is het slimme deel: skills laden niet alles tegelijk. Ze gebruiken progressieve onthulling om ~75% tokens te besparen.
 
-Elke skill maakt gebruik van een **tokengeoptimaliseerd tweelaags ontwerp**:
+### Laag 1: SKILL.md (~800 bytes)
 
-| Laag | Inhoud | Grootte |
-|------|--------|---------|
-| `SKILL.md` | Identiteit, routeringsvoorwaarden, kernregels | ~40 regels (~800B) |
-| `resources/` | Uitvoeringsprotocollen, voorbeelden, checklists, draaiboeken, codefragmenten, technologiestack | Op aanvraag geladen |
+Altijd geladen. Bevat:
+- Agent-identiteit en rol
+- Wanneer te activeren (routeringsvoorwaarden)
+- Kernregels en beperkingen
+- Wat NIET te doen
 
-Dit levert **~75% tokenbesparing** op bij het initieel laden van skills (3-7KB naar ~800B per skill).
+### Laag 2: resources/ (on-demand geladen)
 
-## Gedeelde resourcelaag (`_shared/`)
+Alleen geladen wanneer de agent daadwerkelijk werkt. Bevat de diepgaande content:
 
-Gemeenschappelijke resources die over alle skills worden ontdubbeld:
-
-| Resource | Doel |
-|----------|------|
-| `reasoning-templates.md` | Gestructureerde invulsjablonen voor meerstapsredenering |
-| `clarification-protocol.md` | Wanneer vragen versus aannemen, ambiguïteitsniveaus |
-| `context-budget.md` | Tokenefficiënte bestandsleesstrategieën per modelniveau |
-| `context-loading.md` | Taaktype-naar-resourcetoewijzing voor orkestrator-promptconstructie |
-| `skill-routing.md` | Skill-naar-agenttoewijzing en parallelle uitvoeringsregels |
-| `difficulty-guide.md` | Eenvoudig/Gemiddeld/Complex-beoordeling met protocolvertakking |
-| `lessons-learned.md` | Sessie-overstijgende verzamelde domeinvalkuilen |
-| `verify.sh` | Geautomatiseerd verificatiescript dat na voltooiing van de agent wordt uitgevoerd |
-| `api-contracts/` | PM maakt contracten, backend implementeert, frontend/mobile consumeert |
-| `serena-memory-protocol.md` | CLI-modus geheugen lees-/schrijfprotocol |
-| `common-checklist.md` | Universele codekwaliteitscontroles |
-
-## Resources per skill
-
-Elke skill biedt domeinspecifieke resources:
-
-| Resource | Doel |
-|----------|------|
-| `execution-protocol.md` | 4-staps chain-of-thought-werkstroom (Analyseren, Plannen, Implementeren, Verifiëren) |
-| `examples.md` | 2-3 few-shot invoer-/uitvoervoorbeelden |
-| `checklist.md` | Domeinspecifieke zelfverificatiechecklist |
-| `error-playbook.md` | Foutherstel met "3 strikes"-escalatieregel |
-| `tech-stack.md` | Gedetailleerde technologiespecificaties |
+| Resource | Wat Het Doet |
+|----------|-------------|
+| `execution-protocol.md` | Stapsgewijze workflow: Analyseren → Plannen → Implementeren → Verifiëren |
+| `tech-stack.md` | Gedetailleerde technologiespecificaties en versies |
+| `error-playbook.md` | Wat te doen als dingen misgaan (met "3 strikes" escalatie) |
+| `checklist.md` | Domeinspecifieke kwaliteitscontroles |
 | `snippets.md` | Kant-en-klare codepatronen |
-| `variants/` | Taalspecifieke presets (bijv. `python/`, `node/`, `rust/`) -- gebruikt door `oma-backend` |
+| `examples/` | Few-shot input/output voorbeelden |
 
-## Waarom dit belangrijk is
+### Hoe Dit Eruitziet
 
-Dit houdt de initiële context compact en ondersteunt tegelijkertijd diepgaande uitvoering wanneer dat nodig is.
+```
+.agents/skills/oma-frontend/
+├── SKILL.md                          ← Altijd geladen (~800 bytes)
+└── resources/
+    ├── execution-protocol.md         ← On-demand
+    ├── tech-stack.md
+    ├── tailwind-rules.md
+    ├── component-template.tsx
+    ├── snippets.md
+    ├── error-playbook.md
+    ├── checklist.md
+    └── examples/
+```
+
+## Gedeelde Resources
+
+Alle agents delen gemeenschappelijke basis uit `.agents/skills/_shared/`:
+
+| Resource | Doel |
+|----------|-----|
+| `skill-routing.md` | Koppelt taken aan de juiste agent |
+| `context-loading.md` | Welke resources te laden voor welk taaktype |
+| `prompt-structure.md` | Doel → Context → Beperkingen → Klaar Wanneer |
+| `clarification-protocol.md` | Wanneer vragen vs. gewoon aannemen |
+| `context-budget.md` | Token-efficiënt bestanden lezen per modeltier |
+| `difficulty-guide.md` | Eenvoudig / Gemiddeld / Complex taakbeoordeling |
+| `reasoning-templates.md` | Gestructureerde redeneersjablonen om in te vullen |
+| `quality-principles.md` | Universele kwaliteitsstandaarden |
+| `vendor-detection.md` | Detecteren welke IDE/CLI draait |
+
+## Voorwaardelijke Resources
+
+Sommige resources laden alleen wanneer specifieke voorwaarden getriggerd worden:
+
+| Resource | Wanneer Het Laadt |
+|----------|------------------|
+| `quality-score.md` | Kwaliteitsbeoordeling gevraagd |
+| `experiment-ledger.md` | Experimentele aanpak wordt geprobeerd |
+| `exploration-loop.md` | Iteratieve verkenning bezig |
+
+## Vendor-Specifieke Uitvoering
+
+Elke ondersteunde CLI heeft een eigen uitvoeringsprotocol in `.agents/skills/_shared/runtime/execution-protocols/`:
+- `claude.md` — Claude-specifieke patronen
+- `gemini.md` — Gemini-specifieke patronen
+- `codex.md` — Codex-specifieke patronen
+- `qwen.md` — Qwen-specifieke patronen
+
+## Waarom Dit Belangrijk Is
+
+Zonder progressieve onthulling zou het laden van 5 agents je contextvenster vullen voordat er werk begint. Hiermee krijg je licht initieel laden en diepgaande uitvoering wanneer het ertoe doet.

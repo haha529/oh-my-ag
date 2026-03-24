@@ -1,79 +1,75 @@
 ---
-title: 多仓库设置的中央注册中心
-description: 将本仓库作为版本化的中央注册中心运行，并通过基于 PR 的更新安全同步消费者项目。
+title: 中央注册表
+description: 将 oh-my-agent 用作版本化注册表，让多个项目保持同步。
 ---
 
-# 多仓库设置的中央注册中心
+# 多仓库场景的中央注册表
 
-本仓库可作为代理技能的 **中央注册中心**，使多个消费者仓库与版本化更新保持同步。
+有多个项目在使用 oh-my-agent？你可以把这个仓库当作**中央注册表** —— 对技能进行版本管理，所有消费方项目自动保持同步。
 
-## 架构
+## 工作原理
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  中央注册中心（本仓库）                                    │
-│  • 使用 release-please 自动版本管理                       │
-│  • 自动生成 CHANGELOG.md                                 │
-│  • prompt-manifest.json（版本/文件/校验和）                │
-│  • agent-skills.tar.gz 发布产物                          │
+│  中央注册表（oh-my-agent 仓库）                           │
+│  • release-please 自动版本管理                            │
+│  • CHANGELOG.md 自动生成                                 │
+│  • prompt-manifest.json（版本 + 校验和）                   │
+│  • agent-skills.tar.gz 发布产物                           │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│  消费者仓库                                               │
-│  • 使用 .agent-registry.yml 锁定版本                     │
-│  • 检测到新版本 → 创建 PR（不自动合并）                      │
-│  • 可复用的 Action 进行文件同步                             │
+│  你的项目                                                │
+│  • .agent-registry.yml 锁定版本                          │
+│  • GitHub Action 检测新版本 → 创建 PR                     │
+│  • 审查并合并即可更新                                      │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 注册中心维护者指南
+## 对注册表维护者
 
-发布通过 [release-please](https://github.com/googleapis/release-please) 自动完成：
+发布通过 [release-please](https://github.com/googleapis/release-please) 自动化：
 
-1. 使用约定式提交（`feat:`、`fix:`、`chore:` 等）。
-2. 推送到 `main` 以创建/更新 Release PR。
-3. 合并 Release PR 以发布 GitHub Release 产物：
-   - `CHANGELOG.md`（自动生成）
+1. 使用 Conventional Commits（`feat:`、`fix:`、`chore:`）
+2. 推送到 `main` → 自动创建/更新 Release PR
+3. 合并 Release PR → 发布 GitHub Release，包含：
+   - `CHANGELOG.md`
    - `prompt-manifest.json`（文件列表 + SHA256 校验和）
-   - `agent-skills.tar.gz`（压缩的 `.agents/` 目录）
+   - `agent-skills.tar.gz`（压缩的 `.agents/`）
 
-## 消费者项目指南
+## 对消费方项目
 
-将 `docs/consumer-templates/` 中的模板复制到您的项目中：
+将模板复制到你的项目中：
 
 ```bash
-# 配置文件
-cp docs/consumer-templates/.agent-registry.yml /path/to/your-project/
-
-# GitHub 工作流
-cp docs/consumer-templates/check-registry-updates.yml /path/to/your-project/.github/workflows/
-cp docs/consumer-templates/sync-agent-registry.yml /path/to/your-project/.github/workflows/
+cp docs/consumer-templates/.agent-registry.yml your-project/
+cp docs/consumer-templates/check-registry-updates.yml your-project/.github/workflows/
+cp docs/consumer-templates/sync-agent-registry.yml your-project/.github/workflows/
 ```
 
-然后在 `.agent-registry.yml` 中锁定您需要的版本：
+锁定你的版本：
 
 ```yaml
+# .agent-registry.yml
 registry:
   repo: first-fluke/oh-my-agent
-  version: "1.2.0"
+  version: "4.7.0"
 ```
 
-工作流角色：
+工作流：
+- `check-registry-updates.yml` —— 检查新版本，创建 PR
+- `sync-agent-registry.yml` —— 当你更新锁定版本时同步 `.agents/`
 
-- `check-registry-updates.yml`：检查新版本并创建 PR。
-- `sync-agent-registry.yml`：当锁定版本变更时同步 `.agents/`。
+**自动合并被有意禁用。**所有更新都需要人工审查。
 
-**重要提示**：自动合并被有意禁用。所有更新均应经过人工审核。
+## 中央注册表 vs. GitHub Action
 
-## 使用可复用 Action
+| | GitHub Action | 中央注册表 |
+|:--|:--:|:--:|
+| 设置成本 | 1 个工作流文件 | 3 个文件 |
+| 更新方式 | `oma update` CLI | Tarball 下载 |
+| 版本控制 | 始终最新 | 显式锁定 |
+| 适用于 | 大多数项目 | 严格的版本控制 |
 
-消费者仓库可直接调用同步 Action：
-
-```yaml
-- uses: first-fluke/oh-my-agent/.github/actions/sync-agent-registry@main
-  with:
-    registry-repo: first-fluke/oh-my-agent
-    version: "1.2.0" # or "latest"
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-```
+大多数团队应该使用 [GitHub Action](./automated-updates) 方式。如果你需要严格的版本锁定或无法使用第三方 Action，再考虑中央注册表。

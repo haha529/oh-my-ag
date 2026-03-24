@@ -1,67 +1,67 @@
 ---
-title: "Caso de Uso: Monitoramento via Dashboard"
-description: Opere sessões do orquestrador com dashboards de terminal/web e sinais de runbook acionáveis.
+title: Monitoramento com Dashboard
+description: Acompanhe seus agentes trabalhando em tempo real com dashboards de terminal e web.
 ---
 
-# Caso de Uso: Monitoramento via Dashboard
+# Monitoramento com Dashboard
 
-## Comandos de inicialização
+Quando voce tem multiplos agentes rodando em paralelo, voce quer ter visibilidade do que esta acontecendo. E para isso que os dashboards servem.
+
+## Iniciar um Dashboard
 
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+# UI no Terminal
+oma dashboard
+
+# UI Web
+oma dashboard:web
+# → http://localhost:9847
 ```
 
-URL padrão do dashboard web: `http://localhost:9847`
+## Configuracao Recomendada
 
-## Layout de terminal recomendado
+Use 3 terminais lado a lado:
 
-Use pelo menos 3 terminais:
+| Terminal | Proposito |
+|----------|----------|
+| 1 | `oma dashboard` -- status ao vivo dos agentes |
+| 2 | Comandos de spawn de agentes |
+| 3 | Logs de teste e build |
 
-1. dashboard no terminal (`oma dashboard`)
-2. comandos de spawn de agentes
-3. logs de teste/build
+Mantenha o dashboard web aberto no navegador para visibilidade compartilhada durante sessoes em equipe.
 
-Mantenha o dashboard web aberto para visibilidade compartilhada durante sessões em equipe.
+## O Que Voce Ve
 
-## O que os dashboards monitoram
+Os dashboards observam `.serena/memories/` e mostram:
 
-Fonte de dados: `.serena/memories/`
+- **Status da sessao** -- rodando, concluida ou falhou
+- **Quadro de tarefas** -- qual agente tem qual tarefa
+- **Progresso dos agentes** -- contagem de turnos, atividade atual
+- **Resultados** -- saidas finais conforme chegam
 
-Sinais primários:
+As atualizacoes sao orientadas por eventos (deteccao de mudanca de arquivo) -- sem loops de polling consumindo sua CPU.
 
-- status da sessão (`running`, `completed`, `failed`)
-- atribuição do quadro de tarefas e mudanças de estado
-- turnos de progresso por agente
-- eventos de publicação de resultados
+## Sinais de Solucao de Problemas
 
-As atualizações são orientadas por eventos a partir de arquivos alterados; não é necessário um loop de polling do diretório completo.
+| Voce Ve | O Que Fazer |
+|---------|-----------|
+| "No agents detected" | Verifique se os agentes foram iniciados com o mesmo `session-id`. Verifique se `.serena/memories/` esta sendo escrito. |
+| Sessao presa em "running" | Verifique timestamps dos arquivos `progress-*`. Reinicie agentes bloqueados com prompts mais claros. |
+| Reconexoes frequentes (web) | Verifique firewall/proxy. Reinicie `dashboard:web` e atualize a pagina. |
+| Atividade ausente | Verifique se o orchestrator esta escrevendo no diretorio de workspace correto. |
 
-## Runbook: sinal -> ação
+## Antes de Fazer Merge
 
-- `No agents detected`
-  - verifique se os agentes foram criados com o mesmo `session-id`
-  - confirme que `.serena/memories/` está sendo escrito
-- `Session stuck in running`
-  - inspecione os timestamps dos arquivos `progress-*` mais recentes
-  - reinicie o agente com falha ou bloqueado com um prompt mais claro
-- `Frequent reconnects (web)`
-  - verifique firewall/proxy local
-  - reinicie o `dashboard:web` e reabra a página
-- `Missing activity while agents are active`
-  - verifique se as escritas do orquestrador não estão sendo redirecionadas para outro workspace
+Checklist rapido do dashboard:
 
-## Checklist de monitoramento pré-merge
+- Todos os agentes alcancaram status "completed"
+- Nenhuma descoberta QA de alta severidade nao resolvida
+- Arquivos de resultado presentes para cada agente
+- Testes de integracao executados apos saidas finais
 
-- todos os agentes necessários atingiram o estado concluído
-- nenhuma descoberta de QA de alta severidade não resolvida
-- os arquivos de resultado mais recentes estão presentes para cada agente
-- testes de integração executados após as saídas finais dos agentes
+## Quando Voce Terminar
 
-## Critérios de conclusão
-
-A fase de monitoramento está concluída quando:
-
-- a sessão atingiu o estado terminal (`completed` ou intencionalmente interrompida)
-- o histórico de atividades explica a proveniência da saída final
-- a decisão de release/merge é tomada com visibilidade completa do status
+A fase de monitoramento esta completa quando:
+- Sessao mostra estado terminal (completed ou stopped)
+- Historico de atividade explica o que aconteceu
+- Voce tomou sua decisao de merge/release com total visibilidade

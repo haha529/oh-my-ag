@@ -1,335 +1,222 @@
 ---
 title: 使用指南
-description: 完整使用指南，包括示例、工作流、仪表盘操作和故障排除。
+description: 实战示例，展示如何使用 oh-my-agent —— 从简单任务到完整的多智能体编排。
 ---
 
-# 如何使用 AI IDE 多代理技能
+# 如何使用 oh-my-agent
 
-> 如果您不确定从何开始，请先输入 `/coordinate <您的任务提示>`。
+> 不确定从哪里开始？输入 `/coordinate` 加上你想构建的内容。
 
 ## 快速开始
 
-1. **在 AI IDE 中打开**
-   ```bash
-   cd /path/to/oh-my-agent
-   ```
+1. 在 AI IDE（Claude Code、Gemini、Cursor 等）中打开你的项目
+2. 技能会从 `.agents/skills/` 自动检测
+3. 开始对话 —— 描述你想要什么
 
-2. **技能会自动检测。** IDE 扫描 `.agents/skills/` 并索引所有可用技能。
-
-3. **在 IDE 中聊天。** 描述您想要构建的内容。
+就这样。剩下的 oh-my-agent 会搞定。
 
 ---
 
-## 使用示例
+## 示例 1：简单的单一任务
 
-### 示例 1：简单的单领域任务
-
-**您输入：**
+**你输入：**
 ```
-"Create a login form component with email and password fields using Tailwind CSS"
+"用 Tailwind CSS 创建一个带邮箱和密码字段的登录表单组件"
 ```
 
-**执行过程：**
-- 通过 /command 或代理 skills 字段调用 `oma-frontend`
-- 按需加载技能（渐进式披露）
-- 您获得一个包含 TypeScript、Tailwind、表单验证的 React 组件
+**发生了什么：**
+- `oma-frontend` 技能激活
+- 按需加载执行协议和技术栈资源
+- 你得到一个包含 TypeScript、Tailwind、表单验证和测试的 React 组件
 
-### 示例 2：复杂的多领域项目
+不需要斜杠命令，描述你的需求就行。
 
-**您输入：**
+## 示例 2：多领域项目
+
+**你输入：**
 ```
-"Build a TODO app with user authentication"
+"构建一个带用户认证的 TODO 应用"
 ```
 
-**执行过程：**
+**发生了什么：**
 
-1. **Workflow Guide 激活** — 检测到多领域复杂性
-2. **PM Agent 规划** — 创建带优先级的任务拆解
-3. **您通过 CLI 启动代理**：
+1. 关键词检测发现这是多领域任务 → 建议使用 `/coordinate`
+2. **PM 智能体**规划工作：认证 API、数据库 schema、前端 UI、QA 范围
+3. **你启动智能体：**
    ```bash
-   oma agent:spawn backend "JWT authentication API" session-01 &
-   oma agent:spawn frontend "Login and TODO UI" session-01 &
+   oma agent:spawn backend "JWT authentication API" session-01 -w ./apps/api &
+   oma agent:spawn frontend "Login and TODO UI" session-01 -w ./apps/web &
    wait
    ```
-4. **代理并行工作** — 将输出保存到知识库
-5. **您协调** — 检查 `.agents/brain/` 的一致性
-6. **QA Agent 评审** — 安全/性能审计
-7. **修复与迭代** — 使用修正内容重新启动代理
+4. **智能体并行工作** —— 各自在自己的工作区
+5. **QA 智能体审查** —— 安全审计、集成检查
+6. **你迭代** —— 根据需要用改进后的提示重新启动智能体
 
-### 示例 3：缺陷修复
+## 示例 3：Bug 修复
 
-**您输入：**
+**你输入：**
 ```
-"There's a bug — clicking login shows 'Cannot read property map of undefined'"
-```
-
-**执行过程：**
-
-1. **oma-debug 激活** — 分析错误
-2. **找到根因** — 组件在数据加载前对 `todos` 执行 map 操作
-3. **提供修复** — 添加加载状态和空值检查
-4. **编写回归测试** — 确保缺陷不再出现
-5. **发现相似模式** — 主动修复其他 3 个组件
-
-### 示例：设计系统创建
-
-**输入：**
-```
-"为我的SaaS产品设计一个暗色高端着陆页"
+"有个 bug —— 点击登录时显示 'Cannot read property map of undefined'"
 ```
 
-**执行过程：**
+**发生了什么：**
 
-1. **oma-design激活** — 检查`.design-context.md`
-2. **上下文收集** — 询问目标受众、品牌、美学方向
-3. **提示增强** — 将模糊请求转换为逐节详细规范
-4. **提出2-3个方向** — 颜色、字体、布局、动效选项
-5. **生成DESIGN.md** — 6节设计系统 + 令牌
-6. **审核运行** — 响应式、WCAG、Nielsen启发式、AI俗套检查
-7. **交接** — 准备好进行oma-frontend实现
+1. `oma-debug` 自动激活（关键词："bug"）
+2. 定位根因 —— 组件在数据加载前就对 `todos` 执行 map
+3. 应用修复 —— 加入加载状态和空值检查
+4. 编写回归测试
+5. 在其他 3 个组件中找到并主动修复了相同的模式
 
-### 示例 4：基于 CLI 的并行执行
+## 示例 4：设计系统
+
+**你输入：**
+```
+"为我的 SaaS 产品设计一个暗色高端落地页"
+```
+
+**发生了什么：**
+
+1. `oma-design` 激活（关键词："设计"、"落地页"）
+2. 收集上下文 —— 目标受众、品牌、美学方向
+3. 提出 2-3 个设计方向，包括颜色、字体和布局选项
+4. 生成包含令牌、组件模式和无障碍规则的 `DESIGN.md`
+5. 运行审计 —— 响应式、WCAG、尼尔森启发式评估
+6. 准备好交给 `oma-frontend` 实现
+
+## 示例 5：CLI 并行执行
 
 ```bash
-# 单个代理（自动检测工作区）
+# 单个智能体
 oma agent:spawn backend "Implement JWT auth API" session-01
 
-# 并行代理
-oma agent:spawn backend "Implement auth API" session-01 &
-oma agent:spawn frontend "Create login form" session-01 &
-oma agent:spawn mobile "Build auth screens" session-01 &
+# 多个智能体并行
+oma agent:spawn backend "Auth API + DB migration" session-01 -w ./apps/api &
+oma agent:spawn frontend "Login form + error states" session-01 -w ./apps/web &
+oma agent:spawn mobile "Auth screens + biometrics" session-01 -w ./apps/mobile &
 wait
+
+# 实时监控
+oma dashboard        # 终端界面
+oma dashboard:web    # Web 界面 http://localhost:9847
 ```
-
-**实时监控：**
-```bash
-# 终端（另开终端窗口）
-bunx oh-my-agent dashboard
-
-# 或浏览器
-bunx oh-my-agent dashboard:web
-# → http://localhost:9847
-```
-
----
-
-## 实时仪表盘
-
-### 终端仪表盘
-
-```bash
-bunx oh-my-agent dashboard
-```
-
-使用 `fswatch`（macOS）或 `inotifywait`（Linux）监控 `.serena/memories/`。显示包含会话状态、代理状态、回合数和最新活动的实时表格。当记忆文件变更时自动更新。
-
-**依赖项：**
-- macOS：`brew install fswatch`
-- Linux：`apt install inotify-tools`
-
-### Web 仪表盘
-
-```bash
-bun install          # 仅首次需要
-bunx oh-my-agent dashboard:web
-```
-
-在浏览器中打开 `http://localhost:9847`。功能特性：
-
-- **实时更新** — 通过 WebSocket（事件驱动，非轮询）
-- **自动重连** — 连接断开时自动恢复
-- **Serena 风格 UI** — 紫色主题色调
-- **会话状态** — ID 和 running/completed/failed 状态
-- **代理表格** — 名称、状态（带彩色圆点）、回合数、任务描述
-- **活动日志** — 来自进度和结果文件的最新变更
-
-服务端使用 chokidar 监控 `.serena/memories/`，带 100ms 防抖。仅变更的文件触发读取 — 不进行全量扫描。
-
----
-
-## 核心概念
-
-### 渐进式披露
-技能通过 /command 调用或代理 skills 字段显式加载。只有所需的技能会加载到上下文中。
-
-### Token 优化的技能设计
-每个技能采用双层架构以最大化 Token 效率：
-- **SKILL.md**（约 40 行）：身份标识、路由、核心规则 — 立即加载
-- **resources/**：执行协议、示例、检查清单、错误手册 — 按需加载
-
-共享资源位于 `_shared/`（非技能），被所有代理引用：
-- 带四步工作流的思维链执行协议
-- 用于中端模型引导的少样本输入/输出示例
-- 带有"三振出局"升级机制的错误恢复手册
-- 用于结构化多步分析的推理模板
-- Flash/Pro 模型层级的上下文预算管理
-- 通过 `verify.sh` 进行自动化验证
-- 跨会话经验教训积累
-
-### CLI 代理启动
-使用 `oma agent:spawn` 通过 CLI 运行代理。遵循 `user-preferences.yaml` 中的 `agent_cli_mapping` 为每种代理类型选择合适的 CLI（gemini、claude、codex、qwen）。工作区从常见 monorepo 约定自动检测，也可通过 `-w` 显式设置。
-
-### 知识库
-代理输出存储在 `.agents/brain/`。包含规划、代码、报告和协调笔记。
-
-### Serena 记忆
-结构化运行时状态位于 `.serena/memories/`。编排器写入会话信息、任务看板、每代理进度和结果。仪表盘监控这些文件。
-
-### 工作区
-代理可在独立目录中工作以避免冲突。工作区从常见 monorepo 约定自动检测：
-```
-./apps/api   or ./backend   → Backend Agent 工作区
-./apps/web   or ./frontend  → Frontend Agent 工作区
-./apps/mobile or ./mobile   → Mobile Agent 工作区
-```
-
----
-
-## 可用技能
-
-| 技能 | 使用场景 | 输出 |
-|------|-------------|------|
-| oma-coordination | 复杂的多领域项目 | 分步代理协调 |
-| oma-pm | "plan this"、"break down" | `.agents/plan.json` |
-| oma-frontend | UI、组件、样式 | React 组件、测试 |
-| oma-backend | API、数据库、认证 | API 端点、模型、测试 |
-| oma-mobile | 移动应用、iOS/Android | Flutter 页面、状态管理 |
-| oma-brainstorm | 构思、概念探索 | 设计文档 |
-| oma-db | 数据库、模式、ERD、迁移 | 模式设计、查询调优 |
-| oma-dev-workflow | CI/CD、git hooks、monorepo 配置 | 工作流配置、自动化 |
-| oma-tf-infra | Terraform、云基础设施 | IaC 模块、状态管理 |
-| oma-translator | 翻译、多语言内容 | 保留语气的翻译文本 |
-| oma-qa | "review security"、"audit" | 带优先级修复建议的 QA 报告 |
-| oma-debug | 缺陷报告、错误消息 | 修复后的代码、回归测试 |
-| oma-orchestrator | CLI 子代理执行 | 结果保存在 `.agents/results/` |
-| oma-commit | "commit"、"커밋해줘" | Git 提交（按功能自动拆分） |
 
 ---
 
 ## 工作流命令
 
-在 AI IDE 聊天中输入以下命令以触发分步工作流：
+在 AI IDE 中输入这些命令来触发结构化流程：
 
-| 命令 | 描述 |
-|------|------|
-| `/brainstorm` | 设计优先的构思与概念探索 |
-| `/coordinate` | 通过 CLI 进行多代理编排，提供分步引导 |
-| `/deepinit` | 深度项目初始化与代码库分析 |
-| `/exec-plan` | 执行并追踪现有规划文件 |
-| `/orchestrate` | 基于 CLI 的自动化并行代理执行 |
-| `/plan` | PM 任务拆解与 API 契约 |
-| `/review` | 完整 QA 流水线（安全、性能、无障碍、代码质量） |
-| `/debug` | 结构化缺陷修复（复现 → 诊断 → 修复 → 回归测试） |
-| `/setup` | 项目环境初始化与配置 |
-| `/tools` | MCP 工具管理与配置 |
-| `/ultrawork` | 最大并行度的五阶段门控执行 |
-| `/stack-set` | 设置 oma-backend 的后端语言栈 (Python, Node.js, Rust) |
-
-这些与 **技能**（通过 /command 或代理 skills 字段调用）是分开的。工作流让您对多步骤流程拥有显式控制权。
-
----
-
-## 典型工作流
-
-### 工作流 A：单一技能
-
-```
-您："Create a button component"
-  → AI IDE 加载 oma-frontend
-  → 立即获得组件
-```
-
-### 工作流 B：多代理项目（自动）
-
-```
-您："Build a TODO app with authentication"
-  → 使用 /coordinate 启动 oma-coordination
-  → PM Agent 创建规划
-  → 您通过 CLI 启动代理（oma agent:spawn）
-  → 代理并行工作
-  → QA Agent 评审
-  → 修复问题，迭代
-```
-
-### 工作流 B-2：多代理项目（显式）
-
-```
-您：/coordinate
-  → 分步引导工作流
-  → PM 规划 → 规划评审 → 代理启动 → 监控 → QA 评审
-```
-
-### 工作流 C：缺陷修复
-
-```
-您："Login button throws TypeError"
-  → oma-debug 激活
-  → 根因分析
-  → 修复 + 回归测试
-  → 检查相似模式
-```
-
-### 工作流 D：CLI 编排与仪表盘
-
-```
-终端 1：bunx oh-my-agent dashboard:web
-终端 2：oma agent:spawn backend "task" session-01 &
-        oma agent:spawn frontend "task" session-01 &
-浏览器：http://localhost:9847 → 实时状态
-```
+| 命令 | 功能 | 使用时机 |
+|------|------|---------|
+| `/brainstorm` | 自由形式的构思和探索 | 在确定方案之前 |
+| `/plan` | PM 任务分解 → `.agents/plan.json` | 开始任何复杂功能之前 |
+| `/exec-plan` | 逐步执行已有计划 | `/plan` 之后 |
+| `/coordinate` | 逐步的多领域协调 | 跨多个智能体的功能 |
+| `/orchestrate` | 自动化的并行智能体执行 | 大型项目，最大并行度 |
+| `/ultrawork` | 5 阶段质量工作流（11 个审查关卡） | 追求最高质量交付 |
+| `/review` | 安全 + 性能 + 无障碍审计 | 合并之前 |
+| `/debug` | 结构化的根因调试 | 排查 Bug |
+| `/design` | 7 阶段设计工作流 → `DESIGN.md` | 构建设计系统 |
+| `/commit` | 带 type/scope 分析的 conventional commit | 提交变更 |
+| `/setup` | 项目配置 | 首次设置 |
+| `/tools` | MCP 服务器管理 | 添加外部工具 |
+| `/stack-set` | 技术栈配置 | 设置语言/框架偏好 |
+| `/deepinit` | 完整项目初始化 | 在现有代码库中设置 |
 
 ---
 
-## 使用技巧
+## 自动检测（不需要斜杠命令）
 
-1. **具体明确** — "Build a TODO app with JWT auth, React frontend, Express backend" 优于 "make an app"
-2. **使用 CLI 启动** 进行多领域项目 — 不要试图在一个聊天中完成所有事情
-3. **检查知识库** — 查看 `.agents/brain/` 以确保 API 一致性
-4. **通过重新启动迭代** — 优化指令，而非从头开始
-5. **使用仪表盘** — `bunx oh-my-agent dashboard` 或 `bunx oh-my-agent dashboard:web` 监控编排器会话
-6. **分离工作区** — 为每个代理分配独立目录
+oh-my-agent 检测 11 种语言的关键词，自动激活工作流：
+
+| 你说的话 | 激活的工作流 |
+|---------|------------|
+| "plan the auth feature" | `/plan` |
+| "버그 수정해줘" | `/debug` |
+| "do everything in parallel" | `/orchestrate` |
+| "レビューして" | `/review` |
+| "diseña la página" | `/design` |
+| "brainstorm some ideas" | `/brainstorm` |
+
+像"什么是 orchestrate？"这样的提问会被过滤 —— 不会误触发工作流。
+
+---
+
+## 可用技能
+
+| 技能 | 适用场景 | 输出 |
+|------|---------|------|
+| oma-pm | "规划这个"、"拆解一下" | `.agents/plan.json` |
+| oma-frontend | UI、组件、样式 | React 组件、测试 |
+| oma-backend | API、数据库、认证 | 接口、模型、测试 |
+| oma-db | Schema、ERD、迁移 | Schema 设计、查询优化 |
+| oma-mobile | 移动应用 | Flutter 页面、状态管理 |
+| oma-design | UI/UX、设计系统 | 包含令牌的 `DESIGN.md` |
+| oma-brainstorm | 构思、探索 | 设计文档 |
+| oma-qa | 安全、性能、无障碍 | 带优先级修复建议的 QA 报告 |
+| oma-debug | Bug、错误、崩溃 | 修复后的代码 + 回归测试 |
+| oma-tf-infra | 云基础设施 | Terraform 模块 |
+| oma-dev-workflow | CI/CD、自动化 | 流水线配置 |
+| oma-translator | 翻译 | 自然的多语言内容 |
+| oma-orchestrator | 并行执行 | 智能体结果 |
+| oma-commit | Git 提交 | Conventional commits |
+
+---
+
+## 仪表盘
+
+### 终端仪表盘
+
+```bash
+oma dashboard
+```
+
+实时表格，显示会话状态、智能体状态、轮次和最新活动。监视 `.serena/memories/` 获取实时更新。
+
+### Web 仪表盘
+
+```bash
+oma dashboard:web
+# → http://localhost:9847
+```
+
+特性：
+- 通过 WebSocket 实时更新
+- 连接断开时自动重连
+- 带有颜色标识的智能体状态
+- 来自进度和结果文件的活动日志
+
+### 推荐布局
+
+使用 3 个终端：
+1. 仪表盘（`oma dashboard`）
+2. 智能体启动命令
+3. 测试/构建日志
+
+---
+
+## 小贴士
+
+1. **要具体** —— "用 JWT 认证、React 前端、Express 后端构建一个 TODO 应用"比"做个应用"好得多
+2. **用工作区** —— `-w ./apps/api` 防止智能体互相干扰
+3. **先锁定契约** —— 在并行启动智能体前运行 `/plan`
+4. **主动监控** —— 仪表盘能在合并前发现问题
+5. **用重新启动来迭代** —— 优化智能体提示，而不是从头开始
+6. **从 `/coordinate` 开始** —— 当你不确定该用哪个工作流时
 
 ---
 
 ## 故障排除
 
 | 问题 | 解决方案 |
-|------|----------|
-| 技能未在 AI IDE 中加载 | 在项目根目录打开 AI IDE，验证 `.agents/skills/` 和 `SKILL.md`，然后重启 IDE |
-| 找不到 CLI | 检查 `which gemini` / `which claude`，安装缺失的 CLI |
-| 代理生成不兼容的代码 | 检查 `.agents/brain/` 中的输出，引用另一代理的输出重新启动一个代理，然后使用 QA Agent 做最终一致性检查 |
-| 仪表盘显示 "No agents detected" | 记忆文件尚未创建。运行编排器或手动在 `.serena/memories/` 中创建文件 |
-| Web 仪表盘无法启动 | 运行 `bun install` 以安装 chokidar 和 ws |
-| 找不到 fswatch | macOS：`brew install fswatch`，Linux：`apt install inotify-tools` |
-| QA 报告有 50+ 个问题 | 先关注 CRITICAL/HIGH 级别，其余记录后续处理 |
+|------|---------|
+| IDE 中检测不到技能 | 确认 `.agents/skills/` 存在且包含 `SKILL.md` 文件，重启 IDE |
+| 找不到 CLI | `which gemini` / `which claude` —— 安装缺失的工具 |
+| 智能体产出冲突代码 | 使用独立工作区（`-w`），审查输出，用修正后的提示重新启动 |
+| 仪表盘显示"No agents detected" | 智能体还没写入 `.serena/memories/` —— 等一下或检查 session ID |
+| Web 仪表盘无法启动 | 先运行 `bun install` |
+| QA 报告有 50+ 个问题 | 先处理 CRITICAL/HIGH 级别，其余记录下来之后再处理 |
 
 ---
 
-## CLI 命令
-
-```bash
-bunx oh-my-agent                # 交互式技能安装器
-bunx oh-my-agent doctor         # 检查设置并修复缺失的技能
-bunx oh-my-agent doctor --json  # JSON 输出，适用于 CI/CD
-bunx oh-my-agent update         # 将技能更新到最新版本
-bunx oh-my-agent stats          # 查看生产力指标
-bunx oh-my-agent stats --reset  # 重置指标
-bunx oh-my-agent retro          # 会话回顾（经验教训与后续步骤）
-bunx oh-my-agent dashboard      # 终端实时仪表盘
-bunx oh-my-agent dashboard:web  # Web 仪表盘 (http://localhost:9847)
-bunx oh-my-agent help           # 显示帮助
-```
-
----
-
-## 面向开发者（集成指南）
-
-如果您想将这些技能集成到现有的 AI IDE 项目中，请参阅[集成到现有项目](./integration.md)了解：
-- 快速三步集成
-- 完整仪表盘集成
-- 为您的技术栈定制技能
-- 故障排除与最佳实践
-
----
-
-**直接在 AI IDE 中聊天即可。** 如需监控，使用仪表盘。如需 CLI 执行，使用编排器脚本。如需集成到现有项目，请参阅[集成到现有项目](./integration.md)。
+关于集成到现有项目，参见[集成指南](./integration)。

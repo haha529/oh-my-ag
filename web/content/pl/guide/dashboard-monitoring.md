@@ -1,67 +1,67 @@
 ---
-title: "Przypadek użycia: Monitorowanie panelu"
-description: Obsługa sesji orkiestratora za pomocą paneli terminalowych/webowych i sygnałów runbooka do podjęcia działań.
+title: Monitorowanie Dashboardem
+description: Obserwuj swoich agentow pracujacych w czasie rzeczywistym za pomoca dashboardow terminala i przegladarki.
 ---
 
-# Przypadek użycia: Monitorowanie panelu
+# Monitorowanie Dashboardem
 
-## Komendy uruchomienia
+Gdy masz wielu agentow dzialajacych rownolegle, chcesz widziec co sie dzieje. Do tego sluza dashboardy.
+
+## Uruchom Dashboard
 
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+# UI Terminala
+oma dashboard
+
+# UI Webowe
+oma dashboard:web
+# → http://localhost:9847
 ```
 
-Domyślny URL panelu webowego: `http://localhost:9847`
+## Zalecana Konfiguracja
 
-## Zalecany układ terminala
+Uzywaj 3 terminali obok siebie:
 
-Używaj co najmniej 3 terminali:
+| Terminal | Przeznaczenie |
+|---------|-------------|
+| 1 | `oma dashboard` -- status agentow na zywo |
+| 2 | Komendy uruchamiania agentow |
+| 3 | Logi testow i budowania |
 
-1. Panel terminalowy (`oma dashboard`)
-2. Komendy uruchamiania agentów
-3. Logi testów/budowania
+Trzymaj dashboard webowy otwarty w przegladarce dla wspolnej widocznosci podczas sesji zespolowych.
 
-Trzymaj panel webowy otwarty dla wspólnej widoczności podczas sesji zespołowych.
+## Co Widzisz
 
-## Co monitorują panele
+Dashboardy monitoruja `.serena/memories/` i pokazuja:
 
-Źródło danych: `.serena/memories/`
+- **Status sesji** -- dziala, ukonczona lub zepsuta
+- **Tablica zadan** -- ktory agent ma ktore zadanie
+- **Postep agentow** -- licznik tur, biezaca aktywnosc
+- **Wyniki** -- koncowe dane wyjsciowe w miare ich pojawiania sie
 
-Główne sygnały:
+Aktualizacje sa sterowane zdarzeniami (wykrywanie zmian plikow) -- zadnych petli odpytywania zjadajacych CPU.
 
-- status sesji (`running`, `completed`, `failed`)
-- przypisania tablicy zadań i zmiany stanów
-- tury postępu poszczególnych agentów
-- zdarzenia publikacji wyników
+## Sygnaly Rozwiazywania Problemow
 
-Aktualizacje są sterowane zdarzeniami ze zmienionych plików; pełna pętla odpytywania katalogu nie jest wymagana.
+| Widzisz | Co Robic |
+|---------|---------|
+| "No agents detected" | Sprawdz czy agenci zostali uruchomieni z tym samym `session-id`. Zweryfikuj czy `.serena/memories/` jest zapisywany. |
+| Sesja zablokowana na "running" | Sprawdz sygnatury czasowe plikow `progress-*`. Uruchom ponownie zablokowanych agentow z jaśniejszymi promptami. |
+| Czeste ponowne laczenia (web) | Sprawdz firewall/proxy. Uruchom ponownie `dashboard:web` i odswiez strone. |
+| Brak aktywnosci | Zweryfikuj czy orkiestrator pisze do prawidlowego katalogu workspace. |
 
-## Runbook: sygnał → działanie
+## Przed Mergem
 
-- `No agents detected`
-  - zweryfikuj, czy agenci zostali uruchomieni z tym samym `session-id`
-  - potwierdź, że `.serena/memories/` jest zapisywany
-- `Session stuck in running`
-  - sprawdź znaczniki czasu najnowszych plików `progress-*`
-  - uruchom ponownie zablokowanego agenta z jaśniejszym promptem
-- `Frequent reconnects (web)`
-  - sprawdź lokalny firewall/proxy
-  - uruchom ponownie `dashboard:web` i odśwież stronę
-- `Missing activity while agents are active`
-  - zweryfikuj, czy zapisy orkiestratora nie są przekierowane do innej przestrzeni roboczej
+Szybka lista kontrolna z dashboardu:
 
-## Lista kontrolna monitorowania przed scaleniem
+- Wszyscy agenci osiagneli status "completed"
+- Brak nierozwiazanych ustalen QA o wysokiej wadze
+- Pliki wynikowe obecne dla kazdego agenta
+- Testy integracyjne uruchomione po koncowych wynikach
 
-- wszyscy wymagani agenci osiągnęli stan completed
-- brak nierozwiązanych ustaleń QA o wysokim priorytecie
-- najnowsze pliki wyników są obecne dla każdego agenta
-- testy integracyjne wykonane po końcowych wynikach agentów
+## Kiedy Skonczysz
 
-## Kryteria zakończenia
-
-Faza monitorowania jest zakończona, gdy:
-
-- sesja osiągnęła stan końcowy (`completed` lub celowo zatrzymana)
-- historia aktywności wyjaśnia pochodzenie końcowego wyniku
-- decyzja o wydaniu/scaleniu została podjęta z pełną widocznością statusu
+Faza monitorowania jest kompletna gdy:
+- Sesja pokazuje stan koncowy (completed lub stopped)
+- Historia aktywnosci wyjasnia co sie stalo
+- Podjales decyzje o merge/wydaniu z pelna widocznoscia

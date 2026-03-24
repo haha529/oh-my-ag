@@ -1,79 +1,75 @@
 ---
-title: Zentrale Registry für Multi-Repo-Setup
-description: Dieses Repository als versionierte zentrale Registry betreiben und Consumer-Projekte sicher über PR-basierte Updates synchronisieren.
+title: Zentrales Register
+description: Verwende oh-my-agent als versioniertes Register, um mehrere Projekte synchron zu halten.
 ---
 
-# Zentrale Registry für Multi-Repo-Setup
+# Zentrales Register fuer Multi-Repo-Setup
 
-Dieses Repository kann als **zentrale Registry** für Agenten-Skills dienen, damit mehrere Consumer-Repositories mit versionierten Updates synchron bleiben.
+Hast du mehrere Projekte, die oh-my-agent nutzen? Du kannst dieses Repo als **zentrales Register** behandeln — versioniere deine Skills, und alle Verbraucher-Projekte bleiben synchron.
 
-## Architektur
+## Wie Es Funktioniert
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  Zentrale Registry (dieses Repo)                        │
-│  • release-please für automatische Versionierung        │
-│  • CHANGELOG.md automatisch generiert                   │
-│  • prompt-manifest.json (Version/Dateien/Prüfsummen)    │
-│  • agent-skills.tar.gz Release-Artefakt                 │
+│  Zentrales Register (oh-my-agent Repo)                   │
+│  • release-please fuer automatische Versionierung        │
+│  • CHANGELOG.md Auto-Generierung                         │
+│  • prompt-manifest.json (Versionen + Checksums)          │
+│  • agent-skills.tar.gz Release-Artefakt                  │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Consumer-Repo                                          │
-│  • .agent-registry.yml für Versions-Pinning            │
-│  • Neue Version erkannt → PR (kein Auto-Merge)          │
-│  • Wiederverwendbare Action für Dateisynchronisation    │
+│  Dein Projekt                                            │
+│  • .agent-registry.yml fixiert die Version               │
+│  • GitHub Action erkennt neue Versionen → oeffnet PR     │
+│  • Pruefen und mergen zum Aktualisieren                  │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Für Registry-Maintainer
+## Fuer Register-Maintainer
 
-Releases werden über [release-please](https://github.com/googleapis/release-please) automatisiert:
+Releases werden automatisiert via [release-please](https://github.com/googleapis/release-please):
 
-1. Verwenden Sie Conventional Commits (`feat:`, `fix:`, `chore:`, ...).
-2. Pushen Sie auf `main`, um den Release-PR zu erstellen/aktualisieren.
-3. Mergen Sie den Release-PR, um GitHub-Release-Assets zu veröffentlichen:
-   - `CHANGELOG.md` (automatisch generiert)
-   - `prompt-manifest.json` (Dateiliste + SHA256-Prüfsummen)
-   - `agent-skills.tar.gz` (komprimiertes `.agents/`-Verzeichnis)
+1. Verwende Conventional Commits (`feat:`, `fix:`, `chore:`)
+2. Push auf `main` → Release-PR wird erstellt/aktualisiert
+3. Merge den Release-PR → GitHub Release veroeffentlicht mit:
+   - `CHANGELOG.md`
+   - `prompt-manifest.json` (Dateiliste + SHA256-Checksums)
+   - `agent-skills.tar.gz` (komprimiertes `.agents/`)
 
-## Für Consumer-Projekte
+## Fuer Verbraucher-Projekte
 
-Kopieren Sie die Vorlagen aus `docs/consumer-templates/` in Ihr Projekt:
+Kopiere die Templates in dein Projekt:
 
 ```bash
-# Konfigurationsdatei
-cp docs/consumer-templates/.agent-registry.yml /path/to/your-project/
-
-# GitHub-Workflows
-cp docs/consumer-templates/check-registry-updates.yml /path/to/your-project/.github/workflows/
-cp docs/consumer-templates/sync-agent-registry.yml /path/to/your-project/.github/workflows/
+cp docs/consumer-templates/.agent-registry.yml your-project/
+cp docs/consumer-templates/check-registry-updates.yml your-project/.github/workflows/
+cp docs/consumer-templates/sync-agent-registry.yml your-project/.github/workflows/
 ```
 
-Pinnen Sie dann Ihre gewünschte Version in `.agent-registry.yml`:
+Fixiere deine Version:
 
 ```yaml
+# .agent-registry.yml
 registry:
   repo: first-fluke/oh-my-agent
-  version: "1.2.0"
+  version: "4.7.0"
 ```
 
-Workflow-Rollen:
+Die Workflows:
+- `check-registry-updates.yml` — Prueft auf neue Versionen, oeffnet einen PR
+- `sync-agent-registry.yml` — Synchronisiert `.agents/`, wenn du die fixierte Version aktualisierst
 
-- `check-registry-updates.yml`: Prüft auf neue Versionen und öffnet einen PR.
-- `sync-agent-registry.yml`: Synchronisiert `.agents/`, wenn sich die gepinnte Version ändert.
+**Auto-Merge ist absichtlich deaktiviert.** Alle Updates bekommen eine menschliche Pruefung.
 
-**Wichtig**: Auto-Merge ist absichtlich deaktiviert. Alle Updates sollten manuell überprüft werden.
+## Zentrales Register vs. GitHub Action
 
-## Verwendung der wiederverwendbaren Action
+| | GitHub Action | Zentrales Register |
+|:--|:--:|:--:|
+| Setup-Aufwand | 1 Workflow-Datei | 3 Dateien |
+| Update-Methode | `oma update` CLI | Tarball-Download |
+| Versionskontrolle | Immer aktuellste | Explizites Pinning |
+| Am Besten fuer | Die meisten Projekte | Strikte Versionskontrolle |
 
-Consumer-Repos können die Sync-Action direkt aufrufen:
-
-```yaml
-- uses: first-fluke/oh-my-agent/.github/actions/sync-agent-registry@main
-  with:
-    registry-repo: first-fluke/oh-my-agent
-    version: "1.2.0" # or "latest"
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-```
+Die meisten Teams sollten den [GitHub Action](./automated-updates)-Ansatz verwenden. Verwende das Zentrale Register, wenn du striktes Version-Pinning brauchst oder keine Drittanbieter-Actions nutzen kannst.

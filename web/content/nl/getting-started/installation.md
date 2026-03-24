@@ -1,66 +1,97 @@
 ---
 title: Installatie
-description: Vereisten, installatieopties en eerste configuratie.
+description: Krijg oh-my-agent draaiend in je project — drie manieren om te installeren, allemaal snel.
 ---
 
 # Installatie
 
-## Vereisten
+## Wat Je Nodig Hebt
 
-- Google Antigravity (2026+)
-- Bun
-- uv
+- **Een AI-IDE** — Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI of vergelijkbaar
+- **bun** en **uv** — worden automatisch geïnstalleerd als ze ontbreken
 
-## Optie 1: Interactieve installatie
+## Optie 1: Eén Regel (Aanbevolen)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/first-fluke/oh-my-agent/main/cli/install.sh | bash
+```
+
+Dit detecteert ontbrekende dependencies (bun, uv), installeert ze en start de interactieve setup. Klaar in ongeveer een minuut.
+
+## Optie 2: Handmatige Installatie
 
 ```bash
 bunx oh-my-agent
 ```
 
-Installeert skills en workflows in `.agents/` in het huidige project.
+Je krijgt een menu om een preset te kiezen:
 
-## Optie 2: Globale installatie
+| Preset | Wat Je Krijgt |
+|--------|--------------|
+| ✨ All | Elke agent en skill |
+| 🌐 Fullstack | frontend + backend + db + pm + qa + debug + brainstorm + commit |
+| 🎨 Frontend | frontend + pm + qa + debug + brainstorm + commit |
+| ⚙️ Backend | backend + db + pm + qa + debug + brainstorm + commit |
+| 📱 Mobile | mobile + pm + qa + debug + brainstorm + commit |
+| 🚀 DevOps | tf-infra + dev-workflow + pm + qa + debug + brainstorm + commit |
+
+Skills worden geplaatst in `.agents/skills/` met symlinks voor je IDE.
+
+## Optie 3: Globale Installatie
+
+Voor frequent CLI-gebruik (dashboards, agent spawning, diagnostiek):
 
 ```bash
-# Homebrew (macOS/Linux)
+# Homebrew
 brew install oh-my-agent
 
-# npm/bun
+# of npm/bun
 bun install --global oh-my-agent
 ```
 
-Aanbevolen als u regelmatig orkestratiecommando's gebruikt.
-
-## Optie 3: Integratie in bestaand project
-
-### CLI-pad
+Nu kun je `oma` overal gebruiken:
 
 ```bash
-bunx oh-my-agent
-bunx oh-my-agent doctor
+oma doctor          # Controleer of alles gezond is
+oma dashboard       # Realtime monitoring
+oma agent:spawn     # Start agents vanuit de terminal
 ```
 
-### Handmatig kopieerpad
+## Kies een AI-CLI
+
+Je hebt er minstens één nodig:
+
+| CLI | Installatie | Hoe Te Authenticeren |
+|-----|-----------|---------------------|
+| Gemini | `bun install --global @google/gemini-cli` | Automatisch bij eerste start |
+| Claude | `curl -fsSL https://claude.ai/install.sh \| bash` | Automatisch bij eerste start |
+| Codex | `bun install --global @openai/codex` | `codex login` |
+| Qwen | `bun install --global @qwen-code/qwen-code` | `/auth` in de CLI |
+
+## Eerste Configuratie
+
+Na installatie, voer `/setup` uit in je AI-IDE om te configureren:
+
+- Antwoordtaal
+- Standaard CLI-vendor
+- Per-agent CLI-mapping (gebruik verschillende AI-tools voor verschillende agents)
+
+Dit maakt `.agents/config/user-preferences.yaml` — het bestand dat al je voorkeuren beheert.
+
+## Controleer of Het Werkt
 
 ```bash
-cp -r oh-my-agent/.agents/skills /path/to/project/.agents/
-cp -r oh-my-agent/.agents/workflows /path/to/project/.agents/
-cp -r oh-my-agent/.agents/config /path/to/project/.agents/
+oma doctor
 ```
 
-## Initieel configuratiecommando
+Dit controleert CLI-installaties, MCP-configs en skill-status. Als er iets mis is, vertelt het precies wat je moet fixen.
 
-```text
-/setup
+## Wat Nu?
+
+Open je project in je AI-IDE en begin te chatten. Skills worden automatisch gedetecteerd. Probeer zoiets als:
+
+```
+"Bouw een loginformulier met e-mailvalidatie met Tailwind CSS"
 ```
 
-Maakt `.agents/config/user-preferences.yaml` aan.
-
-## Vereiste CLI-vendors
-
-Installeer en authenticeer minimaal een van de volgende:
-
-- Gemini
-- Claude
-- Codex
-- Qwen
+Of ga naar de [Gebruiksgids](/guide/usage) voor meer voorbeelden.

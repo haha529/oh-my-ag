@@ -1,79 +1,75 @@
 ---
-title: Centraal register voor multi-repo-opzet
-description: Gebruik deze repository als een versiebeheerd centraal register en synchroniseer consumerprojecten veilig via PR-gebaseerde updates.
+title: Centraal Register
+description: Gebruik oh-my-agent als een versiebeheerd register om meerdere projecten gesynchroniseerd te houden.
 ---
 
-# Centraal register voor multi-repo-opzet
+# Centraal Register voor Multi-Repo Setup
 
-Deze repository kan dienen als een **centraal register** voor agentskills, zodat meerdere consumerrepository's op een lijn blijven met versiebeheerde updates.
+Meerdere projecten die oh-my-agent gebruiken? Je kunt deze repo behandelen als een **centraal register** — versiebeheer je skills, en alle consumerende projecten blijven gesynchroniseerd.
 
-## Architectuur
+## Hoe Het Werkt
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  Centraal register (deze repo)                          │
+│  Centraal Register (oh-my-agent repo)                   │
 │  • release-please voor automatische versiebeheer        │
-│  • CHANGELOG.md automatisch gegenereerd                 │
-│  • prompt-manifest.json (versie/bestanden/checksums)    │
+│  • CHANGELOG.md auto-generatie                          │
+│  • prompt-manifest.json (versies + checksums)           │
 │  • agent-skills.tar.gz release-artefact                 │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Consumerrepo                                           │
-│  • .agent-registry.yml voor versiepinning              │
-│  • Nieuwe versiedetectie → PR (geen auto-merge)         │
-│  • Herbruikbare Action voor bestandssynchronisatie       │
+│  Jouw Project                                           │
+│  • .agent-registry.yml pint versie                      │
+│  • GitHub Action detecteert nieuwe versies → opent PR   │
+│  • Review en merge om te updaten                        │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Voor registerbeheerders
+## Voor Register-Beheerders
 
 Releases zijn geautomatiseerd via [release-please](https://github.com/googleapis/release-please):
 
-1. Gebruik Conventional Commits (`feat:`, `fix:`, `chore:`, ...).
-2. Push naar `main` om de release-PR aan te maken/bij te werken.
-3. Merge de release-PR om GitHub Release-assets te publiceren:
-   - `CHANGELOG.md` (automatisch gegenereerd)
-   - `prompt-manifest.json` (bestandslijst + SHA256-checksums)
-   - `agent-skills.tar.gz` (gecomprimeerde `.agents/`-map)
+1. Gebruik Conventional Commits (`feat:`, `fix:`, `chore:`)
+2. Push naar `main` → Release PR wordt aangemaakt/bijgewerkt
+3. Merge de Release PR → GitHub Release gepubliceerd met:
+   - `CHANGELOG.md`
+   - `prompt-manifest.json` (bestandenlijst + SHA256 checksums)
+   - `agent-skills.tar.gz` (gecomprimeerde `.agents/`)
 
-## Voor consumerprojecten
+## Voor Consumerende Projecten
 
-Kopieer sjablonen uit `docs/consumer-templates/` naar uw project:
+Kopieer de templates naar je project:
 
 ```bash
-# Configuratiebestand
-cp docs/consumer-templates/.agent-registry.yml /path/to/your-project/
-
-# GitHub-workflows
-cp docs/consumer-templates/check-registry-updates.yml /path/to/your-project/.github/workflows/
-cp docs/consumer-templates/sync-agent-registry.yml /path/to/your-project/.github/workflows/
+cp docs/consumer-templates/.agent-registry.yml your-project/
+cp docs/consumer-templates/check-registry-updates.yml your-project/.github/workflows/
+cp docs/consumer-templates/sync-agent-registry.yml your-project/.github/workflows/
 ```
 
-Pin vervolgens de gewenste versie in `.agent-registry.yml`:
+Pin je versie:
 
 ```yaml
+# .agent-registry.yml
 registry:
   repo: first-fluke/oh-my-agent
-  version: "1.2.0"
+  version: "4.7.0"
 ```
 
-Workflowrollen:
+De workflows:
+- `check-registry-updates.yml` — Controleert op nieuwe versies, opent een PR
+- `sync-agent-registry.yml` — Synchroniseert `.agents/` wanneer je de gepinde versie bijwerkt
 
-- `check-registry-updates.yml`: controleert op nieuwe versies en opent een PR.
-- `sync-agent-registry.yml`: synchroniseert `.agents/` wanneer de vastgepinde versie wijzigt.
+**Auto-merge is bewust uitgeschakeld.** Alle updates krijgen menselijke review.
 
-**Belangrijk**: Auto-merge is opzettelijk uitgeschakeld. Alle updates dienen handmatig te worden beoordeeld.
+## Centraal Register vs. GitHub Action
 
-## De herbruikbare Action gebruiken
+| | GitHub Action | Centraal Register |
+|:--|:--:|:--:|
+| Setup-inspanning | 1 workflow-bestand | 3 bestanden |
+| Update-methode | `oma update` CLI | Tarball-download |
+| Versiebeheer | Altijd de nieuwste | Expliciete pin |
+| Het beste voor | De meeste projecten | Strikt versiebeheer |
 
-Consumerrepo's kunnen de synchronisatieactie rechtstreeks aanroepen:
-
-```yaml
-- uses: first-fluke/oh-my-agent/.github/actions/sync-agent-registry@main
-  with:
-    registry-repo: first-fluke/oh-my-agent
-    version: "1.2.0" # or "latest"
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-```
+De meeste teams zouden de [GitHub Action](./automated-updates) benadering moeten gebruiken. Gebruik het Centraal Register als je strikte versie-pinning nodig hebt of geen third-party actions kunt gebruiken.

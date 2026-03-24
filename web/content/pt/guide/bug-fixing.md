@@ -1,76 +1,70 @@
 ---
-title: "Caso de Uso: Correção de Bugs"
-description: Loop estruturado de reproduzir-diagnosticar-corrigir-regredir com escalação baseada em severidade.
+title: "Caso de Uso: Correcao de Bugs"
+description: Debugging estruturado -- de reproduzir o problema a escrever testes de regressao.
 ---
 
-# Caso de Uso: Correção de Bugs
+# Caso de Uso: Correcao de Bugs
 
-## Formato de entrada
+## Comece com um Bom Relatorio
 
-Comece com um relatório reproduzível:
+Quanto melhor seu relatorio de bug, mais rapido a correcao:
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## Triagem de severidade
+## Primeiro a Triagem
 
-Classifique cedo para escolher a velocidade de resposta:
+| Severidade | O Que Significa | Resposta |
+|-----------|----------------|----------|
+| **P0** | Perda de dados, bypass de auth, queda em producao | Largue tudo, envolva QA/seguranca |
+| **P1** | Fluxo principal do usuario quebrado | Corrigir no sprint atual |
+| **P2** | Degradado mas tem workaround | Agendar correcao |
+| **P3** | Menor, nao bloqueante | Backlog |
 
-- `P0`: perda de dados, bypass de autenticação, indisponibilidade em produção
-- `P1`: fluxo principal do usuário quebrado
-- `P2`: comportamento degradado com solução alternativa
-- `P3`: menor/não-bloqueante
+## O Loop de Debug
 
-`P0/P1` devem sempre envolver revisão de QA/segurança.
+1. **Reproduzir** -- exatamente, em um ambiente minimo
+2. **Isolar** -- encontrar a causa raiz (nao apenas o sintoma)
+3. **Corrigir** -- menor alteracao segura
+4. **Testar** -- teste de regressao para o caminho que falhou
+5. **Escanear** -- verificar codigo adjacente para o mesmo padrao
 
-## Loop de execução
-
-1. Reproduza exatamente em um ambiente mínimo.
-2. Isole a causa raiz (não apenas correção de sintoma).
-3. Implemente a menor correção segura.
-4. Adicione testes de regressão para o caminho com falha.
-5. Verifique novamente caminhos adjacentes que provavelmente compartilham o mesmo modo de falha.
-
-## Template de prompt para oma-debug
+## Template de Prompt
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## Sinais comuns de escalação
+## Quando Escalar
 
-Escale para QA ou segurança quando o bug envolver:
+Envolva QA ou seguranca quando o bug toca:
 
-- autenticação/sessão/renovação de token
-- limites de permissão
-- consistência de pagamentos/transações
-- regressões de performance sob carga
+- Autenticacao / sessao / refresh de token
+- Limites de permissao
+- Pagamento / consistencia de transacao
+- Performance sob carga
 
-## Validação pós-correção
+## Apos a Correcao
 
-- a reprodução original não falha mais
-- nenhum erro novo em fluxos relacionados
-- os testes falham antes da correção e passam depois da correção
-- o caminho de rollback está claro caso seja necessário um hotfix
-
-## Critérios de conclusão
-
-A correção de bugs está concluída quando:
-
-- a causa raiz é identificada e documentada
-- a correção é verificada por meio de verificações reproduzíveis
-- a cobertura de regressão está implementada
+Verifique:
+- O repro original nao falha mais
+- Nenhum erro novo em fluxos relacionados
+- Testes falham antes da correcao, passam depois
+- Caminho de rollback esta claro se necessario

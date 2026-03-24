@@ -1,57 +1,87 @@
 ---
 title: Skills
-description: Divulgation progressive et architecture de skills optimisée en tokens.
+description: Comment l'architecture de skills en deux couches garde les agents intelligents sans gaspiller de tokens.
 ---
 
 # Skills
 
-## Divulgation progressive
+Les skills sont ce qui rend chaque agent expert. Ce sont des connaissances structurees — pas juste des prompts, mais des protocoles d'execution, des templates de code, des playbooks d'erreurs et des checklists de qualite.
 
-Les skills sont chargés explicitement via /command ou via le champ skills de l'agent.
+## Le Design en Deux Couches
 
-## Conception à deux couches
+Voici l'astuce : les skills ne chargent pas tout d'un coup. Ils utilisent la divulgation progressive pour economiser ~75% de tokens.
 
-Chaque skill utilise une **conception à deux couches optimisée en tokens** :
+### Couche 1 : SKILL.md (~800 octets)
 
-| Couche | Contenu | Taille |
-|--------|---------|--------|
-| `SKILL.md` | Identité, conditions de routage, règles principales | ~40 lignes (~800 o) |
-| `resources/` | Protocoles d'exécution, exemples, checklists, playbooks, extraits de code, pile technique | Chargé à la demande |
+Toujours charge. Contient :
+- Identite et role de l'agent
+- Quand s'activer (conditions de routage)
+- Regles et contraintes principales
+- Ce qu'il ne faut PAS faire
 
-Cela permet une **économie d'environ 75 % de tokens** lors du chargement initial du skill (3-7 Ko vers ~800 o par skill).
+### Couche 2 : resources/ (charge a la demande)
 
-## Couche de ressources partagées (`_shared/`)
+Charge uniquement quand l'agent travaille activement. Contient le contenu approfondi :
 
-Ressources communes dédupliquées entre tous les skills :
+| Ressource | Ce Qu'elle Fait |
+|-----------|-----------------|
+| `execution-protocol.md` | Flux etape par etape : Analyser → Planifier → Implementer → Verifier |
+| `tech-stack.md` | Specifications technologiques detaillees et versions |
+| `error-playbook.md` | Que faire quand ca tourne mal (avec escalade "3 strikes") |
+| `checklist.md` | Verifications qualite specifiques au domaine |
+| `snippets.md` | Patterns de code prets a l'emploi |
+| `examples/` | Exemples few-shot entree/sortie |
+
+### A Quoi Ca Ressemble
+
+```
+.agents/skills/oma-frontend/
+├── SKILL.md                          ← Toujours charge (~800 octets)
+└── resources/
+    ├── execution-protocol.md         ← A la demande
+    ├── tech-stack.md
+    ├── tailwind-rules.md
+    ├── component-template.tsx
+    ├── snippets.md
+    ├── error-playbook.md
+    ├── checklist.md
+    └── examples/
+```
+
+## Ressources Partagees
+
+Tous les agents partagent des fondations communes depuis `.agents/skills/_shared/` :
 
 | Ressource | Objectif |
 |-----------|----------|
-| `reasoning-templates.md` | Modèles structurés à compléter pour le raisonnement en plusieurs étapes |
-| `clarification-protocol.md` | Quand demander vs supposer, niveaux d'ambiguïté |
-| `context-budget.md` | Stratégies de lecture de fichiers optimisées en tokens par niveau de modèle |
-| `context-loading.md` | Correspondance type de tâche vers ressource pour la construction du prompt de l'orchestrateur |
-| `skill-routing.md` | Correspondance skill vers agent et règles d'exécution parallèle |
-| `difficulty-guide.md` | Évaluation Simple/Moyen/Complexe avec branchement de protocole |
-| `lessons-learned.md` | Retours d'expérience accumulés entre sessions |
-| `verify.sh` | Script de vérification automatisé exécuté après la complétion de l'agent |
-| `api-contracts/` | Le PM crée les contrats, le backend les implémente, le frontend/mobile les consomme |
-| `serena-memory-protocol.md` | Protocole de lecture/écriture mémoire en mode CLI |
-| `common-checklist.md` | Vérifications universelles de qualité de code |
+| `skill-routing.md` | Mappe les taches au bon agent |
+| `context-loading.md` | Quelles ressources charger pour quel type de tache |
+| `prompt-structure.md` | Objectif → Contexte → Contraintes → Termine Quand |
+| `clarification-protocol.md` | Quand demander vs. simplement supposer |
+| `context-budget.md` | Lecture de fichiers econome en tokens par tier de modele |
+| `difficulty-guide.md` | Evaluation de tache Simple / Moyenne / Complexe |
+| `reasoning-templates.md` | Templates de raisonnement structure a remplir |
+| `quality-principles.md` | Standards de qualite universels |
+| `vendor-detection.md` | Detecter quel IDE/CLI est en cours d'execution |
 
-## Ressources par skill
+## Ressources Conditionnelles
 
-Chaque skill fournit des ressources spécifiques à son domaine :
+Certaines ressources ne se chargent que lorsque declenchees par des conditions specifiques :
 
-| Ressource | Objectif |
-|-----------|----------|
-| `execution-protocol.md` | Workflow en 4 étapes de type chaîne de pensée (Analyser, Planifier, Implémenter, Vérifier) |
-| `examples.md` | 2-3 exemples entrée/sortie en few-shot |
-| `checklist.md` | Checklist d'auto-vérification spécifique au domaine |
-| `error-playbook.md` | Récupération sur erreur avec règle d'escalade « 3 tentatives » |
-| `tech-stack.md` | Spécifications techniques détaillées |
-| `snippets.md` | Modèles de code prêts à copier-coller |
-| `variants/` | Presets par langage (ex. `python/`, `node/`, `rust/`) -- utilisé par `oma-backend` |
+| Ressource | Quand Elle Se Charge |
+|-----------|----------------------|
+| `quality-score.md` | Evaluation de qualite demandee |
+| `experiment-ledger.md` | Essai d'une approche experimentale |
+| `exploration-loop.md` | Exploration iterative en cours |
 
-## Pourquoi c'est important
+## Execution Specifique au Vendor
 
-Cela maintient un contexte initial léger tout en supportant une exécution approfondie lorsque nécessaire.
+Chaque CLI supporte a son propre protocole d'execution dans `.agents/skills/_shared/runtime/execution-protocols/` :
+- `claude.md` — Patterns specifiques a Claude
+- `gemini.md` — Patterns specifiques a Gemini
+- `codex.md` — Patterns specifiques a Codex
+- `qwen.md` — Patterns specifiques a Qwen
+
+## Pourquoi C'est Important
+
+Sans divulgation progressive, charger 5 agents epuiserait votre fenetre de contexte avant que le moindre travail commence. Avec elle, vous obtenez un chargement initial leger et une execution approfondie quand ca compte.

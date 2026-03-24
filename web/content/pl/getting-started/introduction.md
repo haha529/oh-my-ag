@@ -1,48 +1,56 @@
 ---
 title: Wprowadzenie
-description: Czym jest oh-my-agent i jak działa współpraca wieloagentowa.
+description: Czym jest oh-my-agent i dlaczego warto miec zespol agentow AI pracujacych razem.
 ---
 
 # Wprowadzenie
 
-oh-my-agent to wieloagentowy orkiestrator dla Antigravity IDE. Kieruje żądania do wyspecjalizowanych umiejętności i koordynuje agentów za pośrednictwem pamięci Serena.
+Czy kiedykolwiek chciales, zeby Twoj asystent AI mial wspolpracownikow? Wlasnie to robi oh-my-agent.
 
-## Co otrzymujesz
+Zamiast jednego AI robiącego wszystko (i gubiącego się w polowie drogi), oh-my-agent rozdziela prace miedzy **wyspecjalizowanych agentow** -- ekspert od frontendu, ekspert od backendu, recenzent QA, planista PM i wiecej. Kazdy agent doglebnie zna swoja dziedzine i ma wlasne narzedzia, listy kontrolne i poradniki obslugi bledow.
 
-- Jawne wywoływanie umiejętności przez /command lub pole skills agenta
-- Wykonanie oparte na przepływach pracy dla planowania/przeglądu/debugowania
-- Orkiestracja CLI do równoległego uruchamiania agentów
-- Panele czasu rzeczywistego do monitorowania sesji
+## Co Naprawde Dostajesz
 
-## Role agentów
+- **14 wyspecjalizowanych agentow** -- kazdy wzorowany na prawdziwej roli w zespole inzynierskim
+- **Komendy slash** jak `/plan`, `/coordinate`, `/review` uruchamiajace ustrukturyzowane workflow
+- **Automatyczne wykrywanie** -- po prostu opisz czego chcesz w jezuku naturalnym, a odpowiedni workflow sie aktywuje (w 11 jezykach!)
+- **Rownolegle wykonywanie** -- uruchom wielu agentow pracujacych jednoczesnie nad roznymi czesciami
+- **Dashboardy w czasie rzeczywistym** -- terminal i interfejs webowy do monitorowania pracy agentow
+- **Dziala wszedzie** -- Antigravity, Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode i wiecej
 
-| Agent | Odpowiedzialność |
-|---|---|
-| oma-coordination | Koordynuje złożone projekty wielodomenowe |
-| oma-pm | Planowanie i dekompozycja architektury |
-| oma-frontend | Implementacja React/Next.js |
-| oma-backend | Implementacja API backend (Python, Node.js, Rust, ...) |
-| oma-mobile | Implementacja Flutter/mobile |
-| oma-qa | Przegląd bezpieczeństwa/wydajności/dostępności |
-| oma-debug | Analiza przyczyn źródłowych i poprawki bezpieczne dla regresji |
-| oma-brainstorm | Ideacja z priorytetem projektowania i eksploracja koncepcji |
-| oma-db | Modelowanie baz danych, projektowanie schematów i optymalizacja zapytań |
-| oma-dev-workflow | Optymalizacja przepływu pracy deweloperskiej i CI/CD |
-| oma-tf-infra | Provisioning infrastruktury jako kodu z Terraform |
-| oma-translator | Kontekstowe tłumaczenie wielojęzyczne |
-| oma-orchestrator | Orkiestracja podagentów oparta na CLI |
-| oma-commit | Przepływ pracy konwencjonalnych commitów |
+## Poznaj Swoj Zespol
 
-## Struktura projektu
+| Agent | Co Robi |
+|-------|--------|
+| **oma-brainstorm** | Eksploruje pomysly zanim zaczniesz cokolwiek budowac |
+| **oma-pm** | Rozklada wymagania, planuje zadania, definiuje kontrakty API |
+| **oma-frontend** | Buduje UI w React/Next.js z TypeScript i Tailwind CSS |
+| **oma-backend** | Tworzy API w Python, Node.js lub Rust |
+| **oma-db** | Projektuje schematy baz danych, zarzadza migracjami, optymalizuje zapytania |
+| **oma-mobile** | Buduje wieloplatformowe aplikacje z Flutter |
+| **oma-design** | Tworzy design systems z tokenami, dostepnoscia i regulami responsywnymi |
+| **oma-qa** | Sprawdza bezpieczenstwo (OWASP), wydajnosc i dostepnosc |
+| **oma-debug** | Znajduje przyczyny zrodlowe, pisze poprawki i testy regresyjne |
+| **oma-tf-infra** | Wdrazanie infrastruktury chmurowej z Terraform |
+| **oma-dev-workflow** | Automatyzuje CI/CD, wydania i zadania monorepo |
+| **oma-translator** | Naturalnie tlumaczy tresci miedzy jezykami |
+| **oma-orchestrator** | Uruchamia wielu agentow rownolegle przez CLI |
+| **oma-commit** | Tworzy czyste conventional commits |
 
-- `.agents/skills/`: definicje umiejętności i zasoby
-- `.agents/workflows/`: jawne komendy przepływów pracy
-- `.serena/memories/`: stan orkiestracji w czasie wykonania
-- `cli/cli.ts`: źródło prawdy dla interfejsów komend
+## Jak To Dziala (Wersja 30-Sekundowa)
 
-## Progresywne ujawnianie
+1. Opisujesz co chcesz zbudowac
+2. oh-my-agent ustala, ktorzy agenci sa potrzebni
+3. Agenci wykonuja prace ze swoja specjalistyczna wiedza
+4. Bramki jakosci sprawdzaja prace przed zakonczeniem
+5. Dostajesz kod gotowy do produkcji, nie tylko sugestie
 
-1. Zidentyfikuj intencję żądania
-2. Załaduj tylko wymagane zasoby umiejętności
-3. Wykonaj za pomocą wyspecjalizowanych agentów
-4. Zweryfikuj i iteruj przez pętle QA/debug
+## Kluczowa Idea
+
+Wszystko zyje w `.agents/` -- jeden przenosny katalog w Twoim projekcie. Umiejetnosci, workflow, konfiguracje, wszystko. Zmien IDE kiedy chcesz. Twoja konfiguracja agentow podruzuje z kodem.
+
+## Co Dalej?
+
+- **[Instalacja](./installation)** -- Zacznij w 60 sekund
+- **[Przewodnik Uzycia](/guide/usage)** -- Zobacz prawdziwe przyklady agentow w akcji
+- **[Workflows](/core-concepts/workflows)** -- Poznaj komendy slash

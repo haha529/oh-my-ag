@@ -1,63 +1,108 @@
 ---
-title: Options
-description: All command options currently exposed by the CLI.
+title: CLI Options
+description: All flags and options for oh-my-agent CLI commands.
 ---
 
-# Options
+# CLI Options
 
-## Global
+## Global Options
 
-- `-h, --help`
-- `-V, --version`
+Available on every command:
 
-## usage:anti
+| Option | What It Does |
+|--------|-------------|
+| `-h, --help` | Show help |
+| `-V, --version` | Show version number |
 
-- `--json`
-- `--raw`
+## Output Options
 
-## doctor
+Many commands support machine-readable output:
 
-- `--json`
+| Option | What It Does |
+|--------|-------------|
+| `--json` | Output as JSON |
+| `--output <format>` | Output format: `text` or `json` |
 
-## stats
+You can also set `OH_MY_AG_OUTPUT_FORMAT=json` as an environment variable.
 
-- `--json`
-- `--reset`
+**Supported by:** `doctor`, `stats`, `retro`, `cleanup`, `auth:status`, `usage:anti`, `memory:init`, `verify`, `visualize`
 
-## retro
+## Per-Command Options
 
-- `--json`
-- `--interactive`
+### `update`
+| Option | What It Does |
+|--------|-------------|
+| `-f, --force` | Overwrite user-customized config files |
+| `--ci` | Non-interactive mode (skip all prompts) |
 
-## cleanup
+### `stats`
+| Option | What It Does |
+|--------|-------------|
+| `--reset` | Reset all metrics data |
 
-- `--dry-run`
-- `--json`
+### `retro`
+| Option | What It Does |
+|--------|-------------|
+| `--interactive` | Manual entry mode |
+| `--compare` | Compare current window vs. prior same-length window |
 
-## agent:spawn
+### `cleanup`
+| Option | What It Does |
+|--------|-------------|
+| `--dry-run` | Show what would be cleaned without doing it |
+| `-y, --yes` | Skip confirmation prompts |
 
-- `-v, --vendor <vendor>`
-- `-w, --workspace <path>`
+### `usage:anti`
+| Option | What It Does |
+|--------|-------------|
+| `--raw` | Dump raw RPC response |
 
-## agent:status
+### `agent:spawn`
+| Option | What It Does |
+|--------|-------------|
+| `-v, --vendor <vendor>` | Override CLI vendor (`gemini`/`claude`/`codex`/`qwen`) |
+| `-w, --workspace <path>` | Working directory for the agent |
 
-- `-r, --root <path>`
+### `agent:status`
+| Option | What It Does |
+|--------|-------------|
+| `-r, --root <path>` | Root path for memory checks |
 
-## memory:init
+### `agent:parallel`
+| Option | What It Does |
+|--------|-------------|
+| `-v, --vendor <vendor>` | Override CLI vendor |
+| `-i, --inline` | Specify tasks as `agent:task` arguments |
+| `--no-wait` | Don't wait for completion (background mode) |
 
-- `--json`
-- `--force`
+### `memory:init`
+| Option | What It Does |
+|--------|-------------|
+| `--force` | Overwrite existing schema files |
 
-## verify
+### `verify`
+| Option | What It Does |
+|--------|-------------|
+| `-w, --workspace <path>` | Workspace path to verify |
 
-- `-w, --workspace <path>`
-- `--json`
-
-## Practical Example
+## Practical Examples
 
 ```bash
-oma usage:anti --json
+# JSON output for CI pipeline
+oma doctor --json
+
+# Reset productivity metrics
 oma stats --reset
+
+# Preview cleanup without executing
 oma cleanup --dry-run
-oma agent:spawn backend "Implement auth API" session-01 -v codex -w ./apps/api
+
+# Spawn with specific CLI and workspace
+oma agent:spawn backend "Auth API" session-01 -v codex -w ./apps/api
+
+# Non-interactive update in CI
+oma update --ci --force
+
+# Compare last 7 days vs. prior 7 days
+oma retro 7 --compare
 ```

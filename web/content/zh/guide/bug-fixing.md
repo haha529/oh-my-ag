@@ -1,76 +1,70 @@
 ---
-title: "用例：缺陷修复"
-description: 结构化的复现-诊断-修复-回归循环，支持基于严重程度的升级机制。
+title: "使用场景：Bug 修复"
+description: 结构化调试 —— 从复现问题到编写回归测试。
 ---
 
-# 用例：缺陷修复
+# 使用场景：Bug 修复
 
-## 信息收集格式
+## 从一份好的报告开始
 
-从可复现的报告开始：
+Bug 报告写得越好，修复就越快：
 
 ```text
-Symptom:
-Environment:
+Symptom: Login button throws TypeError
+Environment: Chrome 130, macOS, production build
 Steps to reproduce:
-Expected vs actual:
-Logs/trace:
-Regression window (if known):
+  1. Go to /login
+  2. Enter valid credentials
+  3. Click "Sign In"
+Expected: Redirect to dashboard
+Actual: White screen, console shows "Cannot read property 'map' of undefined"
+Logs: [paste relevant logs]
 ```
 
-## 严重程度分级
+## 先分级
 
-尽早分类以选择响应速度：
+| 严重程度 | 含义 | 响应 |
+|---------|------|------|
+| **P0** | 数据丢失、认证绕过、生产故障 | 放下一切，拉上 QA/安全团队 |
+| **P1** | 主要用户流程中断 | 当前迭代内修复 |
+| **P2** | 功能降级但有变通方案 | 安排修复计划 |
+| **P3** | 小问题，不阻塞 | 放入待办列表 |
 
-- `P0`：数据丢失、认证绕过、生产环境宕机
-- `P1`：主要用户流程中断
-- `P2`：功能降级但存在变通方案
-- `P3`：次要/非阻塞问题
+## 调试循环
 
-`P0/P1` 应始终涉及 QA/安全评审。
+1. **复现** —— 在最小环境中精确复现
+2. **隔离** —— 找到根因（不只是表面症状）
+3. **修复** —— 最小的安全变更
+4. **测试** —— 为失败路径编写回归测试
+5. **扫描** —— 检查相邻代码中是否有相同模式
 
-## 执行循环
-
-1. 在最小化环境中精确复现。
-2. 隔离根因（不仅仅是修补症状）。
-3. 实施最小安全修复。
-4. 为失败路径添加回归测试。
-5. 重新检查可能存在相同故障模式的相邻路径。
-
-## oma-debug 的提示模板
+## 提示词模板
 
 ```text
-Bug: <error/symptom>
-Repro steps: <steps>
-Scope: <files/modules>
-Expected behavior: <expected>
+Bug: Login throws "Cannot read property 'map' of undefined"
+Repro: Click sign-in with valid credentials
+Scope: src/components/auth/*, src/hooks/useAuth.ts
+Expected: Redirect to dashboard
 Need:
-1) root cause
+1) root cause analysis
 2) minimal fix
 3) regression tests
-4) adjacent-risk scan
+4) scan for similar patterns
 ```
 
-## 常见升级信号
+## 何时升级
 
-当缺陷涉及以下内容时升级至 QA 或安全团队：
+在 Bug 涉及以下内容时，拉上 QA 或安全团队：
 
-- 认证/会话/Token 刷新
+- 认证 / 会话 / token 刷新
 - 权限边界
-- 支付/交易一致性
-- 高负载下的性能回归
+- 支付 / 交易一致性
+- 负载下的性能
 
-## 修复后验证
+## 修复之后
 
-- 原始复现场景不再失败
-- 相关流程中无新错误
+验证：
+- 原始复现步骤不再失败
+- 相关流程没有新错误
 - 测试在修复前失败、修复后通过
-- 如需热修复，回滚路径明确
-
-## 完成标准
-
-缺陷修复完成的条件：
-
-- 根因已识别并记录
-- 修复已通过可复现的检查验证
-- 回归测试覆盖已到位
+- 如果需要，有明确的回滚路径

@@ -1,67 +1,67 @@
 ---
-title: "Use Case: Dashboard Monitoring"
-description: Operate orchestrator sessions with terminal/web dashboards and actionable runbook signals.
+title: Dashboard Monitoring
+description: Watch your agents work in real-time with terminal and web dashboards.
 ---
 
-# Use Case: Dashboard Monitoring
+# Dashboard Monitoring
 
-## Start commands
+When you've got multiple agents running in parallel, you want eyes on what's happening. That's what dashboards are for.
+
+## Start a Dashboard
 
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+# Terminal UI
+oma dashboard
+
+# Web UI
+oma dashboard:web
+# → http://localhost:9847
 ```
 
-Web dashboard default URL: `http://localhost:9847`
+## Recommended Setup
 
-## Recommended terminal layout
+Use 3 terminals side by side:
 
-Use at least 3 terminals:
+| Terminal | Purpose |
+|----------|---------|
+| 1 | `oma dashboard` — live agent status |
+| 2 | Agent spawn commands |
+| 3 | Test and build logs |
 
-1. terminal dashboard (`oma dashboard`)
-2. agent spawn commands
-3. test/build logs
+Keep the web dashboard open in a browser for shared visibility during team sessions.
 
-Keep the web dashboard open for shared visibility during team sessions.
+## What You See
 
-## What the dashboards watch
+Dashboards watch `.serena/memories/` and show:
 
-Data source: `.serena/memories/`
+- **Session status** — running, completed, or failed
+- **Task board** — which agent has which task
+- **Agent progress** — turn count, current activity
+- **Results** — final outputs as they arrive
 
-Primary signals:
+Updates are event-driven (file change detection) — no polling loops eating your CPU.
 
-- session status (`running`, `completed`, `failed`)
-- task board assignment and state changes
-- per-agent progress turns
-- result publication events
+## Troubleshooting Signals
 
-Updates are event-driven from changed files; no full directory polling loop is required.
+| You See | What to Do |
+|---------|-----------|
+| "No agents detected" | Check agents were spawned with the same `session-id`. Verify `.serena/memories/` is being written. |
+| Session stuck in "running" | Check `progress-*` file timestamps. Restart blocked agents with clearer prompts. |
+| Frequent reconnects (web) | Check firewall/proxy. Restart `dashboard:web` and refresh the page. |
+| Missing activity | Verify the orchestrator is writing to the correct workspace directory. |
 
-## Runbook: signal → action
+## Before You Merge
 
-- `No agents detected`
-  - verify agents were spawned with the same `session-id`
-  - confirm `.serena/memories/` is being written
-- `Session stuck in running`
-  - inspect latest `progress-*` file timestamps
-  - restart failed or blocked agent with clearer prompt
-- `Frequent reconnects (web)`
-  - check local firewall/proxy
-  - restart `dashboard:web` and re-open the page
-- `Missing activity while agents are active`
-  - verify orchestrator writes are not redirected to another workspace
+Quick checklist from the dashboard:
 
-## Pre-merge monitoring checklist
+- All agents reached "completed" status
+- No unresolved high-severity QA findings
+- Result files present for each agent
+- Integration tests run after final outputs
 
-- all required agents reached completed state
-- no unresolved high-severity QA findings
-- latest result files are present for each agent
-- integration tests executed after final agent outputs
+## When You're Done
 
-## Done criteria
-
-Monitoring phase is done when:
-
-- session reached terminal state (`completed` or intentionally stopped)
-- activity history explains final output provenance
-- release/merge decision is made with full status visibility
+The monitoring phase is complete when:
+- Session shows terminal state (completed or stopped)
+- Activity history explains what happened
+- You've made your merge/release decision with full visibility

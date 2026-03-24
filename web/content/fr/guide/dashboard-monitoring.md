@@ -1,67 +1,67 @@
 ---
-title: "Cas d'usage : Surveillance par tableau de bord"
-description: Exploiter les sessions d'orchestrateur avec les tableaux de bord terminal/web et les signaux exploitables du runbook.
+title: Surveillance par Dashboard
+description: Observez vos agents travailler en temps reel avec des dashboards terminal et web.
 ---
 
-# Cas d'usage : Surveillance par tableau de bord
+# Surveillance par Dashboard
 
-## Commandes de démarrage
+Quand vous avez plusieurs agents qui tournent en parallele, vous voulez garder un oeil sur ce qui se passe. C'est a ca que servent les dashboards.
+
+## Demarrer un Dashboard
 
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+# UI Terminal
+oma dashboard
+
+# UI Web
+oma dashboard:web
+# → http://localhost:9847
 ```
 
-URL par défaut du tableau de bord web : `http://localhost:9847`
+## Configuration Recommandee
 
-## Disposition recommandée des terminaux
+Utilisez 3 terminaux cote a cote :
 
-Utilisez au moins 3 terminaux :
+| Terminal | Objectif |
+|----------|----------|
+| 1 | `oma dashboard` — statut des agents en direct |
+| 2 | Commandes de spawn d'agents |
+| 3 | Logs de test et build |
 
-1. Tableau de bord terminal (`oma dashboard`)
-2. Commandes de lancement d'agents
-3. Logs de tests/build
+Gardez le dashboard web ouvert dans un navigateur pour une visibilite partagee lors des sessions d'equipe.
 
-Gardez le tableau de bord web ouvert pour une visibilité partagée lors des sessions d'équipe.
+## Ce Que Vous Voyez
 
-## Ce que surveillent les tableaux de bord
+Les dashboards surveillent `.serena/memories/` et affichent :
 
-Source de données : `.serena/memories/`
+- **Statut de session** — en cours, termine ou echoue
+- **Tableau de taches** — quel agent a quelle tache
+- **Progression de l'agent** — nombre de tours, activite en cours
+- **Resultats** — sorties finales au fur et a mesure qu'elles arrivent
 
-Signaux principaux :
+Les mises a jour sont pilotees par evenements (detection de changements de fichiers) — pas de boucles de polling qui mangent votre CPU.
 
-- statut de session (`running`, `completed`, `failed`)
-- affectation du tableau de tâches et changements d'état
-- tours de progression par agent
-- événements de publication de résultats
+## Signaux de Problemes
 
-Les mises à jour sont déclenchées par les changements de fichiers ; aucune boucle de scrutation complète du répertoire n'est nécessaire.
+| Vous Voyez | Que Faire |
+|-----------|-----------|
+| "No agents detected" | Verifiez que les agents ont ete lances avec le meme `session-id`. Verifiez que `.serena/memories/` est alimente. |
+| Session bloquee sur "running" | Verifiez les timestamps des fichiers `progress-*`. Relancez les agents bloques avec des prompts plus clairs. |
+| Reconnexions frequentes (web) | Verifiez le firewall/proxy. Relancez `dashboard:web` et rafraichissez la page. |
+| Activite manquante | Verifiez que l'orchestrateur ecrit dans le bon repertoire de workspace. |
 
-## Runbook : signal vers action
+## Avant de Merger
 
-- `No agents detected`
-  - vérifier que les agents ont été lancés avec le même `session-id`
-  - confirmer que `.serena/memories/` est bien alimenté
-- `Session stuck in running`
-  - inspecter les horodatages des derniers fichiers `progress-*`
-  - relancer l'agent défaillant ou bloqué avec un prompt plus clair
-- `Frequent reconnects (web)`
-  - vérifier le pare-feu/proxy local
-  - relancer `dashboard:web` et rouvrir la page
-- `Missing activity while agents are active`
-  - vérifier que les écritures de l'orchestrateur ne sont pas redirigées vers un autre espace de travail
+Checklist rapide depuis le dashboard :
 
-## Checklist de surveillance pré-fusion
+- Tous les agents ont atteint le statut "completed"
+- Pas de constats QA de haute severite non resolus
+- Fichiers de resultats presents pour chaque agent
+- Tests d'integration lances apres les sorties finales
 
-- tous les agents requis ont atteint l'état terminé
-- aucune constatation QA de haute sévérité non résolue
-- les derniers fichiers de résultats sont présents pour chaque agent
-- les tests d'intégration ont été exécutés après les sorties finales des agents
+## Quand Vous Avez Termine
 
-## Critères de terminaison
-
-La phase de surveillance est terminée lorsque :
-
-- la session a atteint un état final (`completed` ou arrêtée volontairement)
-- l'historique d'activité explique la provenance du résultat final
-- la décision de release/fusion est prise avec une visibilité complète sur le statut
+La phase de surveillance est complete quand :
+- La session affiche un etat terminal (completed ou stopped)
+- L'historique d'activite explique ce qui s'est passe
+- Vous avez pris votre decision de merge/release avec une visibilite complete

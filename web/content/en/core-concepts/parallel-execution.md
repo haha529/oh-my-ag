@@ -1,9 +1,11 @@
 ---
 title: Parallel Execution
-description: CLI orchestration patterns for running multiple agents concurrently.
+description: Run multiple agents at the same time — because waiting for one to finish before starting the next is slow.
 ---
 
 # Parallel Execution
+
+The real power of oh-my-agent is running multiple agents simultaneously. While the backend agent builds your API, the frontend agent is already creating the UI.
 
 ## Basic Pattern
 
@@ -13,47 +15,77 @@ oma agent:spawn frontend "Create login form" session-01 &
 wait
 ```
 
+The `&` runs each agent in the background. `wait` blocks until both finish.
+
 ## Workspace-Aware Pattern
+
+Give each agent its own directory to avoid merge conflicts:
 
 ```bash
 oma agent:spawn backend "Auth + DB migration" session-02 -w ./apps/api
 oma agent:spawn frontend "Login + token refresh" session-02 -w ./apps/web
+oma agent:spawn mobile "Auth screens" session-02 -w ./apps/mobile
 ```
 
-## Monitoring Pattern
+## Using `agent:parallel`
+
+For a cleaner syntax:
 
 ```bash
-bunx oh-my-agent dashboard:web
-# open http://localhost:9847
+oma agent:parallel -i backend:"Implement auth API" frontend:"Build login form" mobile:"Auth screens"
 ```
+
+Add `--no-wait` to fire and forget:
+
+```bash
+oma agent:parallel -i backend:"task" frontend:"task" --no-wait
+```
+
+## Monitor While They Work
+
+Open a separate terminal:
+
+```bash
+# Terminal dashboard
+oma dashboard
+
+# Or web dashboard
+oma dashboard:web
+# → http://localhost:9847
+```
+
+The dashboard shows live status for each agent — turns taken, current task, completion state.
 
 ## Multi-CLI Configuration
 
-Configure different CLIs per agent type in `.agents/config/user-preferences.yaml`:
+Not all AI tools are equal. Route agents to the CLI that handles their domain best:
 
 ```yaml
-# Response language
-language: ko  # ko, en, ja, zh, ...
-
-# Default CLI (single tasks)
+# .agents/config/user-preferences.yaml
 default_cli: gemini
 
-# Per-agent CLI mapping (multi-CLI mode)
 agent_cli_mapping:
-  frontend: gemini
-  backend: codex
+  frontend: claude      # Complex UI reasoning
+  backend: gemini       # Fast API generation
   mobile: gemini
-  pm: claude
-  qa: claude
-  debug: gemini
+  qa: claude            # Thorough security review
+  debug: claude         # Deep root-cause analysis
+  pm: gemini            # Quick decomposition
 ```
 
-Run `/setup` to configure interactively.
+## CLI Vendor Resolution
 
-## CLI Vendor Resolution Priority
+When spawning an agent, the CLI is chosen in this order:
 
-1. `--vendor` command line argument
-2. `agent_cli_mapping` from user-preferences.yaml
-3. `default_cli` from user-preferences.yaml
-4. `active_vendor` from cli-config.yaml (legacy)
-5. Hardcoded fallback: `gemini`
+1. `--vendor` flag (highest priority)
+2. `agent_cli_mapping` for that specific agent
+3. `default_cli` setting
+4. `cli-config.yaml`'s `active_vendor`
+5. `gemini` (fallback)
+
+## Tips for Parallel Runs
+
+- **Use one session ID per feature** — keeps agent outputs grouped
+- **Lock API contracts first** — run `/plan` before spawning implementation agents
+- **Separate workspaces** — avoid agents stepping on each other's files
+- **Monitor actively** — catch issues early via dashboard instead of finding them at merge time

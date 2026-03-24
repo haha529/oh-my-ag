@@ -1,129 +1,104 @@
 ---
-title: Integração com Projeto Existente
-description: Fluxo de integração seguro e não-destrutivo para adicionar skills do oh-my-agent a um projeto Antigravity existente.
+title: Integracao em Projeto Existente
+description: Adicione o oh-my-agent a um projeto que voce ja esta trabalhando -- de forma segura e nao destrutiva.
 ---
 
 # Integrar em um Projeto Existente
 
-Este guia substitui o fluxo legado do `AGENT_GUIDE.md` na raiz e reflete a estrutura atual de workspace (`cli` + `web`) e o comportamento da CLI.
+Ja tem um projeto? Veja como adicionar o oh-my-agent sem quebrar nada.
 
-## Objetivo
+## O Jeito Facil (CLI)
 
-Adicionar skills do `oh-my-agent` a um projeto existente sem sobrescrever os assets atuais.
-
-## Caminho Recomendado (CLI)
-
-Execute isto na raiz do projeto alvo:
+Execute isso na raiz do seu projeto:
 
 ```bash
 bunx oh-my-agent
 ```
 
-O que ele faz:
+O que isso faz:
+- Instala skills em `.agents/skills/`
+- Copia recursos compartilhados para `.agents/skills/_shared/`
+- Cria symlinks para sua IDE (`.claude/skills/`, etc.)
+- Instala workflows em `.agents/workflows/`
+- Cria config padrao em `.agents/config/user-preferences.yaml`
 
-- Instala ou atualiza `.agents/skills/*`
-- Instala recursos compartilhados em `.agents/skills/_shared`
-- Instala `.agents/workflows/*`
-- Instala `.agents/config/user-preferences.yaml`
-- Opcionalmente instala workflows globais em `~/.gemini/antigravity/global_workflows`
+## O Jeito Manual
 
-## Caminho Manual Seguro
-
-Use quando precisar de controle total sobre cada diretório copiado.
+Quando voce quer controle total sobre o que e copiado:
 
 ```bash
 cd /path/to/your-project
 
-mkdir -p .agents/skills .agents/workflows .agents/config
+mkdir -p .agents/skills .agents/workflows .agents/config .claude/skills
 
-# Copiar apenas diretórios de skills ausentes (exemplo)
-for skill in oma-coordination oma-pm oma-frontend oma-backend oma-mobile oma-qa oma-debug oma-orchestrator oma-commit; do
-  if [ ! -d ".agents/skills/$skill" ]; then
-    cp -r /path/to/oh-my-agent/.agents/skills/$skill .agents/skills/$skill
-  fi
+# Copie as skills que voce quer
+for skill in oma-pm oma-frontend oma-backend oma-qa oma-debug oma-commit; do
+  [ -d ".agents/skills/$skill" ] || cp -r /path/to/oh-my-agent/.agents/skills/$skill .agents/skills/
 done
 
-# Copiar recursos compartilhados se ausentes
-[ -d .agents/skills/_shared ] || cp -r /path/to/oh-my-agent/.agents/skills/_shared .agents/skills/_shared
+# Copie recursos compartilhados
+[ -d .agents/skills/_shared ] || cp -r /path/to/oh-my-agent/.agents/skills/_shared .agents/skills/
 
-# Copiar workflows se ausentes
-for wf in coordinate.md orchestrate.md plan.md review.md debug.md setup.md tools.md; do
-  [ -f ".agents/workflows/$wf" ] || cp /path/to/oh-my-agent/.agents/workflows/$wf .agents/workflows/$wf
+# Copie workflows
+for wf in coordinate.md plan.md review.md debug.md commit.md setup.md; do
+  [ -f ".agents/workflows/$wf" ] || cp /path/to/oh-my-agent/.agents/workflows/$wf .agents/workflows/
 done
 
-# Copiar preferências de usuário padrão apenas se ausentes
-[ -f .agents/config/user-preferences.yaml ] || cp /path/to/oh-my-agent/.agents/config/user-preferences.yaml .agents/config/user-preferences.yaml
+# Config padrao (apenas se ausente)
+[ -f .agents/config/user-preferences.yaml ] || cp /path/to/oh-my-agent/.agents/config/user-preferences.yaml .agents/config/
 ```
 
-## Checklist de Verificação
+## Verifique se Funcionou
 
 ```bash
-# 9 skills instaláveis (excluindo _shared)
-find .agents/skills -mindepth 1 -maxdepth 1 -type d ! -name '_shared' | wc -l
-
-# Recursos compartilhados
-[ -d .agents/skills/_shared ] && echo ok
-
-# 7 workflows
-find .agents/workflows -maxdepth 1 -name '*.md' | wc -l
-
-# Verificação básica de saúde dos comandos
-bunx oh-my-agent doctor
+oma doctor
 ```
 
-## Dashboards Opcionais
-
-Os dashboards são opcionais e utilizam a CLI instalada:
-
+Ou verifique manualmente:
 ```bash
-bunx oh-my-agent dashboard
-bunx oh-my-agent dashboard:web
+ls .agents/skills/          # Deve ver seus diretorios de skills
+ls .agents/workflows/       # Deve ver arquivos .md de workflow
+cat .agents/config/user-preferences.yaml  # Deve ver sua config
 ```
 
-URL padrão do dashboard web: `http://localhost:9847`
+## Symlinks Multi-IDE
 
-## Estratégia de Rollback
-
-Antes da integração, crie um commit de checkpoint no seu projeto:
-
-```bash
-git add -A
-git commit -m "chore: checkpoint before oh-my-agent integration"
-```
-
-Se precisar desfazer, reverta esse commit com o processo normal da sua equipe.
-
-## Suporte a Symlinks Multi-CLI
-
-Quando você executar `bunx oh-my-agent`, verá este prompt após selecionar as skills:
+Durante `bunx oh-my-agent`, voce sera perguntado:
 
 ```text
-Also develop with other CLI tools?
-  ○ Claude Code (.claude/skills/)
-  ○ OpenCode, Amp, Codex (.agents/skills/)
+Also create symlinks for other CLI tools?
+  ○ Cursor (.cursor/skills/)
   ○ GitHub Copilot (.github/skills/)
 ```
 
-Selecione quaisquer ferramentas CLI adicionais que você utiliza junto com o Antigravity. O instalador irá:
+Uma fonte de verdade (`.agents/skills/`), multiplas IDEs lendo dela:
 
-1. Instalar skills em `.agents/skills/` (localização nativa do Antigravity)
-2. Criar symlinks do diretório de skills de cada CLI selecionada para `.agents/skills/`
-
-Isso garante uma fonte única da verdade enquanto permite que as skills funcionem em múltiplas ferramentas CLI.
-
-### Estrutura de Symlinks
-
-```
-.agents/skills/oma-frontend/      <- Fonte (SSOT)
-.claude/skills/oma-frontend/     -> ../../.agents/skills/oma-frontend/
-.agents/skills/oma-frontend/     -> ../../.agents/skills/oma-frontend/ (OpenCode, Amp, Codex)
-.github/skills/oma-frontend/     → ../../.agents/skills/oma-frontend/ (GitHub Copilot)
+```text
+.agents/skills/oma-frontend/     ← Fonte (SSOT)
+.claude/skills/oma-frontend/     → symlink
+.cursor/skills/oma-frontend/     → symlink
+.github/skills/oma-frontend/     → symlink
 ```
 
-O instalador ignora symlinks existentes e alerta se um diretório real existir no local de destino.
+## Dicas de Seguranca
 
-## Observações
+**Antes de integrar**, crie um checkpoint:
 
-- Não sobrescreva pastas existentes em `.agents/skills/*` a menos que pretenda substituir skills personalizadas.
-- Mantenha arquivos de política específicos do projeto (`.agents/config/*`) sob a propriedade do seu repositório.
-- Para padrões de orquestração multi-agente, continue com o [`Guia de Uso`](./usage.md).
+```bash
+git add -A && git commit -m "chore: checkpoint before oh-my-agent"
+```
+
+- A CLI nunca sobrescreve pastas de skills existentes
+- Suas configs especificas do projeto ficam sob seu controle
+- `oma doctor` sinalizara qualquer problema
+
+## Opcional: Dashboards
+
+```bash
+oma dashboard        # Monitoramento no terminal
+oma dashboard:web    # UI Web em http://localhost:9847
+```
+
+## Proximo Passo
+
+Comece a conversar na sua IDE de IA, ou confira o [Guia de Uso](./usage) para exemplos de workflows.

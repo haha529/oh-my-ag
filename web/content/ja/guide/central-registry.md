@@ -1,79 +1,75 @@
 ---
-title: マルチリポジトリ構成のセントラルレジストリ
-description: このリポジトリをバージョン管理されたセントラルレジストリとして運用し、PR ベースの更新でコンシューマープロジェクトを安全に同期する方法。
+title: セントラルレジストリ
+description: oh-my-agentをバージョン管理されたレジストリとして使い、複数プロジェクトを同期する。
 ---
 
-# マルチリポジトリ構成のセントラルレジストリ
+# マルチリポ構成のセントラルレジストリ
 
-このリポジトリは、複数のコンシューマーリポジトリがバージョン管理された更新に揃うよう、エージェントスキルの**セントラルレジストリ**として機能できます。
+oh-my-agentを使っているプロジェクトが複数ありますか？ このリポジトリを**セントラルレジストリ**として扱えます。スキルをバージョン管理し、すべてのコンシューマープロジェクトを同期させましょう。
 
-## アーキテクチャ
+## 仕組み
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  セントラルレジストリ（このリポジトリ）                      │
-│  • release-please による自動バージョニング                  │
-│  • CHANGELOG.md の自動生成                                │
-│  • prompt-manifest.json（バージョン/ファイル/チェックサム）  │
-│  • agent-skills.tar.gz リリースアーティファクト             │
+│  セントラルレジストリ（oh-my-agentリポジトリ）              │
+│  • release-pleaseによる自動バージョニング                   │
+│  • CHANGELOG.md自動生成                                    │
+│  • prompt-manifest.json（バージョン + チェックサム）         │
+│  • agent-skills.tar.gz リリースアーティファクト              │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│  コンシューマーリポジトリ                                   │
-│  • .agent-registry.yml によるバージョンピニング            │
-│  • 新バージョン検出 → PR（自動マージなし）                  │
-│  • ファイル同期用の再利用可能な Action                      │
+│  あなたのプロジェクト                                      │
+│  • .agent-registry.ymlでバージョンをピン留め                │
+│  • GitHub Actionが新バージョンを検出 → PRを作成             │
+│  • レビューしてマージすれば更新完了                          │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## レジストリメンテナー向け
+## レジストリ管理者向け
 
-リリースは [release-please](https://github.com/googleapis/release-please) により自動化されています:
+リリースは[release-please](https://github.com/googleapis/release-please)で自動化されています：
 
-1. Conventional Commits を使用します（`feat:`、`fix:`、`chore:`、...）。
-2. `main` にプッシュしてリリース PR を作成/更新します。
-3. リリース PR をマージして GitHub Release アセットを公開します:
-   - `CHANGELOG.md`（自動生成）
-   - `prompt-manifest.json`（ファイルリスト + SHA256 チェックサム）
-   - `agent-skills.tar.gz`（圧縮された `.agents/` ディレクトリ）
+1. Conventional Commitsを使う（`feat:`、`fix:`、`chore:`）
+2. `main` にプッシュ → リリースPRが作成/更新される
+3. リリースPRをマージ → GitHub Releaseが以下と共に公開：
+   - `CHANGELOG.md`
+   - `prompt-manifest.json`（ファイルリスト + SHA256チェックサム）
+   - `agent-skills.tar.gz`（圧縮された `.agents/`）
 
 ## コンシューマープロジェクト向け
 
-`docs/consumer-templates/` からテンプレートをプロジェクトにコピーします:
+テンプレートをプロジェクトにコピーします：
 
 ```bash
-# Configuration file
-cp docs/consumer-templates/.agent-registry.yml /path/to/your-project/
-
-# GitHub workflows
-cp docs/consumer-templates/check-registry-updates.yml /path/to/your-project/.github/workflows/
-cp docs/consumer-templates/sync-agent-registry.yml /path/to/your-project/.github/workflows/
+cp docs/consumer-templates/.agent-registry.yml your-project/
+cp docs/consumer-templates/check-registry-updates.yml your-project/.github/workflows/
+cp docs/consumer-templates/sync-agent-registry.yml your-project/.github/workflows/
 ```
 
-次に、`.agent-registry.yml` で目的のバージョンをピニングします:
+バージョンをピン留めします：
 
 ```yaml
+# .agent-registry.yml
 registry:
   repo: first-fluke/oh-my-agent
-  version: "1.2.0"
+  version: "4.7.0"
 ```
 
-ワークフローの役割:
+ワークフロー：
+- `check-registry-updates.yml` — 新バージョンをチェックしてPRを作成
+- `sync-agent-registry.yml` — ピン留めバージョンの更新時に `.agents/` を同期
 
-- `check-registry-updates.yml`: 新しいバージョンを確認し、PR を作成します。
-- `sync-agent-registry.yml`: ピニングされたバージョンが変更されたときに `.agents/` を同期します。
+**自動マージは意図的に無効**にしています。すべての更新は人間がレビューします。
 
-**重要**: 自動マージは意図的に無効化されています。すべての更新は手動でレビューしてください。
+## セントラルレジストリ vs. GitHub Action
 
-## 再利用可能な Action の使用
+| | GitHub Action | セントラルレジストリ |
+|:--|:--:|:--:|
+| セットアップ工数 | ワークフロー1ファイル | 3ファイル |
+| 更新方法 | `oma update` CLI | tarballダウンロード |
+| バージョン管理 | 常に最新 | 明示的ピン留め |
+| 適している用途 | ほとんどのプロジェクト | 厳格なバージョン管理 |
 
-コンシューマーリポジトリは同期アクションを直接呼び出すことができます:
-
-```yaml
-- uses: first-fluke/oh-my-agent/.github/actions/sync-agent-registry@main
-  with:
-    registry-repo: first-fluke/oh-my-agent
-    version: "1.2.0" # or "latest"
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-```
+ほとんどのチームは[GitHub Action](./automated-updates)アプローチを使うべきです。厳格なバージョンピン留めが必要な場合や、サードパーティActionが使えない場合にセントラルレジストリを使ってください。

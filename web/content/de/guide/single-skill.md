@@ -1,31 +1,31 @@
 ---
 title: "Anwendungsfall: Einzelner Skill"
-description: Schneller Weg für fokussierte Einzeldomänen-Arbeit mit klarem Umfang und kurzen Feedback-Schleifen.
+description: Wenn du nur einen Agenten fuer eine fokussierte Aufgabe brauchst — der schnelle Weg.
 ---
 
 # Anwendungsfall: Einzelner Skill
 
-## Wann dieser Weg geeignet ist
+## Wann Dies Verwenden
 
-Verwenden Sie diesen Weg, wenn die Ausgabe eng begrenzt ist und hauptsächlich einer Domäne gehört:
+Verwende dies, wenn deine Aufgabe eng eingegrenzt ist und einem einzigen Domain gehoert:
 
 - Eine UI-Komponente
-- Ein API-Endpunkt
-- Ein Fehler in einer Schicht
+- Ein API-Endpoint
+- Ein Bug in einer Schicht
 - Ein Refactoring in einem Modul
 
-Wenn die Aufgabe domänenübergreifende Koordination erfordert (API-Vertrag + UI + QA), verwenden Sie [`Multi-Agenten-Projekt`](./multi-agent-project.md).
+Wenn die Aufgabe domainuebergreifende Koordination braucht (API + UI + QA), wechsle zum [Multi-Agenten-Projekt](./multi-agent-project).
 
-## Vorbereitungs-Checkliste
+## Bevor Du Deinen Prompt Schreibst
 
-Definieren Sie vor dem Prompting:
+Schnell-Checkliste:
 
-1. Exakte Ausgabe (Datei oder Verhalten)
-2. Ziel-Stack und Versionen
-3. Akzeptanzkriterien
-4. Testerwartungen
+1. **Was ist die Ausgabe?** — bestimmte Datei oder Verhalten
+2. **Welcher Stack?** — Framework, Sprache, Versionen
+3. **Was ist "fertig"?** — Akzeptanzkriterien
+4. **Welche Tests?** — kritische Faelle abzudecken
 
-## Prompt-Vorlage
+## Prompt-Template
 
 ```text
 Build <specific artifact> using <stack>.
@@ -36,7 +36,7 @@ Acceptance criteria:
 Add tests for: <critical cases>.
 ```
 
-## Beispiel-Prompt
+## Echtes Beispiel
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Erwarteter Ausführungsablauf
+## Was Passiert
 
-1. Der passende Skill wird automatisch ausgewählt.
-2. Der Agent schlägt Implementierung und Annahmen vor.
-3. Sie bestätigen oder korrigieren die Annahmen.
-4. Der Agent liefert Code und Tests.
-5. Sie führen die lokale Verifizierung durch und fordern kleine Nachbesserungen an.
+1. Der richtige Skill aktiviert sich automatisch basierend auf deinem Prompt
+2. Agent deklariert seine Annahmen (Charter Preflight)
+3. Du bestaetigst oder passt an
+4. Agent schreibt Code und Tests
+5. Du fuehrst lokale Verifikation durch
 
-## Qualitäts-Gate vor dem Merge
+## Vor dem Merge
 
-- Verhalten entspricht den Akzeptanzkriterien
-- Tests decken den Happy Path und wesentliche Grenzfälle ab
-- Keine unzugehörigen Dateiänderungen
-- Keine versteckten Breaking Changes an gemeinsamen Modulen
+Pruefe, dass:
+- Verhalten mit deinen Akzeptanzkriterien uebereinstimmt
+- Tests den Happy Path und wichtige Grenzfaelle abdecken
+- Keine unzugehoerigen Dateiaenderungen eingeschlichen sind
+- Geteilte Module nicht kaputt sind
 
-## Eskalationssignale
+## Wann Eskalieren
 
-Wechseln Sie zum Multi-Agenten-Ablauf, wenn:
-
-- UI-Arbeit neue API-Verträge erfordert
-- Eine Korrektur kaskadierende Änderungen über Schichten hinweg verursacht
-- Der Umfang nach der ersten Iteration über eine Domäne hinauswächst
-
-## Abschlusskriterien
-
-Die Einzelskill-Ausführung ist abgeschlossen, wenn:
-
-- Das Zielartefakt implementiert ist
-- Die Akzeptanzkriterien nachweislich erfüllt sind
-- Tests für das geänderte Verhalten hinzugefügt oder aktualisiert wurden
+Wechsle zum Multi-Agenten-Flow, wenn:
+- UI-Arbeit einen neuen API-Vertrag braucht
+- Ein Fix sich ueber Schichten ausbreitet
+- Der Umfang nach der ersten Iteration ueber eine Domain hinauswaechst

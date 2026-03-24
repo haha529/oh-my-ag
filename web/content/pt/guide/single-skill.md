@@ -1,31 +1,31 @@
 ---
-title: "Caso de Uso: Skill Única"
-description: Caminho rápido para trabalho focado em um único domínio com escopo claro e ciclos de feedback rápidos.
+title: "Caso de Uso: Skill Unica"
+description: Quando voce so precisa de um agente para uma tarefa focada -- o caminho rapido.
 ---
 
-# Caso de Uso: Skill Única
+# Caso de Uso: Skill Unica
 
-## Quando usar este caminho
+## Quando Usar Isso
 
-Use quando a saída tem escopo restrito e é principalmente de propriedade de um domínio:
+Use quando sua tarefa tem escopo restrito e pertence a um unico dominio:
 
-- um componente de UI
-- um endpoint de API
-- um bug em uma camada
-- uma refatoração em um módulo
+- Um componente de UI
+- Um endpoint de API
+- Um bug em uma camada
+- Uma refatoracao em um modulo
 
-Se a tarefa exigir coordenação entre domínios (contrato de API + UI + QA), use [`Projeto Multi-Agente`](./multi-agent-project.md).
+Se a tarefa precisa de coordenacao entre dominios (API + UI + QA), mude para [Projeto Multi-Agente](./multi-agent-project).
 
-## Checklist pré-execução
+## Antes de Fazer o Prompt
 
-Antes de fazer o prompt, defina:
+Checklist rapido:
 
-1. saída exata (arquivo ou comportamento)
-2. stack alvo e versões
-3. critérios de aceite
-4. expectativas de testes
+1. **Qual e a saida?** -- arquivo ou comportamento especifico
+2. **Qual stack?** -- framework, linguagem, versoes
+3. **O que e "pronto"?** -- criterios de aceitacao
+4. **Quais testes?** -- casos criticos a cobrir
 
-## Template de prompt
+## Template de Prompt
 
 ```text
 Build <specific artifact> using <stack>.
@@ -36,7 +36,7 @@ Acceptance criteria:
 Add tests for: <critical cases>.
 ```
 
-## Exemplo de prompt
+## Exemplo Real
 
 ```text
 Create a login form component in React + TypeScript + Tailwind CSS.
@@ -48,33 +48,25 @@ Acceptance criteria:
 Add unit tests for valid/invalid submit paths.
 ```
 
-## Fluxo de execução esperado
+## O Que Acontece
 
-1. A skill relevante é selecionada automaticamente.
-2. O agente propõe implementação e premissas.
-3. Você confirma ou ajusta as premissas.
-4. O agente entrega código e testes.
-5. Você executa a verificação local e solicita pequenos ajustes.
+1. A skill correta ativa automaticamente baseada no seu prompt
+2. O agente declara suas suposicoes (charter preflight)
+3. Voce confirma ou ajusta
+4. O agente escreve codigo e testes
+5. Voce executa verificacao local
 
-## Portão de qualidade antes do merge
+## Antes de Fazer Merge
 
-- comportamento corresponde aos critérios de aceite
-- testes cobrem o caminho feliz e os principais casos extremos
-- nenhuma alteração em arquivos não relacionados
-- nenhuma mudança oculta que quebre módulos compartilhados
+Verifique que:
+- O comportamento corresponde aos seus criterios de aceitacao
+- Os testes cobrem caminho feliz e casos de borda importantes
+- Nenhuma alteracao de arquivo nao relacionada se infiltrou
+- Modulos compartilhados nao estao quebrados
 
-## Sinais de escalação
+## Quando Escalar
 
-Mude para o fluxo multi-agente quando:
-
-- o trabalho de UI exigir novos contratos de API
-- uma correção criar mudanças em cascata entre camadas
-- o escopo crescer além de um domínio após a primeira iteração
-
-## Critérios de conclusão
-
-A execução de skill única está concluída quando:
-
-- o artefato alvo está implementado
-- os critérios de aceite são demonstravelmente satisfeitos
-- os testes são adicionados ou atualizados para o comportamento alterado
+Mude para fluxo multi-agente quando:
+- Trabalho de UI precisa de um novo contrato de API
+- Uma correcao se propaga entre camadas
+- O escopo cresce alem de um dominio apos a primeira iteracao
