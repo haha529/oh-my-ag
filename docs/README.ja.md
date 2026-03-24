@@ -136,6 +136,13 @@ bunx oh-my-agent
 → 変更を分析、コミットタイプ/スコープを提案、Co-Author付きでコミット
 ```
 
+**デザインシステム** (DESIGN.md + アンチパターン + オプションStitch MCP):
+
+```
+/design
+→ 7フェーズワークフロー: セットアップ → 抽出 → 強化 → 提案 → 生成 → 監査 → 引き渡し
+```
+
 ### 3. ダッシュボードで監視
 
 ダッシュボードの設定と使い方は[`web/content/ja/guide/usage.md`](./web/content/ja/guide/usage.md#リアルタイムダッシュボード)を参照してください。
@@ -155,6 +162,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["オーケストレーション"]
@@ -169,6 +177,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 
@@ -257,6 +266,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["オーケストレーション"]
@@ -271,6 +281,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

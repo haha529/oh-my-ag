@@ -69,6 +69,23 @@ description: Guía completa de uso incluyendo ejemplos, flujos de trabajo, opera
 4. **Se escribe prueba de regresión** — asegura que el bug no regrese
 5. **Se encuentran patrones similares** — corrige proactivamente 3 otros componentes
 
+### Ejemplo: Creación de sistema de diseño
+
+**Escribes:**
+```
+"Diseña una landing page premium oscura para mi producto SaaS"
+```
+
+**Qué sucede:**
+
+1. **oma-design se activa** — verifica `.design-context.md`
+2. **Contexto recopilado** — pregunta sobre audiencia, marca, dirección estética
+3. **Prompt mejorado** — solicitud vaga se convierte en especificación sección por sección
+4. **2-3 direcciones propuestas** — opciones de color, tipografía, diseño, movimiento
+5. **DESIGN.md generado** — sistema de diseño de 6 secciones + tokens
+6. **Auditoría ejecutada** — responsivo, WCAG, heurísticas de Nielsen, verificación de AI slop
+7. **Entrega** — listo para implementación con oma-frontend
+
 ### Ejemplo 4: Ejecución Paralela Basada en CLI
 
 ```bash

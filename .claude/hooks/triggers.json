@@ -122,6 +122,23 @@
         "nl": ["project initialiseren"],
         "pl": ["inicjalizacja projektu"]
       }
+    },
+    "design": {
+      "persistent": false,
+      "keywords": {
+        "*": ["design system", "DESIGN.md", "design token"],
+        "en": ["design", "landing page", "ui design", "color palette", "typography", "dark theme", "responsive design", "glassmorphism"],
+        "ko": ["디자인", "랜딩페이지", "디자인 시스템", "UI 디자인", "색상 팔레트", "타이포그래피", "다크 테마", "반응형"],
+        "ja": ["デザイン", "ランディングページ", "デザインシステム", "UIデザイン", "カラーパレット", "タイポグラフィ", "ダークテーマ", "レスポンシブ"],
+        "zh": ["设计", "着陆页", "设计系统", "UI设计", "配色方案", "字体排版", "暗色主题", "响应式"],
+        "es": ["diseño", "página de aterrizaje", "sistema de diseño", "diseño UI", "paleta de colores", "tipografía", "tema oscuro", "diseño responsivo"],
+        "fr": ["design", "page d'atterrissage", "système de design", "design UI", "palette de couleurs", "typographie", "thème sombre", "design responsif"],
+        "de": ["Design", "Landingpage", "Designsystem", "UI-Design", "Farbpalette", "Typografie", "dunkles Theme", "responsives Design"],
+        "pt": ["design", "página de destino", "sistema de design", "design UI", "paleta de cores", "tipografia", "tema escuro", "design responsivo"],
+        "ru": ["дизайн", "лендинг", "дизайн-система", "UI дизайн", "цветовая палитра", "типографика", "тёмная тема", "адаптивный дизайн"],
+        "nl": ["ontwerp", "landingspagina", "ontwerpsysteem", "UI-ontwerp", "kleurenpalet", "typografie", "donker thema", "responsief ontwerp"],
+        "pl": ["projekt", "strona docelowa", "system projektowy", "projekt UI", "paleta kolorów", "typografia", "ciemny motyw", "responsywny projekt"]
+      }
     }
   },
   "informationalPatterns": {

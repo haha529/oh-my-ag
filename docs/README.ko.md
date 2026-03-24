@@ -150,6 +150,13 @@ bunx oh-my-agent
 → 변경 분석, 커밋 타입/스코프 제안, Co-Author 포함 커밋
 ```
 
+**디자인 시스템** (DESIGN.md + 안티패턴 + 선택적 Stitch MCP):
+
+```
+/design
+→ 7단계 워크플로우: 설정 → 추출 → 증강 → 제안 → 생성 → 검증 → 전달
+```
+
 ### 3. 대시보드로 모니터링
 
 대시보드 설정과 사용법은 [`web/content/ko/guide/usage.md`](./web/content/ko/guide/usage.md#실시간-대시보드)를 참고하세요.
@@ -169,6 +176,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["오케스트레이션"]
@@ -183,6 +191,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

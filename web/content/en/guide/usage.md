@@ -69,6 +69,23 @@ description: Full usage guide including examples, workflows, dashboard operation
 4. **Regression test written** — ensures bug won't return
 5. **Similar patterns found** — proactively fixes 3 other components
 
+### Example: Design System Creation
+
+**You type:**
+```
+"Design a dark premium landing page for my SaaS product"
+```
+
+**What happens:**
+
+1. **oma-design activates** — checks for `.design-context.md`
+2. **Context gathered** — asks about audience, brand, aesthetic direction
+3. **Prompt enhanced** — vague request becomes section-by-section spec
+4. **2-3 directions proposed** — color, typography, layout, motion options
+5. **DESIGN.md generated** — 6-section design system with tokens
+6. **Audit run** — responsive, WCAG, Nielsen heuristics, AI slop check
+7. **Handoff** — ready for oma-frontend implementation
+
 ### Example 4: CLI-based Parallel Execution
 
 ```bash

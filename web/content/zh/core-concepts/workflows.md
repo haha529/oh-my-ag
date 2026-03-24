@@ -19,6 +19,7 @@ description: 显式斜杠命令工作流及其使用场景。
 - `/tools`
 - `/stack-set`
 - `/ultrawork`
+- `/design`
 
 ## 技能与工作流的区别
 

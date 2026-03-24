@@ -149,6 +149,13 @@ bunx oh-my-agent
 → Анализ изменений, выбор типа и области коммита, создание коммита с Co-Author
 ```
 
+**Дизайн-система** (DESIGN.md + антипаттерны + опциональный Stitch MCP):
+
+```
+/design
+→ 7-фазный рабочий процесс: Настройка → Извлечение → Улучшение → Предложение → Генерация → Аудит → Передача
+```
+
 ### 3. Мониторинг с помощью дашбордов
 
 Для настройки и использования дашбордов см. [`web/content/en/guide/usage.md`](./web/content/en/guide/usage.md#real-time-dashboards).
@@ -168,6 +175,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["Оркестрация"]
@@ -182,6 +190,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

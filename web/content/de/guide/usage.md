@@ -69,6 +69,23 @@ description: Vollständige Nutzungsanleitung mit Beispielen, Workflows, Dashboar
 4. **Regressionstest geschrieben** — stellt sicher, dass Bug nicht zurückkehrt
 5. **Ähnliche Patterns gefunden** — behebt proaktiv 3 weitere Komponenten
 
+### Beispiel: Designsystem erstellen
+
+**Sie tippen:**
+```
+"Entwirf eine dunkle Premium-Landingpage für mein SaaS-Produkt"
+```
+
+**Was passiert:**
+
+1. **oma-design wird aktiviert** — prüft `.design-context.md`
+2. **Kontext gesammelt** — fragt nach Zielgruppe, Marke, ästhetischer Richtung
+3. **Prompt verbessert** — vage Anfrage wird in Abschnitt-für-Abschnitt-Spezifikation umgewandelt
+4. **2-3 Richtungen vorgeschlagen** — Farb-, Typografie-, Layout-, Bewegungsoptionen
+5. **DESIGN.md generiert** — 6-Abschnitt-Designsystem + Tokens
+6. **Audit durchgeführt** — Responsive, WCAG, Nielsen-Heuristiken, AI-Slop-Prüfung
+7. **Übergabe** — bereit für oma-frontend-Implementierung
+
 ### Beispiel 4: CLI-basierte parallele Ausführung
 
 ```bash

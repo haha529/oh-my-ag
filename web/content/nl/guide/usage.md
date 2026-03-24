@@ -69,6 +69,23 @@ description: Volledige gebruiksgids met voorbeelden, workflows, dashboardbewerki
 4. **Regressietest geschreven** — zorgt dat bug niet terugkeert
 5. **Vergelijkbare patronen gevonden** — proactief 3 andere components gerepareerd
 
+### Voorbeeld: Ontwerpsysteem aanmaken
+
+**U typt:**
+```
+"Ontwerp een donkere premium landingspagina voor mijn SaaS-product"
+```
+
+**Wat er gebeurt:**
+
+1. **oma-design wordt geactiveerd** — controleert `.design-context.md`
+2. **Context verzameld** — vraagt naar doelgroep, merk, esthetische richting
+3. **Prompt verbeterd** — vaag verzoek wordt omgezet in sectie-voor-sectie specificatie
+4. **2-3 richtingen voorgesteld** — kleur-, typografie-, lay-out-, bewegingsopties
+5. **DESIGN.md gegenereerd** — 6-secties ontwerpsysteem + tokens
+6. **Audit uitgevoerd** — responsief, WCAG, Nielsen-heuristieken, AI-slop-controle
+7. **Overdracht** — klaar voor oma-frontend implementatie
+
 ### Voorbeeld 4: CLI-gebaseerde parallelle uitvoering
 
 ```bash

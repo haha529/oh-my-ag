@@ -141,6 +141,13 @@ bunx oh-my-agent
 → 변경 분석, 커밋 타입/스코프 제안, Co-Author 포함 커밋
 ```
 
+**设计系统** (DESIGN.md + 反模式 + 可选 Stitch MCP):
+
+```
+/design
+→ 7阶段工作流: 设置 → 提取 → 增强 → 提议 → 生成 → 审核 → 交接
+```
+
 ### 3. 仪表盘监控
 
 有关仪表盘设置和使用详情，请参阅 [`web/content/en/guide/usage.md`](./web/content/en/guide/usage.md#real-time-dashboards)。
@@ -161,6 +168,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["编排"]
@@ -175,6 +183,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

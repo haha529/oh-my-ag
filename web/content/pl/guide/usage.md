@@ -69,6 +69,23 @@ description: Kompletny przewodnik użytkowania z przykładami, przepływami prac
 4. **Napisany test regresji** — zapewnia że błąd się nie powtórzy
 5. **Znalezione podobne wzorce** — proaktywnie naprawia 3 inne komponenty
 
+### Przykład: Tworzenie systemu projektowego
+
+**Wpisujesz:**
+```
+"Zaprojektuj ciemną, premium stronę docelową dla mojego produktu SaaS"
+```
+
+**Co się dzieje:**
+
+1. **oma-design się aktywuje** — sprawdza `.design-context.md`
+2. **Kontekst zebrany** — pyta o grupę docelową, markę, kierunek estetyczny
+3. **Prompt ulepszony** — niejasne żądanie zamienione w specyfikację sekcja po sekcji
+4. **Zaproponowane 2-3 kierunki** — opcje kolorów, typografii, układu, animacji
+5. **DESIGN.md wygenerowany** — 6-sekcyjny system projektowy + tokeny
+6. **Audyt przeprowadzony** — responsywność, WCAG, heurystyki Nielsena, kontrola AI slop
+7. **Przekazanie** — gotowe do implementacji z oma-frontend
+
 ### Przykład 4: Równoległe wykonywanie oparte na CLI
 
 ```bash

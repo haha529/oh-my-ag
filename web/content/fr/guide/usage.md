@@ -69,6 +69,23 @@ description: Guide complet incluant exemples, workflows, opérations de tableau 
 4. **Test de régression écrit** — assure que le bug ne reviendra pas
 5. **Modèles similaires trouvés** — corrige proactivement 3 autres composants
 
+### Exemple : Création de système de design
+
+**Vous tapez :**
+```
+"Conçois une landing page premium sombre pour mon produit SaaS"
+```
+
+**Ce qui se passe :**
+
+1. **oma-design s'active** — vérifie `.design-context.md`
+2. **Contexte collecté** — questions sur l'audience, la marque, la direction esthétique
+3. **Prompt amélioré** — requête vague transformée en spécification section par section
+4. **2-3 directions proposées** — options couleur, typographie, mise en page, animation
+5. **DESIGN.md généré** — système de design en 6 sections + tokens
+6. **Audit exécuté** — responsive, WCAG, heuristiques de Nielsen, vérification AI slop
+7. **Transmission** — prêt pour implémentation avec oma-frontend
+
 ### Exemple 4 : Exécution parallèle basée CLI
 
 ```bash

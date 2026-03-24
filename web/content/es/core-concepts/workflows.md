@@ -19,6 +19,7 @@ description: Flujos de trabajo explicitos con comandos slash y cuando utilizarlo
 - `/tools`
 - `/stack-set`
 - `/ultrawork`
+- `/design`
 
 ## Skills vs flujos de trabajo
 

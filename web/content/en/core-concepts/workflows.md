@@ -15,6 +15,7 @@ description: Explicit slash-command workflows and when to use them.
 - `/plan`
 - `/review`
 - `/debug`
+- `/design`
 - `/setup`
 - `/tools`
 - `/stack-set`

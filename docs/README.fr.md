@@ -166,6 +166,13 @@ bunx oh-my-agent
 → Analyser changements, suggérer type/portée de commit, créer commit avec Co-Author
 ```
 
+**Système de design** (DESIGN.md + anti-patterns + Stitch MCP optionnel) :
+
+```
+/design
+→ Flux en 7 phases : Configuration → Extraction → Amélioration → Proposition → Génération → Audit → Transmission
+```
+
 ### 3. Surveiller avec les tableaux de bord
 
 Pour la configuration et les détails d'utilisation des tableaux de bord, voir [`web/content/fr/guide/usage.md`](./web/content/fr/guide/usage.md#tableaux-de-bord-en-temps-réel).
@@ -185,6 +192,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["Orchestration"]
@@ -199,6 +207,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

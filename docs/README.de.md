@@ -138,6 +138,13 @@ bunx oh-my-agent
 → Änderungen analysieren, Commit-Typ/Scope vorschlagen, Commit mit Co-Author erstellen
 ```
 
+**Designsystem** (DESIGN.md + Anti-Patterns + optionaler Stitch MCP):
+
+```
+/design
+→ 7-Phasen-Workflow: Einrichtung → Extraktion → Verbesserung → Vorschlag → Generierung → Audit → Übergabe
+```
+
 ### 3. Mit Dashboards überwachen
 
 Details zu Dashboard-Setup und Nutzung finden Sie in [`web/content/de/guide/usage.md`](./web/content/de/guide/usage.md#echtzeit-dashboards).
@@ -157,6 +164,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["Orchestrierung"]
@@ -171,6 +179,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

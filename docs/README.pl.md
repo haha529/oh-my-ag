@@ -138,6 +138,13 @@ bunx oh-my-agent
 → Analizuj zmiany, sugeruj typ/zakres commita, utwórz commit z Co-Author
 ```
 
+**System projektowy** (DESIGN.md + anty-wzorce + opcjonalny Stitch MCP):
+
+```
+/design
+→ 7-fazowy przepływ: Konfiguracja → Ekstrakcja → Ulepszenie → Propozycja → Generowanie → Audyt → Przekazanie
+```
+
 ### 3. Monitoruj za pomocą dashboardów
 
 Szczegóły konfiguracji i użycia dashboardu znajdziesz w [`docs/USAGE.pl.md`](./docs/USAGE.pl.md#dashboardy-w-czasie-rzeczywistym).
@@ -157,6 +164,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["Orkiestracja"]
@@ -171,6 +179,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

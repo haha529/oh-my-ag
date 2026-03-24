@@ -138,6 +138,13 @@ bunx oh-my-agent
 → Analyseer wijzigingen, stel commit type/scope voor, creëer commit met Co-Author
 ```
 
+**Ontwerpsysteem** (DESIGN.md + anti-patronen + optionele Stitch MCP):
+
+```
+/design
+→ 7-fasen workflow: Instelling → Extractie → Verbetering → Voorstel → Generatie → Audit → Overdracht
+```
+
 ### 3. Monitoren met dashboards
 
 Voor dashboard setup en gebruiksdetails, zie [`web/content/nl/guide/usage.md`](./web/content/nl/guide/usage.md#realtime-dashboards).
@@ -157,6 +164,7 @@ flowchart TD
         W4["/review"]
         W5["/debug"]
         W6["/deepinit"]
+        W7["/design"]
     end
 
     subgraph Orchestration["Orkestratie"]
@@ -171,6 +179,7 @@ flowchart TD
         BE[oma-backend]
         DB[oma-db]
         MB[oma-mobile]
+        DES[oma-design]
         TF[oma-tf-infra]
     end
 

@@ -24,6 +24,7 @@
 | `/commit` | `commit.md` | Inline git commit |
 | `/tools` | `tools.md` | Inline MCP management |
 | `/stack-set` | `stack-set.md` | Inline stack configuration |
+| `/design` | `design.md` | Inline 7-phase design workflow |
 | `/deepinit` | `deepinit.md` | Inline project initialization |
 
 ## Automatic Workflow Detection

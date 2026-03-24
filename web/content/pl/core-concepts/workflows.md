@@ -19,6 +19,7 @@ description: Jawne przepływy pracy oparte na komendach slash i kiedy ich używa
 - `/tools`
 - `/stack-set`
 - `/ultrawork`
+- `/design`
 
 ## Umiejętności a przepływy pracy
 
