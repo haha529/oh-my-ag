@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.3.6](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.5...web-v0.3.6) (2026-03-24)
+
+
+### Refactoring
+
+* remove .agents/brain/ and consolidate output to .agents/results/ ([3760861](https://github.com/first-fluke/oh-my-agent/commit/37608617a133bd688bfb53ed3757634bd01ecad5))
+
+
+### Documentation
+
+* add detailed web content translations for all 10 languages ([77b2cf4](https://github.com/first-fluke/oh-my-agent/commit/77b2cf49af23a3f9fed2aaf42c8dd2502817359c))
+* comprehensive documentation rewrite (198 files, 11 languages) ([c97a771](https://github.com/first-fluke/oh-my-agent/commit/c97a7712d61e732fb686b37f79dbb4d51e0febd6))
+* comprehensive documentation rewrite across all languages ([d396ce8](https://github.com/first-fluke/oh-my-agent/commit/d396ce808f596d5a2cb3cd8c3fd30500c392c048))
+* upgrade remaining EN web content to detailed reference docs ([cd3a4c7](https://github.com/first-fluke/oh-my-agent/commit/cd3a4c71deb3ba5e3afebb7ac2ae6379ee292687))
+* upgrade single-skill guide to detailed reference ([a1accb0](https://github.com/first-fluke/oh-my-agent/commit/a1accb0c50d166be89416f9b331391c4a2a39492))
+
+
+### Miscellaneous
+
+* bump typescript from ^5 to ^6 ([c7f9166](https://github.com/first-fluke/oh-my-agent/commit/c7f91668f091e1cfd80a4fda401dfe1842e62f69))
+
 ## [0.3.5](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.4...web-v0.3.5) (2026-03-24)
 
 
