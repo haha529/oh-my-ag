@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.8.1](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.8.0...cli-v4.8.1) (2026-03-25)
+
+
+### Documentation
+
+* comprehensive documentation rewrite (198 files, 11 languages) ([c97a771](https://github.com/first-fluke/oh-my-agent/commit/c97a7712d61e732fb686b37f79dbb4d51e0febd6))
+* restore Star History section to all README files ([5871fa5](https://github.com/first-fluke/oh-my-agent/commit/5871fa550a9768e19527cc62a4353c8dae0194c0))
+
+
+### Miscellaneous
+
+* **main:** release web 0.3.6 ([5f84b5f](https://github.com/first-fluke/oh-my-agent/commit/5f84b5fad455f1f6b349e8765c167d72aa14542c))
+* **main:** release web 0.3.6 ([472ab41](https://github.com/first-fluke/oh-my-agent/commit/472ab41cd124c225200aa87c9ff5fca2e022573b))
+* **main:** release web 0.3.7 ([67f596b](https://github.com/first-fluke/oh-my-agent/commit/67f596b4ba7035958fe63a40e6188bbe759e28b0))
+* **main:** release web 0.3.7 ([4b390c0](https://github.com/first-fluke/oh-my-agent/commit/4b390c0afd5a4b27132d9bc74187369d21f793e3))
+
 ## [4.8.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.7.0...cli-v4.8.0) (2026-03-24)
 
 
