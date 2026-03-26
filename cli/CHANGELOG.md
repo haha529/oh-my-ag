@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.10.2](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.10.1...cli-v4.10.2) (2026-03-26)
+
+
+### Bug Fixes
+
+* **ci:** add pull --rebase before push in sync-manifest workflow ([ebae49b](https://github.com/first-fluke/oh-my-agent/commit/ebae49b3e66fa3db382da318bbad45d5da3c7017))
+
+
+### Miscellaneous
+
+* **main:** release web 0.3.8 ([0c2d7bb](https://github.com/first-fluke/oh-my-agent/commit/0c2d7bbc8af5bd2d2d4104dab74efe5e34897849))
+
 ## [4.10.1](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.10.0...cli-v4.10.1) (2026-03-26)
 
 
