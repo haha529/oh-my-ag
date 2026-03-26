@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.10.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.9.0...cli-v4.10.0) (2026-03-26)
+
+
+### Features
+
+* **agents:** reinforce harness design based on Anthropic research ([b0920bb](https://github.com/first-fluke/oh-my-agent/commit/b0920bbc98d26419342dc58c172e854211770d0d))
+
 ## [4.9.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.8.1...cli-v4.9.0) (2026-03-25)
 
 
