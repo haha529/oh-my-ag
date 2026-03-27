@@ -61,7 +61,7 @@ function isTrivialContent(content: string): boolean {
   return trimmed === "" || trimmed === "---";
 }
 
-function formatSessionId(date: Date): string {
+export function formatSessionId(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");
   const yyyy = date.getFullYear();
   const mm = pad(date.getMonth() + 1);

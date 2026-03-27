@@ -9,7 +9,12 @@ import {
   type MockInstance,
   vi,
 } from "vitest";
-import { checkStatus, spawnAgent } from "../commands/agent.js";
+import {
+  checkStatus,
+  resolveSessionId,
+  reviewAgent,
+  spawnAgent,
+} from "../commands/agent.js";
 
 // Hoist mocks to allow usage in vi.mock
 const mockFsFunctions = vi.hoisted(() => ({
@@ -18,9 +23,15 @@ const mockFsFunctions = vi.hoisted(() => ({
   writeFileSync: vi.fn(),
   unlinkSync: vi.fn(),
   openSync: vi.fn(),
+  closeSync: vi.fn(),
   statSync: vi.fn(),
   mkdirSync: vi.fn(),
   readdirSync: vi.fn(),
+}));
+
+const mockMemoryFunctions = vi.hoisted(() => ({
+  getSessionMeta: vi.fn(),
+  formatSessionId: vi.fn(),
 }));
 
 vi.mock("node:fs", async () => {
@@ -35,6 +46,8 @@ vi.mock("node:child_process", () => ({
   execSync: vi.fn(),
 }));
 
+vi.mock("../lib/memory.js", () => mockMemoryFunctions);
+
 describe("agent command", () => {
   let processKillSpy: MockInstance;
 
@@ -42,6 +55,11 @@ describe("agent command", () => {
     vi.clearAllMocks();
     // Mock process.kill globally
     processKillSpy = vi.spyOn(process, "kill").mockImplementation(() => true);
+    // Default memory mock
+    mockMemoryFunctions.getSessionMeta.mockReturnValue({});
+    mockMemoryFunctions.formatSessionId.mockReturnValue(
+      "session-20260327-120000",
+    );
   });
 
   afterEach(() => {
@@ -265,6 +283,353 @@ describe("agent command", () => {
       );
 
       cwdSpy.mockRestore();
+    });
+
+    it("should print log output on non-zero exit", async () => {
+      mockFsFunctions.existsSync.mockImplementation((pathArg: fs.PathLike) => {
+        const target = pathArg.toString();
+        if (target === "/tmp") return true;
+        // Log file exists when exit handler checks
+        if (target.includes("subagent-") && target.endsWith(".log"))
+          return true;
+        return false;
+      });
+      mockFsFunctions.statSync.mockReturnValue({
+        isDirectory: () => true,
+        isFile: () => false,
+      });
+      mockFsFunctions.openSync.mockReturnValue(123);
+      mockFsFunctions.readFileSync.mockReturnValue("Error: something failed");
+
+      let exitHandler: ((code: number | null) => void) | undefined;
+      const mockChild = {
+        pid: 55555,
+        on: vi.fn((event: string, handler: (code: number | null) => void) => {
+          if (event === "exit") exitHandler = handler;
+        }),
+        unref: vi.fn(),
+      };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+
+      const exitSpy = vi
+        .spyOn(process, "exit")
+        .mockImplementation((): never => {
+          throw new Error("exit");
+        });
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await spawnAgent("agent1", "do stuff", "session1", "/tmp");
+
+      // Simulate non-zero exit
+      expect(exitHandler).toBeDefined();
+      expect(() => exitHandler!(1)).toThrow("exit");
+
+      // Should have printed the log content
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Log output"),
+      );
+      expect(consoleSpy).toHaveBeenCalledWith("Error: something failed");
+      expect(exitSpy).toHaveBeenCalledWith(1);
+    });
+
+    it("should create isolation_env directory if it does not exist", async () => {
+      const CLI_CONFIG_YAML = [
+        "active_vendor: codex",
+        "vendors:",
+        "  codex:",
+        "    command: codex",
+        "    subcommand: exec",
+        "    prompt_flag: none",
+        "    auto_approve_flag: --full-auto",
+        '    isolation_env: "CODEX_HOME=/tmp/codex-subagent-$$"',
+      ].join("\n");
+
+      mockFsFunctions.existsSync.mockImplementation((pathArg: fs.PathLike) => {
+        const target = pathArg.toString();
+        if (target.includes("cli-config.yaml")) return true;
+        if (target.includes("user-preferences.yaml")) return false;
+        if (target.startsWith("/tmp/codex-subagent-")) return false;
+        if (target === "/workspace") return true;
+        return false;
+      });
+      mockFsFunctions.readFileSync.mockImplementation(
+        (pathArg: fs.PathLike) => {
+          const target = pathArg.toString();
+          if (target.includes("cli-config.yaml")) return CLI_CONFIG_YAML;
+          return "";
+        },
+      );
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      const mockChild = { pid: 77777, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+
+      await spawnAgent("qa-agent", "review code", "session1", "/workspace");
+
+      expect(mockFsFunctions.mkdirSync).toHaveBeenCalledWith(
+        expect.stringMatching(/^\/tmp\/codex-subagent-\d+$/),
+        { recursive: true },
+      );
+    });
+  });
+
+  describe("resolveSessionId", () => {
+    it("should return active session id when available", () => {
+      mockMemoryFunctions.getSessionMeta.mockReturnValue({
+        id: "session-20260327-090000",
+        status: "running",
+      });
+
+      const result = resolveSessionId();
+      expect(result).toBe("session-20260327-090000");
+    });
+
+    it("should generate new session id when no active session", () => {
+      mockMemoryFunctions.getSessionMeta.mockReturnValue({});
+      mockMemoryFunctions.formatSessionId.mockReturnValue(
+        "session-20260327-120000",
+      );
+
+      const result = resolveSessionId();
+      expect(result).toBe("session-20260327-120000");
+      expect(mockMemoryFunctions.formatSessionId).toHaveBeenCalled();
+    });
+
+    it("should generate new session id when session is completed", () => {
+      mockMemoryFunctions.getSessionMeta.mockReturnValue({
+        id: "session-20260327-080000",
+        status: "completed",
+      });
+      mockMemoryFunctions.formatSessionId.mockReturnValue(
+        "session-20260327-120000",
+      );
+
+      const result = resolveSessionId();
+      expect(result).toBe("session-20260327-120000");
+    });
+
+    it("should generate new session id when session is failed", () => {
+      mockMemoryFunctions.getSessionMeta.mockReturnValue({
+        id: "session-20260327-080000",
+        status: "failed",
+      });
+      mockMemoryFunctions.formatSessionId.mockReturnValue(
+        "session-20260327-120000",
+      );
+
+      const result = resolveSessionId();
+      expect(result).toBe("session-20260327-120000");
+    });
+
+    it("should reuse idle session", () => {
+      mockMemoryFunctions.getSessionMeta.mockReturnValue({
+        id: "session-20260327-100000",
+        status: "idle",
+      });
+
+      const result = resolveSessionId();
+      expect(result).toBe("session-20260327-100000");
+    });
+  });
+
+  describe("reviewAgent", () => {
+    it("should spawn codex review with --uncommitted by default", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(false);
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      const mockChild = { pid: 44444, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+      vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({ model: "codex", workspace: "/tmp" });
+
+      expect(child_process.spawn).toHaveBeenCalledWith(
+        "codex",
+        ["review", "--uncommitted"],
+        expect.objectContaining({ cwd: expect.stringContaining("/tmp") }),
+      );
+    });
+
+    it("should spawn codex review without --uncommitted when disabled", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(false);
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      const mockChild = { pid: 44445, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+      vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({
+        model: "codex",
+        workspace: "/tmp",
+        uncommitted: false,
+      });
+
+      expect(child_process.spawn).toHaveBeenCalledWith(
+        "codex",
+        ["review"],
+        expect.objectContaining({ cwd: expect.stringContaining("/tmp") }),
+      );
+    });
+
+    it("should spawn claude review with prompt flag and output format", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(false);
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      const mockChild = { pid: 44446, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+      vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({ model: "claude", workspace: "/tmp" });
+
+      expect(child_process.spawn).toHaveBeenCalledWith(
+        "claude",
+        expect.arrayContaining([
+          "-p",
+          expect.stringContaining("Review the uncommitted changes"),
+          "--output-format",
+          "text",
+        ]),
+        expect.objectContaining({ cwd: expect.stringContaining("/tmp") }),
+      );
+    });
+
+    it("should spawn qwen review with prompt flag", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(false);
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      const mockChild = { pid: 44447, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+      vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({ model: "qwen", workspace: "/tmp" });
+
+      expect(child_process.spawn).toHaveBeenCalledWith(
+        "qwen",
+        expect.arrayContaining([
+          "-p",
+          expect.stringContaining("Review the uncommitted changes"),
+        ]),
+        expect.anything(),
+      );
+      // Should NOT include --output-format (qwen doesn't use it)
+      const args = vi.mocked(child_process.spawn).mock.calls[0]?.[1] as
+        | string[]
+        | undefined;
+      expect(args).not.toContain("--output-format");
+    });
+
+    it("should use custom prompt for gemini review", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(false);
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      const mockChild = { pid: 44448, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+      vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({
+        model: "gemini",
+        workspace: "/tmp",
+        prompt: "Check auth logic only",
+      });
+
+      expect(child_process.spawn).toHaveBeenCalledWith(
+        "gemini",
+        expect.arrayContaining([
+          "-p",
+          expect.stringContaining("Check auth logic only"),
+        ]),
+        expect.anything(),
+      );
+      // Should NOT include --output-format (gemini doesn't use it)
+      const args = vi.mocked(child_process.spawn).mock.calls[0]?.[1] as
+        | string[]
+        | undefined;
+      expect(args).not.toContain("--output-format");
+    });
+
+    it("should inline git diff for committed-only claude review", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(false);
+      mockFsFunctions.openSync.mockReturnValue(123);
+
+      vi.mocked(child_process.execSync).mockReturnValue(
+        "diff --git a/file.ts\n+added line\n" as unknown as Buffer,
+      );
+
+      const mockChild = { pid: 44449, on: vi.fn(), unref: vi.fn() };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+      vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({
+        model: "claude",
+        workspace: "/tmp",
+        uncommitted: false,
+      });
+
+      expect(child_process.execSync).toHaveBeenCalledWith(
+        "git diff HEAD~1",
+        expect.objectContaining({ encoding: "utf-8" }),
+      );
+
+      const args = vi.mocked(child_process.spawn).mock.calls[0]?.[1] as
+        | string[]
+        | undefined;
+      const prompt = args?.find((a) => a.includes("committed diff"));
+      expect(prompt).toContain("```diff");
+      expect(prompt).toContain("+added line");
+    });
+
+    it("should print review output on exit", async () => {
+      mockFsFunctions.existsSync.mockReturnValue(true);
+      mockFsFunctions.openSync.mockReturnValue(123);
+      mockFsFunctions.readFileSync.mockReturnValue(
+        "Found 2 issues:\n- P1: SQL injection\n- P2: Missing auth",
+      );
+
+      let exitHandler: ((code: number | null) => void) | undefined;
+      const mockChild = {
+        pid: 44450,
+        on: vi.fn((event: string, handler: (code: number | null) => void) => {
+          if (event === "exit") exitHandler = handler;
+        }),
+        unref: vi.fn(),
+      };
+      vi.mocked(child_process.spawn).mockReturnValue(
+        mockChild as unknown as child_process.ChildProcess,
+      );
+
+      const exitSpy = vi
+        .spyOn(process, "exit")
+        .mockImplementation((): never => {
+          throw new Error("exit");
+        });
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+      await reviewAgent({ model: "codex", workspace: "/tmp" });
+
+      expect(exitHandler).toBeDefined();
+      expect(() => exitHandler!(0)).toThrow("exit");
+
+      // Should print the review output even on success
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("SQL injection"),
+      );
+      expect(exitSpy).toHaveBeenCalledWith(0);
     });
   });
 

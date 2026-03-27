@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { checkStatus, parallelRun, spawnAgent } from "./commands/agent.js";
+import {
+  checkStatus,
+  parallelRun,
+  reviewAgent,
+  spawnAgent,
+} from "./commands/agent.js";
 import { checkAuthStatus } from "./commands/auth.js";
 import { bridge } from "./commands/bridge.js";
 import { cleanup } from "./commands/cleanup.js";
@@ -536,7 +541,7 @@ program
   .command("agent:spawn <agent-id> <prompt> <session-id>")
   .description("Spawn a subagent (prompt can be inline text or a file path)")
   .option(
-    "-v, --vendor <vendor>",
+    "-m, --model <vendor>",
     "CLI vendor override (gemini/claude/codex/qwen)",
   )
   .option(
@@ -550,7 +555,7 @@ program
         prompt,
         sessionId,
         options.workspace || ".",
-        options.vendor,
+        options.model,
       );
     }),
   );
@@ -569,7 +574,7 @@ program
   .command("agent:parallel [tasks...]")
   .description("Run multiple sub-agents in parallel")
   .option(
-    "-v, --vendor <vendor>",
+    "-m, --model <vendor>",
     "CLI vendor override (gemini/claude/codex/qwen)",
   )
   .option("-i, --inline", "Inline mode: specify tasks as agent:task arguments")
@@ -577,9 +582,33 @@ program
   .action(
     runAction(async (tasks, options) => {
       await parallelRun(tasks, {
-        vendor: options.vendor,
+        vendor: options.model,
         inline: options.inline,
         noWait: !options.wait,
+      });
+    }),
+  );
+
+program
+  .command("agent:review")
+  .description("Run code review using external CLI (codex/claude/gemini)")
+  .option(
+    "-m, --model <vendor>",
+    "CLI vendor (codex/claude/gemini)",
+  )
+  .option("-p, --prompt <prompt>", "Custom review prompt")
+  .option(
+    "-w, --workspace <path>",
+    "Working directory (default: current)",
+  )
+  .option("--no-uncommitted", "Review committed changes only")
+  .action(
+    runAction(async (options) => {
+      await reviewAgent({
+        prompt: options.prompt,
+        model: options.model,
+        workspace: options.workspace,
+        uncommitted: options.uncommitted,
       });
     }),
   );

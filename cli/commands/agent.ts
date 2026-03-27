@@ -1,10 +1,14 @@
-import { spawn as spawnProcess } from "node:child_process";
+import {
+  execSync,
+  spawn as spawnProcess,
+} from "node:child_process";
 import fs from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import color from "picocolors";
 import { parse as parseYaml } from "yaml";
 import { z } from "zod";
+import { formatSessionId, getSessionMeta } from "../lib/memory.js";
 
 // Helper to check if process with PID is running
 function isProcessRunning(pid: number): boolean {
@@ -646,7 +650,11 @@ export async function spawnAgent(
     const [key, ...rest] = vendorConfig.isolation_env.split("=");
     const rawValue = rest.join("=");
     if (key && rawValue) {
-      env[key] = rawValue.replace("$$", String(process.pid));
+      const value = rawValue.replace("$$", String(process.pid));
+      env[key] = value;
+      if (value.startsWith("/") && !fs.existsSync(value)) {
+        fs.mkdirSync(value, { recursive: true });
+      }
     }
   }
 
@@ -692,6 +700,13 @@ export async function spawnAgent(
     "exit",
     (code: number | null) => {
       console.log(color.blue(`[${agentId}] Exited with code ${code}`));
+      if (code !== 0 && fs.existsSync(logFile)) {
+        const log = fs.readFileSync(logFile, "utf-8").trim();
+        if (log) {
+          console.log(color.red(`[${agentId}] Log output:`));
+          console.log(log);
+        }
+      }
       cleanup();
       process.exit(code ?? 0);
     },
@@ -956,7 +971,11 @@ export async function parallelRun(
       const [key, ...rest] = vendorConfig.isolation_env.split("=");
       const rawValue = rest.join("=");
       if (key && rawValue) {
-        env[key] = rawValue.replace("$$", String(process.pid));
+        const value = rawValue.replace("$$", String(process.pid));
+        env[key] = value;
+        if (value.startsWith("/") && !fs.existsSync(value)) {
+          fs.mkdirSync(value, { recursive: true });
+        }
       }
     }
 
@@ -1092,4 +1111,181 @@ export async function parallelRun(
   if (failed > 0) {
     process.exit(1);
   }
+}
+
+export function resolveSessionId(): string {
+  const meta = getSessionMeta(process.cwd());
+  if (meta.id && meta.status !== "completed" && meta.status !== "failed") {
+    return meta.id;
+  }
+  return formatSessionId(new Date());
+}
+
+const REVIEW_FALLBACK_VENDOR = "codex";
+const REVIEW_SUPPORTED_VENDORS = ["codex", "claude", "gemini", "qwen"];
+
+function buildReviewDiffPrompt(
+  prompt: string,
+  uncommitted: boolean,
+  cwd: string,
+): string {
+  if (uncommitted) {
+    return `Review the uncommitted changes (git diff) in this repository. ${prompt}`;
+  }
+  // For committed-only mode, inline the diff so the CLI only sees committed changes
+  try {
+    const diff = execSync("git diff HEAD~1", { cwd, encoding: "utf-8" }).trim();
+    if (!diff) return `No committed changes found. ${prompt}`;
+    return `Review the following committed diff:\n\n\`\`\`diff\n${diff}\n\`\`\`\n\n${prompt}`;
+  } catch {
+    return `Review the latest committed changes. ${prompt}`;
+  }
+}
+
+function buildReviewArgs(
+  vendor: string,
+  vendorConfig: VendorConfig,
+  prompt: string,
+  uncommitted: boolean,
+  cwd: string,
+): string[] {
+  const command = vendorConfig.command || vendor;
+
+  // Codex has native review subcommand
+  if (vendor === "codex") {
+    return uncommitted
+      ? [command, "review", "--uncommitted"]
+      : [command, "review"];
+  }
+
+  // Other vendors: use prompt flag with diff context
+  const reviewPrompt = buildReviewDiffPrompt(prompt, uncommitted, cwd);
+  const promptFlag = vendorConfig.prompt_flag || "-p";
+  const args = [command, promptFlag, reviewPrompt];
+
+  if (vendorConfig.model_flag && vendorConfig.default_model) {
+    args.push(vendorConfig.model_flag, vendorConfig.default_model);
+  }
+
+  if (vendorConfig.auto_approve_flag) {
+    args.push(vendorConfig.auto_approve_flag);
+  } else {
+    const defaultAutoApprove: Record<string, string> = {
+      gemini: "--approval-mode=yolo",
+      qwen: "--yolo",
+    };
+    const fallback = defaultAutoApprove[vendor];
+    if (fallback) args.push(fallback);
+  }
+
+  if (vendor === "claude") {
+    args.push("--output-format", "text");
+  }
+
+  return args;
+}
+
+export async function reviewAgent(options: {
+  prompt?: string;
+  model?: string;
+  workspace?: string;
+  uncommitted?: boolean;
+}) {
+  const sessionId = resolveSessionId();
+  const prompt =
+    options.prompt ||
+    "Review for bugs, security vulnerabilities, performance issues, and code quality. Report findings with severity levels.";
+  const agentId = "review";
+  const workspace = options.workspace || ".";
+  const resolvedWorkspace = path.resolve(workspace);
+
+  // Resolve vendor, falling back to codex if resolved vendor doesn't support review
+  const { vendor: resolvedVendor, config } = resolveVendor(agentId, options.model);
+  const vendor = REVIEW_SUPPORTED_VENDORS.includes(resolvedVendor)
+    ? resolvedVendor
+    : REVIEW_FALLBACK_VENDOR;
+  if (vendor !== resolvedVendor) {
+    console.log(
+      color.yellow(
+        `[${agentId}] "${resolvedVendor}" has no review mode, falling back to ${vendor}`,
+      ),
+    );
+  }
+
+  const vendorConfig = config?.vendors?.[vendor] || {};
+  const uncommitted = options.uncommitted ?? true;
+  const reviewArgs = buildReviewArgs(
+    vendor,
+    vendorConfig,
+    prompt,
+    uncommitted,
+    resolvedWorkspace,
+  );
+  const command = reviewArgs[0]!;
+  const args = reviewArgs.slice(1);
+
+  const logFile = path.join(tmpdir(), `review-${sessionId}.log`);
+  const pidFile = path.join(tmpdir(), `review-${sessionId}.pid`);
+
+  console.log(color.dim(`  Session: ${sessionId}`));
+  console.log(color.blue(`[${agentId}] Starting review...`));
+  console.log(color.dim(`  Vendor: ${vendor}`));
+  console.log(color.dim(`  Command: ${command} ${args.slice(0, 2).join(" ")}...`));
+
+  const logStream = fs.openSync(logFile, "w");
+
+  const child = spawnProcess(command, args, {
+    cwd: resolvedWorkspace,
+    stdio: ["ignore", logStream, logStream],
+    detached: false,
+  });
+
+  if (!child.pid) {
+    console.error(color.red(`[${agentId}] Failed to spawn process`));
+    process.exit(1);
+  }
+
+  fs.writeFileSync(pidFile, child.pid.toString());
+  console.log(color.green(`[${agentId}] Started with PID ${child.pid}`));
+
+  const cleanup = () => {
+    try {
+      if (fs.existsSync(pidFile)) fs.unlinkSync(pidFile);
+      if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
+    } catch (_e) {
+      // ignore
+    }
+  };
+
+  const cleanAndExit = () => {
+    if (child.pid && isProcessRunning(child.pid)) {
+      process.kill(child.pid);
+    }
+    cleanup();
+    process.exit();
+  };
+
+  process.on("SIGINT", cleanAndExit);
+  process.on("SIGTERM", cleanAndExit);
+
+  (child as unknown as NodeJS.EventEmitter).on(
+    "exit",
+    (code: number | null) => {
+      // Print output regardless of exit code for review results
+      if (fs.existsSync(logFile)) {
+        const log = fs.readFileSync(logFile, "utf-8").trim();
+        if (log) {
+          console.log("");
+          console.log(log);
+        }
+      }
+      console.log(
+        code === 0
+          ? color.green(`[${agentId}] Done`)
+          : color.red(`[${agentId}] Exited with code ${code}`),
+      );
+      cleanup();
+      process.exit(code ?? 0);
+    },
+  );
 }
