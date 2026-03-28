@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.14.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.13.0...cli-v4.14.0) (2026-03-28)
+
+
+### Features
+
+* **cli:** add recommended Claude Code settings and user-level CLAUDE.md ([3f41e35](https://github.com/first-fluke/oh-my-agent/commit/3f41e35963fc4e6c065fba84793409f0ea7bd0e6))
+* **skills:** add 12-Factor cloud readiness rules to oma-backend ([4d3ac32](https://github.com/first-fluke/oh-my-agent/commit/4d3ac328eef01c8af7eb5eed8416cf2a04502cab))
+
+
+### Miscellaneous
+
+* **main:** release web 0.3.10 ([5257dbc](https://github.com/first-fluke/oh-my-agent/commit/5257dbc1b5a354fc9fc9511dc284571cae661d4d))
+
 ## [4.13.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.12.0...cli-v4.13.0) (2026-03-28)
 
 
