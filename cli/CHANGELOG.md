@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.13.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.12.0...cli-v4.13.0) (2026-03-28)
+
+
+### Features
+
+* add deactivation detection, export hooks for testing, detect superpowers ([d3baa71](https://github.com/first-fluke/oh-my-agent/commit/d3baa71f4a4f186b33636b18d299c3ceb3ce1760))
+
+
+### Bug Fixes
+
+* close Simple fast-track verification gaps found via agent testing ([dade64b](https://github.com/first-fluke/oh-my-agent/commit/dade64bf63d5430b27584bed3daa6efcb7b3abc2))
+
+
+### Documentation
+
+* review and improve translations across all 10 languages ([35eb06b](https://github.com/first-fluke/oh-my-agent/commit/35eb06b95d2252a4b8a653598fab330a9aa87ad1))
+
+
+### Miscellaneous
+
+* **main:** release web 0.3.9 ([0974500](https://github.com/first-fluke/oh-my-agent/commit/09745007a3c118ed5960242a6768563f46be6b89))
+
 ## [4.12.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.11.0...cli-v4.12.0) (2026-03-27)
 
 
