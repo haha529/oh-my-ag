@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.16.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.15.2...cli-v4.16.0) (2026-03-30)
+
+
+### Features
+
+* **hooks:** fix informational filter, expand keywords, add extension-based agent routing ([7881f4d](https://github.com/first-fluke/oh-my-agent/commit/7881f4d5571414f0234e757cb927e73ae4e48a4c))
+
+
+### Bug Fixes
+
+* **hooks:** prevent false positive workflow activation on meta-discussion ([771d309](https://github.com/first-fluke/oh-my-agent/commit/771d3099988f856afc1e2db420c2ad4607e8913f))
+
 ## [4.15.2](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.15.1...cli-v4.15.2) (2026-03-29)
 
 
