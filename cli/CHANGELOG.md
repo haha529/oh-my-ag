@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.17.1](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.17.0...cli-v4.17.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* **hooks:** resolve CLAUDE_PROJECT_DIR to git root to prevent subdirectory state file misplacement ([96c381c](https://github.com/first-fluke/oh-my-agent/commit/96c381c392774cf82daf1477ac251d3ed00b1691))
+
 ## [4.17.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.16.0...cli-v4.17.0) (2026-03-30)
 
 
