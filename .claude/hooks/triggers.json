@@ -213,17 +213,17 @@
     }
   },
   "informationalPatterns": {
-    "en": ["what is", "what are", "how to", "how does", "explain", "describe", "tell me about"],
-    "ko": ["뭐야", "뭐임", "무엇", "어떻게", "설명해", "알려줘"],
-    "ja": ["とは", "って何", "どうやって", "説明して"],
-    "zh": ["是什么", "什么是", "怎么", "解释"],
-    "es": ["qué es", "cómo", "explica"],
-    "fr": ["c'est quoi", "comment", "explique"],
-    "de": ["was ist", "wie", "erkläre"],
-    "pt": ["o que é", "como", "explique"],
-    "ru": ["что такое", "как", "объясни"],
-    "nl": ["wat is", "hoe", "leg uit"],
-    "pl": ["co to", "jak", "wyjaśnij"]
+    "en": ["what is", "what are", "how to", "how does", "explain", "describe", "tell me about", "keyword", "false positive", "detected", "detector"],
+    "ko": ["뭐야", "뭐임", "무엇", "어떻게", "설명해", "알려줘", "키워드", "감지", "오탐"],
+    "ja": ["とは", "って何", "どうやって", "説明して", "キーワード", "検出", "誤検出"],
+    "zh": ["是什么", "什么是", "怎么", "解释", "关键词", "检测", "误报"],
+    "es": ["qué es", "cómo", "explica", "palabra clave", "falso positivo", "detectado"],
+    "fr": ["c'est quoi", "comment", "explique", "mot-clé", "faux positif", "détecté"],
+    "de": ["was ist", "wie", "erkläre", "schlüsselwort", "falsch positiv", "erkannt"],
+    "pt": ["o que é", "como", "explique", "palavra-chave", "falso positivo", "detectado"],
+    "ru": ["что такое", "как", "объясни", "ключевое слово", "ложное срабатывание", "обнаружено"],
+    "nl": ["wat is", "hoe", "leg uit", "sleutelwoord", "vals positief", "gedetecteerd"],
+    "pl": ["co to", "jak", "wyjaśnij", "słowo kluczowe", "fałszywy alarm", "wykryto"]
   },
   "excludedWorkflows": ["commit", "setup", "tools", "stack-set", "exec-plan"],
   "cjkScripts": ["ko", "ja", "zh"],

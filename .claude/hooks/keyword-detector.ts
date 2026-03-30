@@ -145,7 +145,10 @@ export function isInformationalContext(
 }
 
 export function stripCodeBlocks(text: string): string {
-  return text.replace(/```[\s\S]*?```/g, "").replace(/`[^`]+`/g, "");
+  return text
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]+`/g, "")
+    .replace(/"[^"\n]*"/g, "");
 }
 
 export function startsWithSlashCommand(prompt: string): boolean {

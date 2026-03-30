@@ -95,6 +95,27 @@ describe("keyword-detector", () => {
       const prompt = "can you orchestrate the deployment?";
       expect(isInformationalContext(prompt, 12, infoPatterns)).toBe(false);
     });
+
+    it("should detect meta-discussion with 'keyword' near match", () => {
+      const metaPatterns = [/\bkeyword\b/i, /키워드/i];
+      const prompt = "keyword-detector가 orchestrate 키워드를 감지";
+      const matchIndex = prompt.indexOf("orchestrate");
+      expect(isInformationalContext(prompt, matchIndex, metaPatterns)).toBe(true);
+    });
+
+    it("should detect meta-discussion with 'false positive' near match", () => {
+      const metaPatterns = [/\bfalse positive\b/i];
+      const prompt = "orchestrate false positive issue";
+      expect(isInformationalContext(prompt, 0, metaPatterns)).toBe(true);
+    });
+
+    it("should not flag when meta terms are far from match", () => {
+      const metaPatterns = [/\bkeyword\b/i];
+      const padding = "x".repeat(200);
+      const prompt = `keyword issue ${padding} orchestrate the deploy`;
+      const matchIndex = prompt.indexOf("orchestrate");
+      expect(isInformationalContext(prompt, matchIndex, metaPatterns)).toBe(false);
+    });
   });
 
   describe("stripCodeBlocks", () => {
@@ -111,6 +132,16 @@ describe("keyword-detector", () => {
     it("should handle multiline code blocks", () => {
       const text = "before\n```\nconst x = 1;\n```\nafter";
       expect(stripCodeBlocks(text)).toBe("before\n\nafter");
+    });
+
+    it("should remove double-quoted strings", () => {
+      const text = 'detected "orchestrate" keyword';
+      expect(stripCodeBlocks(text)).toBe("detected  keyword");
+    });
+
+    it("should not strip across newlines", () => {
+      const text = 'first "line\nsecond" line';
+      expect(stripCodeBlocks(text)).toBe('first "line\nsecond" line');
     });
   });
 
