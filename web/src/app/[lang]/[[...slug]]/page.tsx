@@ -21,7 +21,7 @@ interface DocPageProps {
 export function generateStaticParams() {
   return [
     ...getAllDocParams(),
-    ...["en", "ko"].map((lang) => ({ lang, slug: [] as string[] })),
+    ...["en", "ko", "vi"].map((lang) => ({ lang, slug: [] as string[] })),
   ];
 }
 
