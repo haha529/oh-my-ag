@@ -153,7 +153,7 @@ flowchart TD
 
 - **[Tài liệu chi tiết](./AGENTS_SPEC.md)** — Đặc tả kỹ thuật và kiến trúc đầy đủ
 - **[Agent được hỗ trợ](./SUPPORTED_AGENTS.md)** — Ma trận hỗ trợ agent theo IDE
-- **[Tài liệu web](https://oh-my-agent.dev)** — Hướng dẫn, tutorial và CLI reference
+- **[Tài liệu web](https://first-fluke.github.io/oh-my-agent/)** — Hướng dẫn, tutorial và CLI reference
 
 ## Nhà tài trợ
 

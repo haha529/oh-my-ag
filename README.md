@@ -153,7 +153,7 @@ flowchart TD
 
 - **[Detailed Documentation](./docs/AGENTS_SPEC.md)** — Full technical spec and architecture
 - **[Supported Agents](./docs/SUPPORTED_AGENTS.md)** — Agent support matrix across IDEs
-- **[Web Docs](https://oh-my-agent.dev)** — Guides, tutorials, and CLI reference
+- **[Web Docs](https://first-fluke.github.io/oh-my-agent/)** — Guides, tutorials, and CLI reference
 
 ## Sponsors
 

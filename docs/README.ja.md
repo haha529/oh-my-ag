@@ -153,7 +153,7 @@ flowchart TD
 
 - **[詳細ドキュメント](./AGENTS_SPEC.md)** — 完全な技術仕様とアーキテクチャ
 - **[対応エージェント](./SUPPORTED_AGENTS.md)** — IDE別エージェント対応状況
-- **[Webドキュメント](https://oh-my-agent.dev)** — ガイド、チュートリアル、CLIリファレンス
+- **[Webドキュメント](https://first-fluke.github.io/oh-my-agent/)** — ガイド、チュートリアル、CLIリファレンス
 
 ## スポンサー
 

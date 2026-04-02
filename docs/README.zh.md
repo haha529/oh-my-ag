@@ -153,7 +153,7 @@ flowchart TD
 
 - **[详细文档](./AGENTS_SPEC.md)** — 完整技术规格和架构
 - **[支持的 Agent](./SUPPORTED_AGENTS.md)** — 各 IDE 的 agent 支持情况
-- **[Web 文档](https://oh-my-agent.dev)** — 指南、教程和 CLI 参考
+- **[Web 文档](https://first-fluke.github.io/oh-my-agent/)** — 指南、教程和 CLI 参考
 
 ## 赞助
 
