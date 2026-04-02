@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.13](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.12...web-v0.3.13) (2026-04-02)
+
+
+### Bug Fixes
+
+* add vi locale to generateStaticParams in page.tsx ([60f681f](https://github.com/first-fluke/oh-my-agent/commit/60f681f03092be31138b3876dd2d57ba984b2249))
+
+
+### Documentation
+
+* add Vietnamese web content and register vi locale ([53e7fd1](https://github.com/first-fluke/oh-my-agent/commit/53e7fd12e9426963f7b6ec2cee375347bf9e711d))
+
 ## [0.3.12](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.11...web-v0.3.12) (2026-03-31)
 
 
