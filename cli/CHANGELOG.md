@@ -9,6 +9,11 @@
 * add rules installation to CLI install/update pipeline ([c9ae3fc](https://github.com/first-fluke/oh-my-agent/commit/c9ae3fcde48eabb9f43c31890dd0e817e4b78b5f))
 
 
+### Bug Fixes
+
+* redirect stdin from /dev/tty for interactive CLI in pipe install ([4019f59](https://github.com/first-fluke/oh-my-agent/commit/4019f5973a046957c7b835820a47350e4327f7fd))
+
+
 ### Documentation
 
 * add Vietnamese web content and register vi locale ([53e7fd1](https://github.com/first-fluke/oh-my-agent/commit/53e7fd12e9426963f7b6ec2cee375347bf9e711d))
