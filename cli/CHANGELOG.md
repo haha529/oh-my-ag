@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.20.1](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.20.0...cli-v4.20.1) (2026-04-02)
+
+
+### Bug Fixes
+
+* remove hardcoded Korean text from i18n guide ([8f69034](https://github.com/first-fluke/oh-my-agent/commit/8f690341fd9ec0bbf9931e94d518c3353402a502))
+* replace dead oh-my-agent.dev URL with GitHub Pages link ([bdcaf6e](https://github.com/first-fluke/oh-my-agent/commit/bdcaf6efa25483ed4cfe291745d2351aa7987dec))
+
+
+### Miscellaneous
+
+* **main:** release cli 4.20.0 ([db2bfe7](https://github.com/first-fluke/oh-my-agent/commit/db2bfe76b161eb1a14d7d21913ea02c8e49e75c2))
+* **main:** release cli 4.20.0 ([60984fd](https://github.com/first-fluke/oh-my-agent/commit/60984fdf97ec7ff43648af3b0feede81f0ad279e))
+* **main:** release cli 4.20.0 ([5e3dbb4](https://github.com/first-fluke/oh-my-agent/commit/5e3dbb464f48687c074886e0e3b5ee3cc1018cee))
+* **main:** release cli 4.20.0 ([068d3b8](https://github.com/first-fluke/oh-my-agent/commit/068d3b836d5553ef7e1b32682209a5d7b5433d46))
+* **main:** release web 0.3.13 ([ed97d0a](https://github.com/first-fluke/oh-my-agent/commit/ed97d0a8c8d8a599a18703c81ad276f55b594fc3))
+* **main:** release web 0.3.13 ([b32295e](https://github.com/first-fluke/oh-my-agent/commit/b32295e5ff7755c3d75077e4b23127a2eccafc6f))
+
 ## [4.20.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.19.0...cli-v4.20.0) (2026-04-02)
 
 
