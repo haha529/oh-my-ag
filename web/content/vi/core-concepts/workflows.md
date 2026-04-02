@@ -1,0 +1,182 @@
+---
+title: Workflow
+description: Tham chiếu đầy đủ cho tất cả 15 workflow oh-my-agent — lệnh slash, chế độ liên tục và không liên tục, từ khóa trigger bằng 11 ngôn ngữ, các giai đoạn và bước, file đọc và ghi, cơ chế phát hiện tự động, lọc mẫu thông tin và quản lý trạng thái chế độ liên tục.
+---
+
+# Workflow
+
+Workflow là quy trình có cấu trúc nhiều bước được kích hoạt bởi lệnh slash hoặc từ khóa ngôn ngữ tự nhiên. Chúng định nghĩa cách agent cộng tác trong task — từ tiện ích đơn giai đoạn đến cổng chất lượng phức tạp 5 giai đoạn.
+
+Có 15 workflow, trong đó 4 là liên tục (duy trì trạng thái và không thể bị gián đoạn ngẫu nhiên).
+
+---
+
+## Workflow liên tục
+
+Workflow liên tục tiếp tục chạy cho đến khi tất cả task hoàn thành. Chúng duy trì trạng thái trong `.agents/state/` và đưa lại ngữ cảnh `[OMA PERSISTENT MODE: ...]` vào mỗi tin nhắn người dùng cho đến khi được vô hiệu hóa tường minh.
+
+### /orchestrate
+
+**Mô tả:** Thực thi agent song song tự động qua CLI. Spawn subagent qua CLI, điều phối qua MCP memory, giám sát tiến trình và chạy vòng lặp xác minh.
+
+**Liên tục:** Có. File trạng thái: `.agents/state/orchestrate-state.json`.
+
+### /coordinate
+
+**Mô tả:** Điều phối đa lĩnh vực từng bước. PM lập kế hoạch trước, sau đó agent thực thi với xác nhận người dùng ở mỗi cổng, tiếp theo đánh giá QA và vòng lặp khắc phục.
+
+**Liên tục:** Có. File trạng thái: `.agents/state/coordinate-state.json`.
+
+### /ultrawork
+
+**Mô tả:** Workflow chú trọng chất lượng. 5 giai đoạn, 17 bước tổng, 11 bước đánh giá. Mỗi giai đoạn có cổng phải pass trước khi tiếp tục.
+
+**Liên tục:** Có. File trạng thái: `.agents/state/ultrawork-state.json`.
+
+**Giai đoạn:**
+
+| Giai đoạn | Bước | Agent | Góc nhìn đánh giá |
+|-------|-------|-------|-------------------|
+| **PLAN** | 1-4 | Agent PM (inline) | Hoàn chỉnh, Meta-review, Chống over-engineering/Đơn giản |
+| **IMPL** | 5 | Agent Dev (spawn) | Triển khai |
+| **VERIFY** | 6-8 | Agent QA (spawn) | Đồng bộ, An toàn (OWASP), Ngăn hồi quy |
+| **REFINE** | 9-13 | Agent Debug (spawn) | Tách file, Tái sử dụng, Tác động lan truyền, Nhất quán, Dead code |
+| **SHIP** | 14-17 | Agent QA (spawn) | Chất lượng mã (lint/coverage), UX Flow, Vấn đề liên quan, Sẵn sàng triển khai |
+
+### /ralph
+
+**Mô tả:** Vòng lặp thực thi tự tham chiếu liên tục. Bọc ultrawork với verifier độc lập kiểm tra tiêu chí hoàn thành sau mỗi lần lặp. Tiếp tục lặp cho đến khi tất cả tiêu chí pass hoặc bảo vệ kích hoạt.
+
+**Liên tục:** Có. File trạng thái: `.agents/state/ralph-state.json`.
+
+---
+
+## Workflow không liên tục
+
+### /plan
+
+**Mô tả:** Phân tách task do PM dẫn dắt. Phân tích yêu cầu, chọn tech stack, phân tách thành task có ưu tiên với phụ thuộc, định nghĩa API contract.
+
+**Đầu ra:** `.agents/plan.json`, ghi bộ nhớ.
+
+### /exec-plan
+
+**Mô tả:** Tạo, quản lý và theo dõi kế hoạch thực thi dưới dạng artifact repository trong `docs/exec-plans/`.
+
+### /brainstorm
+
+**Mô tả:** Khám phá ý tưởng ưu tiên thiết kế. Khám phá ý định, làm rõ ràng buộc, đề xuất hướng tiếp cận, tạo tài liệu thiết kế được duyệt trước khi lập kế hoạch.
+
+### /deepinit
+
+**Mô tả:** Khởi tạo dự án đầy đủ. Phân tích codebase hiện có, tạo AGENTS.md, ARCHITECTURE.md và cơ sở kiến thức `docs/` có cấu trúc.
+
+### /review
+
+**Mô tả:** Pipeline đánh giá QA đầy đủ. Kiểm tra bảo mật (OWASP Top 10), phân tích hiệu suất, kiểm tra accessibility (WCAG 2.1 AA) và đánh giá chất lượng mã.
+
+### /debug
+
+**Mô tả:** Chẩn đoán và sửa lỗi có cấu trúc với viết test hồi quy và quét mẫu tương tự.
+
+### /design
+
+**Mô tả:** Workflow thiết kế 7 giai đoạn tạo DESIGN.md với token, mẫu component và quy tắc accessibility.
+
+### /commit
+
+**Mô tả:** Tạo Conventional Commits với tự động tách theo tính năng.
+
+### /tools
+
+**Mô tả:** Quản lý khả năng hiển thị và hạn chế công cụ MCP.
+
+### /stack-set
+
+**Mô tả:** Tự phát hiện tech stack dự án và tạo tham chiếu theo ngôn ngữ cho skill backend.
+
+---
+
+## Skill so với workflow
+
+| Khía cạnh | Skill | Workflow |
+|--------|--------|-----------|
+| **Là gì** | Chuyên môn agent (agent biết gì) | Quy trình điều phối (agent làm việc cùng nhau thế nào) |
+| **Vị trí** | `.agents/skills/oma-{name}/` | `.agents/workflows/{name}.md` |
+| **Kích hoạt** | Tự động qua từ khóa định tuyến skill | Lệnh slash hoặc từ khóa trigger |
+| **Phạm vi** | Thực thi đơn lĩnh vực | Nhiều bước, thường đa agent |
+| **Ví dụ** | "Build a React component" | "Plan the feature -> build -> review -> commit" |
+
+---
+
+## Phát hiện tự động: cách hoạt động
+
+### Hệ thống hook
+
+oh-my-agent dùng hook `UserPromptSubmit` chạy trước mỗi tin nhắn người dùng được xử lý:
+
+1. **`triggers.json`**: Định nghĩa ánh xạ từ khóa-workflow cho 11 ngôn ngữ được hỗ trợ.
+2. **`keyword-detector.ts`**: Logic TypeScript quét đầu vào người dùng so với từ khóa trigger và đưa ngữ cảnh kích hoạt workflow vào.
+3. **`persistent-mode.ts`**: Áp dụng thực thi workflow liên tục bằng cách kiểm tra file trạng thái đang hoạt động.
+
+### Lọc mẫu thông tin
+
+Nếu đầu vào khớp cả từ khóa workflow và mẫu thông tin (ví dụ: "what is orchestrate?"), mẫu thông tin được ưu tiên và không workflow nào được kích hoạt.
+
+### Workflow loại trừ
+
+Các workflow sau bị loại trừ khỏi phát hiện tự động và phải được gọi bằng `/command` tường minh:
+- `/commit`
+- `/tools`
+- `/stack-set`
+- `/exec-plan`
+
+---
+
+## Cơ chế chế độ liên tục
+
+### File trạng thái
+
+Workflow liên tục (orchestrate, ultrawork, coordinate, ralph) tạo file trạng thái trong `.agents/state/`.
+
+### Tăng cường
+
+Trong khi workflow liên tục đang hoạt động, hook `persistent-mode.ts` đưa `[OMA PERSISTENT MODE: {workflow-name}]` vào mỗi tin nhắn người dùng. Đảm bảo workflow tiếp tục thực thi xuyên các lượt hội thoại.
+
+### Vô hiệu hóa
+
+Để vô hiệu hóa workflow liên tục, người dùng nói "workflow done" (hoặc tương đương trong ngôn ngữ đã cấu hình). Thao tác này xóa file trạng thái, dừng đưa ngữ cảnh chế độ liên tục và trở về hoạt động bình thường.
+
+---
+
+## Chuỗi workflow điển hình
+
+### Tính năng nhanh
+```
+/plan → xem kết quả → /exec-plan
+```
+
+### Dự án đa lĩnh vực phức tạp
+```
+/coordinate → PM lập kế hoạch → người dùng xác nhận → agent spawn → QA đánh giá → sửa vấn đề → phát hành
+```
+
+### Phân phối chất lượng tối đa
+```
+/ultrawork → PLAN (4 bước đánh giá) → IMPL → VERIFY (3 bước đánh giá) → REFINE (5 bước đánh giá) → SHIP (4 bước đánh giá)
+```
+
+### Điều tra lỗi
+```
+/debug → tái hiện → nguyên nhân gốc → sửa tối thiểu → test hồi quy → quét mẫu tương tự
+```
+
+### Pipeline từ thiết kế đến triển khai
+```
+/brainstorm → tài liệu thiết kế → /plan → phân tách task → /orchestrate → triển khai song song → /review → /commit
+```
+
+### Hoàn thành đảm bảo
+```
+/ralph → định nghĩa tiêu chí → vòng lặp ultrawork → judge xác minh → lặp lại nếu cần → tất cả tiêu chí pass → hoàn thành
+```

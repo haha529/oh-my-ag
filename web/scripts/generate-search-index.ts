@@ -50,7 +50,7 @@ function extractContent(body: string): string {
 
 async function generateSearchIndex(): Promise<SearchIndex> {
   const documents: SearchDocument[] = [];
-  const langs = ["en", "ko"];
+  const langs = ["en", "ko", "vi"];
   
   for (const lang of langs) {
     const langDir = path.join(CONTENT_DIR, lang);

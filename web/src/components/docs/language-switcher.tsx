@@ -21,6 +21,7 @@ interface LanguageSwitcherProps {
 const LABELS: Record<Lang, string> = {
   en: "English",
   ko: "한국어",
+  vi: "Tiếng Việt",
 };
 
 export function LanguageSwitcher({ lang, group, slug }: LanguageSwitcherProps) {
@@ -37,7 +38,7 @@ export function LanguageSwitcher({ lang, group, slug }: LanguageSwitcherProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="border-white/15 bg-zinc-950">
-        {(["en", "ko"] as Lang[]).map((nextLang) => (
+        {(["en", "ko", "vi"] as Lang[]).map((nextLang) => (
           <DropdownMenuItem
             key={nextLang}
             asChild

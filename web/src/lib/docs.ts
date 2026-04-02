@@ -1,6 +1,6 @@
-export type Lang = "en" | "ko";
+export type Lang = "en" | "ko" | "vi";
 
-export const LANGUAGES: Lang[] = ["en", "ko"];
+export const LANGUAGES: Lang[] = ["en", "ko", "vi"];
 export const DEFAULT_LANG: Lang = "en";
 
 export type DocGroupId =
@@ -31,10 +31,10 @@ export interface HeadingItem {
 }
 
 export const GROUP_TITLES: Record<DocGroupId, Record<Lang, string>> = {
-  "getting-started": { en: "Getting Started", ko: "Getting Started" },
-  "core-concepts": { en: "Core Concepts", ko: "Core Concepts" },
-  guide: { en: "Guide", ko: "Guide" },
-  "cli-interfaces": { en: "CLI Interfaces", ko: "CLI Interfaces" },
+  "getting-started": { en: "Getting Started", ko: "Getting Started", vi: "Getting Started" },
+  "core-concepts": { en: "Core Concepts", ko: "Core Concepts", vi: "Core Concepts" },
+  guide: { en: "Guide", ko: "Guide", vi: "Guide" },
+  "cli-interfaces": { en: "CLI Interfaces", ko: "CLI Interfaces", vi: "CLI Interfaces" },
 };
 
 export const DOC_ORDER: Record<DocGroupId, string[]> = {
