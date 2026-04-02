@@ -1,5 +1,10 @@
 import { execSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import * as p from "@clack/prompts";
 import pc from "picocolors";
@@ -27,6 +32,40 @@ import {
 } from "../lib/skills.js";
 import { downloadAndExtract } from "../lib/tarball.js";
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  ko: "한국어",
+  ja: "日本語",
+  zh: "中文",
+  vi: "Tiếng Việt",
+  de: "Deutsch",
+  es: "Español",
+  fr: "Français",
+  nl: "Nederlands",
+  pl: "Polski",
+  pt: "Português",
+  ru: "Русский",
+};
+
+function scanLanguages(
+  repoDir: string,
+): { value: string; label: string }[] {
+  const docsDir = join(repoDir, "docs");
+  const codes: string[] = ["en"];
+
+  if (existsSync(docsDir)) {
+    for (const file of readdirSync(docsDir)) {
+      const match = file.match(/^README\.(.+)\.md$/);
+      if (match) codes.push(match[1]);
+    }
+  }
+
+  return codes.map((code) => ({
+    value: code,
+    label: LANGUAGE_NAMES[code] ?? code,
+  }));
+}
+
 export async function install(): Promise<void> {
   console.clear();
   p.intro(pc.bgMagenta(pc.white(" 🛸 oh-my-agent ")));
@@ -43,19 +82,32 @@ export async function install(): Promise<void> {
   // Detect and offer to remove competing tools
   await promptUninstallCompetitors(process.cwd());
 
+  const spinner = p.spinner();
+  spinner.start("Downloading...");
+
+  let repoDir: string;
+  let cleanup: () => void;
+  try {
+    const result = await downloadAndExtract();
+    repoDir = result.dir;
+    cleanup = result.cleanup;
+  } catch (error) {
+    spinner.stop("Download failed");
+    p.log.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+
+  spinner.stop("Downloaded!");
+
+  const languages = scanLanguages(repoDir);
   const language = await p.select({
     message: "Response language?",
-    options: [
-      { value: "en", label: "English" },
-      { value: "ko", label: "한국어" },
-      { value: "ja", label: "日本語" },
-      { value: "zh", label: "中文" },
-      { value: "vi", label: "Tiếng Việt" },
-    ],
+    options: languages,
     initialValue: "en",
   });
 
   if (p.isCancel(language)) {
+    cleanup();
     p.cancel("Cancelled.");
     process.exit(0);
   }
@@ -164,14 +216,10 @@ export async function install(): Promise<void> {
       selectedClis.push("copilot");
     }
   }
-  const spinner = p.spinner();
-  spinner.start("Downloading...");
+  spinner.start("Installing skills...");
 
   try {
-    const { dir: repoDir, cleanup } = await downloadAndExtract();
-
     try {
-      spinner.message("Installing skills...");
 
       installShared(repoDir, cwd);
       installWorkflows(repoDir, cwd);
