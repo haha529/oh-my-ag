@@ -10,15 +10,23 @@ interface Competitor {
   uninstall: () => void;
 }
 
+function cleanLeftoverDirs(cwd: string): void {
+  for (const dir of [".omc", ".omx"]) {
+    const target = join(cwd, dir);
+    if (existsSync(target)) rmSync(target, { recursive: true, force: true });
+  }
+}
+
 function detectCompetitors(cwd: string): Competitor[] {
   const homeDir = process.env.HOME || process.env.USERPROFILE || "";
   const competitors: Competitor[] = [];
 
   // --- omc (oh-my-claudecode) ---
-  const omcProjectDir = join(cwd, ".omc");
+  // Only detect if global config is active (OMC:START in CLAUDE.md).
+  // Project-level .omc dirs are leftover artifacts — cleaned silently by cleanLeftoverDirs.
   const claudeMdPath = join(homeDir, ".claude", "CLAUDE.md");
-  let omcDetected = existsSync(omcProjectDir);
-  if (!omcDetected && existsSync(claudeMdPath)) {
+  let omcDetected = false;
+  if (existsSync(claudeMdPath)) {
     try {
       const content = readFileSync(claudeMdPath, "utf-8");
       omcDetected = content.includes("OMC:START");
@@ -107,6 +115,7 @@ function detectCompetitors(cwd: string): Competitor[] {
         }
 
         // Remove project-level .omc directory
+        const omcProjectDir = join(cwd, ".omc");
         if (existsSync(omcProjectDir))
           rmSync(omcProjectDir, { recursive: true, force: true });
 
@@ -228,8 +237,10 @@ function detectCompetitors(cwd: string): Competitor[] {
   }
 
   // --- omx (oh-my-codex) ---
-  const omxProjectDir = join(cwd, ".omx");
-  if (existsSync(omxProjectDir)) {
+  // Only detect if the global CLI package is installed.
+  // Project-level .omx dirs are leftover artifacts — cleaned silently by cleanLeftoverDirs.
+  try {
+    execSync("npm ls -g oh-my-codex", { stdio: "pipe", timeout: 10_000 });
     competitors.push({
       name: "omx",
       displayName: "oh-my-codex",
@@ -240,6 +251,8 @@ function detectCompetitors(cwd: string): Competitor[] {
         });
       },
     });
+  } catch {
+    // not installed globally
   }
 
   return competitors;
@@ -252,6 +265,9 @@ function detectCompetitors(cwd: string): Competitor[] {
 export async function promptUninstallCompetitors(
   cwd: string,
 ): Promise<string[]> {
+  // Silently remove leftover project-level dirs (.omc, .omx) — these are artifacts, not active installs.
+  cleanLeftoverDirs(cwd);
+
   const competitors = detectCompetitors(cwd);
   if (competitors.length === 0) return [];
 
