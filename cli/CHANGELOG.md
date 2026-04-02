@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.19.0](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.18.5...cli-v4.19.0) (2026-04-02)
+
+
+### Features
+
+* add i18n response language rules ([4cb69b8](https://github.com/first-fluke/oh-my-agent/commit/4cb69b8ab39dbe9e65207e61c2923acf003e91f8))
+
+
+### Documentation
+
+* add Vietnamese README translation and fix language nav links ([9af8468](https://github.com/first-fluke/oh-my-agent/commit/9af84685ece2ef87aa08f1f3140280bb9f8bb5eb))
+
 ## [4.18.5](https://github.com/first-fluke/oh-my-agent/compare/cli-v4.18.4...cli-v4.18.5) (2026-04-02)
 
 
