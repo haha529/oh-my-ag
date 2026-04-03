@@ -1,5 +1,59 @@
 # Changelog
 
+## [0.4.0](https://github.com/haha529/oh-my-ag/compare/web-v0.3.13...web-v0.4.0) (2026-04-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* All skill directory names changed from `{domain}-agent` to `oma-{domain}` prefix (e.g. `backend-agent` → `oma-backend`). Agent files renamed from `-impl` to role names (e.g. `backend-impl` → `backend-engineer`). `workflow-guide` renamed to `oma-coordination`.
+
+### Features
+
+* add oma-design skill with DESIGN.md workflow and anti-pattern system ([4f7a897](https://github.com/haha529/oh-my-ag/commit/4f7a8971c1ecd59509acbfa117d5f8818a421b3b))
+
+
+### Bug Fixes
+
+* add vi locale to generateStaticParams in page.tsx ([60f681f](https://github.com/haha529/oh-my-ag/commit/60f681f03092be31138b3876dd2d57ba984b2249))
+* address reviewer feedback on PR [#123](https://github.com/haha529/oh-my-ag/issues/123) ([bd1ba25](https://github.com/haha529/oh-my-ag/commit/bd1ba2570b43367c447ab08766c765b80aabd1ce))
+* **demo:** use Hack Nerd Font for VHS recording ([b16bdd7](https://github.com/haha529/oh-my-ag/commit/b16bdd711e38ba4c58bca589926d8d5488480839))
+* **hooks:** remove yaml dependency from keyword-detector hook ([a6a7a7b](https://github.com/haha529/oh-my-ag/commit/a6a7a7b0503121f411d8ee2ef05cf684d732ab08))
+* **web:** add CSS side-effect import type declaration for build ([a7870b8](https://github.com/haha529/oh-my-ag/commit/a7870b8e579dee6893ae7270d4c8ae7cd575219c))
+
+
+### Refactoring
+
+* abstract oma-backend to language-agnostic skill ([a3bdb1c](https://github.com/haha529/oh-my-ag/commit/a3bdb1ccd81eadf0118aed4aa21794ddfff0cfe9))
+* remove .agents/brain/ and consolidate output to .agents/results/ ([3760861](https://github.com/haha529/oh-my-ag/commit/37608617a133bd688bfb53ed3757634bd01ecad5))
+* remove deprecated /setup workflow replaced by oma install/update ([faf9bae](https://github.com/haha529/oh-my-ag/commit/faf9baeac1b922977be547b4825f762e97e312e9))
+* rename skills to oma-* prefix and agents to role-based names ([766b1e2](https://github.com/haha529/oh-my-ag/commit/766b1e208f8397fd0835803e69b71b9a03a32ce4))
+* replace keyword-based auto-activation with explicit skill invocation ([6be9ce7](https://github.com/haha529/oh-my-ag/commit/6be9ce7f587e96539edf96cd049dbe274b27eb3c))
+* unify workflows and agents into .agents/ SSOT ([0195cd8](https://github.com/haha529/oh-my-ag/commit/0195cd806cb37aab7f6b15a4e2c4a8fbf3ce571b))
+
+
+### Documentation
+
+* **action:** use marketplace action slug in examples ([33e3399](https://github.com/haha529/oh-my-ag/commit/33e3399d63ecebffed93fe554b6711afd2785b41))
+* add automated updates guide for GitHub Action ([261e842](https://github.com/haha529/oh-my-ag/commit/261e8425c46d622930857d667f3cda43093aad2e))
+* add brew install oh-my-agent as global installation option ([026169e](https://github.com/haha529/oh-my-ag/commit/026169ef10b451fe72461979b13b778026371c83))
+* add detailed web content translations for all 10 languages ([77b2cf4](https://github.com/haha529/oh-my-ag/commit/77b2cf49af23a3f9fed2aaf42c8dd2502817359c))
+* add Vietnamese web content and register vi locale ([53e7fd1](https://github.com/haha529/oh-my-ag/commit/53e7fd12e9426963f7b6ec2cee375347bf9e711d))
+* comprehensive documentation rewrite (198 files, 11 languages) ([c97a771](https://github.com/haha529/oh-my-ag/commit/c97a7712d61e732fb686b37f79dbb4d51e0febd6))
+* comprehensive documentation rewrite across all languages ([d396ce8](https://github.com/haha529/oh-my-ag/commit/d396ce808f596d5a2cb3cd8c3fd30500c392c048))
+* fill undocumented codebase features in EN/KO web content ([49b5f7e](https://github.com/haha529/oh-my-ag/commit/49b5f7e03c3e9fe0ab771a396a0b008522baeb0e))
+* rename CLI command from oh-my-ag to oma in all web content ([19feda2](https://github.com/haha529/oh-my-ag/commit/19feda2e535326b87c39b464fc02766f5628108a))
+* review and improve translations across all 10 languages ([35eb06b](https://github.com/haha529/oh-my-ag/commit/35eb06b95d2252a4b8a653598fab330a9aa87ad1))
+* simplify user-facing documentation and standardize structure ([fcbaad7](https://github.com/haha529/oh-my-ag/commit/fcbaad7a19b72a002193a0bb325bed10c3b27085))
+* sync localized readmes and remove uk docs ([3808917](https://github.com/haha529/oh-my-ag/commit/3808917ced96721766535e7b17fc39436d3fbd36))
+* translate automated-updates guide to 9 languages ([c0934f0](https://github.com/haha529/oh-my-ag/commit/c0934f0ad3ddf9e92fbcf91c7e5ea99ab9e65a46))
+* update CLI docs for -m/--model flag and add agent:review command ([43ff752](https://github.com/haha529/oh-my-ag/commit/43ff752e5a6faf39eeba7072b52a467ca08038aa))
+* update documentation for backend stack abstraction ([2dc7743](https://github.com/haha529/oh-my-ag/commit/2dc77436cbd779f73f5ccaafa9ae243997af0b66))
+* update usage command to usage:anti across all documentation ([c696920](https://github.com/haha529/oh-my-ag/commit/c6969203005ce46eae40d5a3fd0ccea77c0cba84))
+* upgrade remaining EN web content to detailed reference docs ([cd3a4c7](https://github.com/haha529/oh-my-ag/commit/cd3a4c71deb3ba5e3afebb7ac2ae6379ee292687))
+* upgrade single-skill guide to detailed reference ([a1accb0](https://github.com/haha529/oh-my-ag/commit/a1accb0c50d166be89416f9b331391c4a2a39492))
+* **web:** add missing agents and workflows across all 11 languages ([998924f](https://github.com/haha529/oh-my-ag/commit/998924fb38da8ec59cb93910217c40f149d478b7))
+* **web:** fix header branding from oh-my-ag to oh-my-agent ([553edd3](https://github.com/haha529/oh-my-ag/commit/553edd34f8c2349d366772393f6616ec1c921a49))
+
 ## [0.3.13](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.12...web-v0.3.13) (2026-04-02)
 
 
