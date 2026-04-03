@@ -1,7 +1,7 @@
 {
   "name": "oh-my-agent",
   "version": "4.22.1",
-  "releaseDate": "2026-04-02T22:57:37.826Z",
+  "releaseDate": "2026-04-03T04:29:36.315Z",
   "repository": "https://github.com/first-fluke/oh-my-agent",
   "files": [
     {
@@ -51,8 +51,8 @@
     },
     {
       "path": ".agents/rules/i18n-guide.md",
-      "sha256": "6f6d587a8e5c91f0cb8ed1e5b93ac7958087129c3e8fa0ff2edfcb7506238979",
-      "size": 2779
+      "sha256": "89102519c47c0c6b6026564e81825a4d44df785616073bf80099bef165b953ab",
+      "size": 2893
     },
     {
       "path": ".agents/skills/_shared/README.md",
@@ -176,7 +176,7 @@
     },
     {
       "path": ".agents/skills/_version.json",
-      "sha256": "3dacba3a6e3cfc8720302d50bc281472e3b43e605deaa7172fdd6c1c4cdf3401",
+      "sha256": "1e5e59cbb6a6e6dc091a22517db504d5f9ddf7e8f96f5febdbc6fcca7447490d",
       "size": 25
     },
     {
