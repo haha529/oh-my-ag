@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/haha529/oh-my-ag/compare/action-v1.1.1...action-v1.2.0) (2026-04-03)
+
+
+### Features
+
+* **action:** add GitHub Action for automated oma update ([dc22007](https://github.com/haha529/oh-my-ag/commit/dc220070a1c180d3e32b9c2f00eafb2e5c1888b3))
+
+
+### Documentation
+
+* **action:** use marketplace action slug in examples ([33e3399](https://github.com/haha529/oh-my-ag/commit/33e3399d63ecebffed93fe554b6711afd2785b41))
+
 ## [1.1.1](https://github.com/first-fluke/oh-my-agent/compare/action-v1.1.0...action-v1.1.1) (2026-03-26)
 
 
