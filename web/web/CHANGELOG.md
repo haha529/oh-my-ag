@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.14](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.13...web-v0.3.14) (2026-04-04)
+
+
+### Bug Fixes
+
+* harden installer bootstrap ([3c214f3](https://github.com/first-fluke/oh-my-agent/commit/3c214f3644f236ccbd3d982dd9ca3899853e1d97))
+
 ## [0.3.13](https://github.com/first-fluke/oh-my-agent/compare/web-v0.3.12...web-v0.3.13) (2026-04-02)
 
 
