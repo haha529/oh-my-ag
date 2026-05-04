@@ -1083,7 +1083,7 @@ describe("validateSerenaConfigs", () => {
     validateSerenaConfigs();
 
     const projectYmlMatcher = expect.stringMatching(
-      /[\\\/]project1[\\\/]\.serena[\\\/]project\.yml$/,
+      /[\\/]project1[\\/]\.serena[\\/]project\.yml$/,
     );
     expect(mockFs.writeFileSync).toHaveBeenCalledWith(
       projectYmlMatcher,
@@ -1132,7 +1132,7 @@ describe("validateSerenaConfigs", () => {
 
     expect(mockFs.writeFileSync).toHaveBeenCalledTimes(1);
     expect(mockFs.writeFileSync).toHaveBeenCalledWith(
-      expect.stringMatching(/[\\\/]project2[\\\/]\.serena[\\\/]project\.yml$/),
+      expect.stringMatching(/[\\/]project2[\\/]\.serena[\\/]project\.yml$/),
       expect.stringContaining("languages:"),
     );
   });
