@@ -337,7 +337,7 @@ describe("collectProfileReport — model and CLI mapping", () => {
     const report = await profileModule.collectProfileReport("/fake/cwd");
     const backend = report.rows.find((r) => r.role === "backend");
     expect(backend?.cli).toBe("codex");
-    expect(backend?.model).toBe("openai/gpt-5.3-codex");
+    expect(backend?.model).toBe("openai/gpt-5.5");
   });
 
   it("correctly maps google/ models to gemini CLI", async () => {

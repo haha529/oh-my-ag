@@ -161,7 +161,7 @@ model_preset: antigravity   # claude-only | codex-only | gemini-only | qwen-only
 
 # Optional per-agent overrides
 agents:
-  backend: { model: openai/gpt-5.3-codex, effort: high }
+  backend: { model: openai/gpt-5.5, effort: high }
 ```
 
 - `oma doctor --profile` — prints the per-role resolved model matrix

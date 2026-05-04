@@ -66,12 +66,12 @@ describe("collectProfileReport — subdirectory invocation", () => {
   });
 
   it("finds oma-config.yaml from a nested subdirectory", async () => {
-    // antigravity preset: backend = openai/gpt-5.3-codex
+    // antigravity preset: backend = openai/gpt-5.5
     const report = await collectProfileReport(subDir);
     // TODO Phase 3 qa: replace missingDefaultsYaml with missingPreset assertion
     expect(report.missingPreset).toBe(false);
     const backend = report.rows.find((r) => r.role === "backend");
-    expect(backend?.model).toBe("openai/gpt-5.3-codex");
+    expect(backend?.model).toBe("openai/gpt-5.5");
   });
 
   it("honors agents override in oma-config.yaml from a nested subdirectory", async () => {

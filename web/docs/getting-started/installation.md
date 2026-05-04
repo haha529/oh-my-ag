@@ -210,7 +210,7 @@ auto_update_cli: true
 
 # Optional — partial override per agent (object-only, shallow merge)
 agents:
-  backend: { model: openai/gpt-5.3-codex, effort: high }
+  backend: { model: openai/gpt-5.5, effort: high }
   qa:      { model: anthropic/claude-sonnet-4-6 }
 
 # Optional — user-defined model slugs
@@ -222,7 +222,7 @@ agents:
 #   my-team:
 #     extends: claude-only
 #     agent_defaults:
-#       backend: { model: openai/gpt-5.3-codex, effort: high }
+#       backend: { model: openai/gpt-5.5, effort: high }
 ```
 
 ### Field Reference

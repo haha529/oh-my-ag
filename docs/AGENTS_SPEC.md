@@ -134,7 +134,7 @@ Typical examples:
 agent_cli_mapping:
   pm: "claude"                         # legacy string — vendor only
   backend:                             # AgentSpec object
-    model: "openai/gpt-5.3-codex"
+    model: "openai/gpt-5.5"
     effort: high
     thinking: false
     memory: default

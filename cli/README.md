@@ -36,7 +36,10 @@ bunx oh-my-agent@latest
 
 ### Install via Agent Package Manager
 
-> Microsoft's [Agent Package Manager](https://github.com/microsoft/apm) (APM) — not to be confused with `oma-observability`'s APM (Application Performance Monitoring).
+<details>
+<summary>Microsoft's <a href="https://github.com/microsoft/apm">Agent Package Manager</a> (APM) — skills-only distribution. Click to expand.</summary>
+
+> Not to be confused with `oma-observability`'s APM (Application Performance Monitoring).
 
 ```bash
 # 22 skills, deployed to every detected runtime
@@ -50,6 +53,8 @@ apm install first-fluke/oh-my-agent/.agents/skills/oma-frontend
 APM reads `.claude-plugin/plugin.json`'s `skills: .agents/skills/` pointer, so the `.agents/` SSOT is the only source — no build step or mirror.
 
 APM ships the 22 skills only. For workflows, rules, `oma-config.yaml`, keyword-detection hooks, and the `oma agent:spawn` CLI, use `bunx oh-my-agent@latest`. Pick one distribution per project to avoid drift.
+
+</details>
 
 Pick a preset and you're ready:
 
@@ -84,6 +89,7 @@ Pick a preset and you're ready:
 | **oma-pm** | Plans tasks, breaks down requirements, defines API contracts |
 | **oma-qa** | OWASP security, performance, accessibility review |
 | **oma-recap** | Conversation history recap and themed work summaries |
+| **oma-scholar** | Academic research companion — literature search, peer review |
 | **oma-scm** | SCM (software configuration management) — branching, merges, worktrees, baselines; Conventional Commits |
 | **oma-search** | Intent-based search router with trust scoring — docs, web, code, local |
 | **oma-tf-infra** | Multi-cloud Terraform IaC (Infrastructure as Code) |
@@ -155,7 +161,7 @@ model_preset: antigravity   # claude-only | codex-only | gemini-only | qwen-only
 
 # Optional per-agent overrides
 agents:
-  backend: { model: openai/gpt-5.3-codex, effort: high }
+  backend: { model: openai/gpt-5.5, effort: high }
 ```
 
 - `oma doctor --profile` — prints the per-role resolved model matrix
@@ -265,6 +271,11 @@ See [SPONSORS.md](https://github.com/first-fluke/oh-my-agent/blob/main/SPONSORS.
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=first-fluke/oh-my-agent&type=date&legend=bottom-right)](https://www.star-history.com/#first-fluke/oh-my-agent&type=date&legend=bottom-right)
+
+
+## References
+
+- Liang, Q., Wang, H., Liang, Z., & Liu, Y. (2026). *From skill text to skill structure: The scheduling-structural-logical representation for agent skills* (Version 2) [Preprint]. arXiv. https://doi.org/10.48550/arXiv.2604.24026
 
 
 ## License

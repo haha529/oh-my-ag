@@ -112,8 +112,29 @@ const RAW_REGISTRY: ReadonlyMap<string, ModelSpec> = new Map([
   ],
 
   // -------------------------------------------------------------------------
-  // OpenAI Codex (4)
+  // OpenAI Codex (5)
   // -------------------------------------------------------------------------
+  [
+    "openai/gpt-5.5",
+    {
+      cli: "codex",
+      cli_model: "gpt-5.5",
+      supports: {
+        effort: {
+          type: "granular",
+          levels: ["none", "low", "medium", "high", "xhigh"],
+        },
+        apply_patch: true,
+        task_budget: false,
+        prompt_cache: false,
+        computer_use: true,
+        native_dispatch_from: ["codex"],
+        api_only: false,
+      },
+      pricing_note: "$5/$30 per Mtok (참고용 — 토큰 효율 5.4 대비 향상)",
+      auth_hint: "ChatGPT Plus 또는 Pro 구독 필요 (Codex CLI 기본 모델)",
+    } satisfies ModelSpec,
+  ],
   [
     "openai/gpt-5.4",
     {
@@ -268,8 +289,26 @@ const RAW_REGISTRY: ReadonlyMap<string, ModelSpec> = new Map([
   ],
 
   // -------------------------------------------------------------------------
-  // Alibaba Qwen (2)
+  // Alibaba Qwen (3)
   // -------------------------------------------------------------------------
+  [
+    "qwen/qwen3.6-plus",
+    {
+      cli: "qwen",
+      cli_model: "qwen3.6-plus",
+      supports: {
+        effort: { type: "binary-thinking" },
+        apply_patch: false,
+        task_budget: false,
+        prompt_cache: false,
+        computer_use: false,
+        native_dispatch_from: [],
+        api_only: false,
+      },
+      pricing_note: "1M context, agentic coding 강화 (2026-04 출시)",
+      auth_hint: "Qwen Code 구독 또는 Bailian Coding Plan API 키 필요",
+    } satisfies ModelSpec,
+  ],
   [
     "qwen/qwen3-coder-plus",
     {
@@ -494,7 +533,7 @@ export function reloadRegistry(cwd?: string): ReadonlyMap<string, ModelSpec> {
 }
 
 /**
- * Core model registry. Contains exactly 12 CLI-compatible slugs from the
+ * Core model registry. Contains exactly 14 CLI-compatible slugs from the
  * built-in RAW_REGISTRY, merged with any user entries from models.yaml.
  * Entries with api_only:true are excluded at initialization.
  *

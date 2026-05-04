@@ -132,7 +132,7 @@ model_preset: antigravity   # mixed: Claude for QA/PM, Codex for impl, Gemini fo
 # Override specific agents on top of the preset
 agents:
   frontend: { model: anthropic/claude-sonnet-4-6 }
-  backend:  { model: openai/gpt-5.3-codex, effort: high }
+  backend:  { model: openai/gpt-5.5, effort: high }
 ```
 
 Built-in presets: `claude-only`, `codex-only`, `gemini-only`, `qwen-only`, `antigravity`. See [Per-Agent Models](../guide/per-agent-models.md) for details.
@@ -144,7 +144,7 @@ When `oma agent:spawn` determines which CLI to use:
 | Priority | Source | Example |
 |----------|--------|---------|
 | 1 (highest) | `--model` flag | `oma agent:spawn backend "task" session-01 -m claude` |
-| 2 | `agents:` override in `oma-config.yaml` | `agents: { backend: { model: openai/gpt-5.3-codex } }` |
+| 2 | `agents:` override in `oma-config.yaml` | `agents: { backend: { model: openai/gpt-5.5 } }` |
 | 3 | Active `model_preset` agent defaults | preset lookup for the agent role |
 
 The `--model` flag always wins. If no flag is provided, the system checks `agents:` overrides, then the preset defaults.

@@ -43,7 +43,7 @@ import {
 // Fixtures — OmaConfig objects
 // ---------------------------------------------------------------------------
 
-/** Minimal config using codex-only preset — backend gets gpt-5.3-codex + effort:high */
+/** Minimal config using codex-only preset — backend gets gpt-5.5 + effort:high */
 const CODEX_ONLY_CONFIG = {
   language: "en",
   model_preset: "codex-only",
@@ -259,7 +259,7 @@ describe("setCodexReasoningEffort — Case 9: Codex effort in TOML", () => {
   });
 
   it("codex-only backend plan has effort=high → TOML shows model_reasoning_effort=high", () => {
-    // codex-only preset: backend = { model: openai/gpt-5.3-codex, effort: high }
+    // codex-only preset: backend = { model: openai/gpt-5.5, effort: high }
     const plan = resolveAgentPlanFromConfig("backend", CODEX_ONLY_CONFIG);
     expect(plan.cli).toBe("codex");
     expect(plan.effort).toBe("high");
@@ -470,9 +470,9 @@ describe("geminiThinkingBudgetFlag — Case 12: Gemini effort translation", () =
 // ---------------------------------------------------------------------------
 
 describe("resolveAgentPlanFromConfig — Case 13: preset defaults (no override)", () => {
-  it("codex-only backend uses gpt-5.3-codex + effort:high from preset", () => {
+  it("codex-only backend uses gpt-5.5 + effort:high from preset", () => {
     const plan = resolveAgentPlanFromConfig("backend", CODEX_ONLY_CONFIG);
-    expect(plan.cliModel).toBe("gpt-5.3-codex");
+    expect(plan.cliModel).toBe("gpt-5.5");
     expect(plan.effort).toBe("high");
     expect(plan.cli).toBe("codex");
   });
@@ -580,11 +580,11 @@ describe("buildAgentPlanArgs — Claude", () => {
 // ---------------------------------------------------------------------------
 
 describe("buildAgentPlanArgs — Codex", () => {
-  it("produces -m gpt-5.3-codex args for codex-only backend", () => {
+  it("produces -m gpt-5.5 args for codex-only backend", () => {
     const plan = resolveAgentPlanFromConfig("backend", CODEX_ONLY_CONFIG);
     expect(plan.cli).toBe("codex");
-    expect(plan.cliModel).toBe("gpt-5.3-codex");
-    expect(buildAgentPlanArgs(plan)).toEqual(["-m", "gpt-5.3-codex"]);
+    expect(plan.cliModel).toBe("gpt-5.5");
+    expect(buildAgentPlanArgs(plan)).toEqual(["-m", "gpt-5.5"]);
   });
 });
 
@@ -597,7 +597,7 @@ describe("AgentPlan.spec — downstream reference", () => {
     const plan = resolveAgentPlanFromConfig("backend", CODEX_ONLY_CONFIG);
     expect(plan.spec).toBeDefined();
     expect(plan.spec.cli).toBe("codex");
-    expect(plan.spec.cli_model).toBe("gpt-5.3-codex");
+    expect(plan.spec.cli_model).toBe("gpt-5.5");
     expect(plan.spec.supports.effort?.type).toBe("granular");
     expect(plan.spec.supports.apply_patch).toBe(true);
   });

@@ -11,6 +11,7 @@ describe("CORE_REGISTRY", () => {
     "anthropic/claude-opus-4-7",
     "anthropic/claude-sonnet-4-6",
     "anthropic/claude-haiku-4-5",
+    "openai/gpt-5.5",
     "openai/gpt-5.4",
     "openai/gpt-5.4-pro",
     "openai/gpt-5.4-mini",
@@ -18,13 +19,14 @@ describe("CORE_REGISTRY", () => {
     "google/gemini-3.1-pro-preview",
     "google/gemini-3-flash",
     "google/gemini-3.1-flash-lite",
+    "qwen/qwen3.6-plus",
     "qwen/qwen3-coder-plus",
     "qwen/qwen3-coder-next",
   ] as const;
 
-  it("contains exactly 12 slugs (Anthropic 3, OpenAI 4, Google 3, Qwen 2)", async () => {
+  it("contains exactly 14 slugs (Anthropic 3, OpenAI 5, Google 3, Qwen 3)", async () => {
     const { CORE_REGISTRY } = await import("./model-registry.js");
-    expect(CORE_REGISTRY.size).toBe(12);
+    expect(CORE_REGISTRY.size).toBe(14);
   });
 
   it.each(EXPECTED_SLUGS)("includes slug: %s", async (slug) => {
@@ -107,6 +109,7 @@ describe("ModelSpec shape validation", () => {
   it("OpenAI Codex slugs use granular effort type with all 5 levels", async () => {
     const { getModelSpec } = await import("./model-registry.js");
     const slugs = [
+      "openai/gpt-5.5",
       "openai/gpt-5.4",
       "openai/gpt-5.4-pro",
       "openai/gpt-5.4-mini",
@@ -137,7 +140,11 @@ describe("ModelSpec shape validation", () => {
 
   it("Qwen slugs use binary-thinking effort type", async () => {
     const { getModelSpec } = await import("./model-registry.js");
-    const slugs = ["qwen/qwen3-coder-plus", "qwen/qwen3-coder-next"];
+    const slugs = [
+      "qwen/qwen3.6-plus",
+      "qwen/qwen3-coder-plus",
+      "qwen/qwen3-coder-next",
+    ];
     for (const slug of slugs) {
       const spec = getModelSpec(slug);
       expect(spec?.supports.effort).toMatchObject({ type: "binary-thinking" });
@@ -145,10 +152,10 @@ describe("ModelSpec shape validation", () => {
     }
   });
 
-  it("gpt-5.4 has computer_use: true", async () => {
+  it("gpt-5.5 and gpt-5.4 have computer_use: true", async () => {
     const { getModelSpec } = await import("./model-registry.js");
-    const spec = getModelSpec("openai/gpt-5.4");
-    expect(spec?.supports.computer_use).toBe(true);
+    expect(getModelSpec("openai/gpt-5.5")?.supports.computer_use).toBe(true);
+    expect(getModelSpec("openai/gpt-5.4")?.supports.computer_use).toBe(true);
   });
 
   it("all entries have a non-empty auth_hint", async () => {
@@ -424,7 +431,7 @@ describe("T14: reloadRegistry — merged registry behavior", () => {
     );
     try {
       const merged = reloadRegistry(emptyDir);
-      expect(merged.size).toBe(12);
+      expect(merged.size).toBe(14);
       expect(getModelSpec("anthropic/claude-opus-4-7")).toBeDefined();
       expect(CORE_REGISTRY.has("openai/gpt-5.4")).toBe(true);
     } finally {
@@ -440,7 +447,7 @@ describe("T14: reloadRegistry — merged registry behavior", () => {
     const dir = makeTempProjectDir(MALFORMED_YAML);
     try {
       const merged = reloadRegistry(dir);
-      expect(merged.size).toBe(12);
+      expect(merged.size).toBe(14);
       expect(getModelSpec("openai/gpt-5.4")).toBeDefined();
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });

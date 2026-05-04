@@ -126,7 +126,9 @@ describe("agent/spawn-status.ts", () => {
     expect(child_process.spawn).toHaveBeenCalledWith(
       "gemini",
       expect.arrayContaining(["-p", "prompt content\n\nexecution protocol"]),
-      expect.objectContaining({ cwd: expect.stringMatching(/[\\/]tmp(?:[\\/]|$)/) }),
+      expect.objectContaining({
+        cwd: expect.stringMatching(/[\\/]tmp(?:[\\/]|$)/),
+      }),
     );
     expect(mockFsFunctions.writeFileSync).toHaveBeenCalledWith(
       expect.stringContaining(".pid"),
@@ -280,7 +282,9 @@ describe("agent/spawn-status.ts", () => {
     expect(child_process.spawn).toHaveBeenLastCalledWith(
       "claude",
       expect.any(Array),
-      expect.objectContaining({ cwd: expect.stringMatching(/[\\/]project(?:[\\/]|$)/) }),
+      expect.objectContaining({
+        cwd: expect.stringMatching(/[\\/]project(?:[\\/]|$)/),
+      }),
     );
 
     await spawnAgent(
@@ -292,7 +296,9 @@ describe("agent/spawn-status.ts", () => {
     expect(child_process.spawn).toHaveBeenLastCalledWith(
       "codex",
       expect.any(Array),
-      expect.objectContaining({ cwd: expect.stringMatching(/[\\/]project(?:[\\/]|$)/) }),
+      expect.objectContaining({
+        cwd: expect.stringMatching(/[\\/]project(?:[\\/]|$)/),
+      }),
     );
 
     cwdSpy.mockRestore();
@@ -302,7 +308,8 @@ describe("agent/spawn-status.ts", () => {
     mockFsFunctions.existsSync.mockImplementation((pathArg: fs.PathLike) => {
       const target = pathArg.toString();
       if (n(target).endsWith("/tmp")) return true;
-      if (n(target).includes("subagent-") && n(target).endsWith(".log")) return true;
+      if (n(target).includes("subagent-") && n(target).endsWith(".log"))
+        return true;
       return false;
     });
     mockFsFunctions.statSync.mockReturnValue({
@@ -439,7 +446,9 @@ describe("agent/spawn-status.ts", () => {
         "-p",
         "plan the work",
       ]),
-      expect.objectContaining({ cwd: expect.stringMatching(/[\\/]workspace(?:[\\/]|$)/) }),
+      expect.objectContaining({
+        cwd: expect.stringMatching(/[\\/]workspace(?:[\\/]|$)/),
+      }),
     );
   });
 
@@ -460,7 +469,7 @@ describe("agent/spawn-status.ts", () => {
       "    output_format_flag: --json",
       "    auto_approve_flag: --full-auto",
       "    model_flag: -m",
-      "    default_model: gpt-5.3-codex",
+      "    default_model: gpt-5.5",
     ].join("\n");
 
     mockFsFunctions.existsSync.mockImplementation((pathArg: fs.PathLike) => {
@@ -496,11 +505,13 @@ describe("agent/spawn-status.ts", () => {
         "exec",
         "--json",
         "-m",
-        "gpt-5.3-codex",
+        "gpt-5.5",
         "--full-auto",
         "@backend-engineer\n\nimplement auth",
       ]),
-      expect.objectContaining({ cwd: expect.stringMatching(/[\\/]workspace(?:[\\/]|$)/) }),
+      expect.objectContaining({
+        cwd: expect.stringMatching(/[\\/]workspace(?:[\\/]|$)/),
+      }),
     );
   });
 
@@ -563,7 +574,9 @@ describe("agent/spawn-status.ts", () => {
         "-p",
         "@frontend-engineer\n\nbuild dashboard",
       ]),
-      expect.objectContaining({ cwd: expect.stringMatching(/[\\/]workspace(?:[\\/]|$)/) }),
+      expect.objectContaining({
+        cwd: expect.stringMatching(/[\\/]workspace(?:[\\/]|$)/),
+      }),
     );
   });
 });
