@@ -4,6 +4,7 @@ import {
   applyRecommendedCodexSettings,
   needsCodexSettingsUpdate,
   parseCodexConfig,
+  RECOMMENDED_CODEX_FEATURES,
   RECOMMENDED_CODEX_MCP,
   serializeCodexConfig,
   setCodexReasoningEffort,
@@ -23,7 +24,31 @@ describe("codex settings", () => {
     ).toBe(true);
   });
 
-  it("accepts existing serena stdio config", () => {
+  it("requires update when recommended features are missing or disabled", () => {
+    const baseMcp = {
+      mcp_servers: {
+        serena: {
+          command: "uvx",
+          args: ["serena"],
+        },
+      },
+    };
+    expect(needsCodexSettingsUpdate(baseMcp)).toBe(true);
+    expect(
+      needsCodexSettingsUpdate({
+        ...baseMcp,
+        features: { goals: true },
+      }),
+    ).toBe(true);
+    expect(
+      needsCodexSettingsUpdate({
+        ...baseMcp,
+        features: { goals: false, child_agents_md: true },
+      }),
+    ).toBe(true);
+  });
+
+  it("accepts existing serena stdio config with recommended features enabled", () => {
     const settings = {
       mcp_servers: {
         serena: {
@@ -31,11 +56,12 @@ describe("codex settings", () => {
           args: ["--from", "git+https://github.com/oraios/serena", "serena"],
         },
       },
+      features: { ...RECOMMENDED_CODEX_FEATURES },
     };
     expect(needsCodexSettingsUpdate(settings)).toBe(false);
   });
 
-  it("applies recommended mcp_servers without dropping existing tables", () => {
+  it("applies recommended mcp_servers and features without dropping existing tables", () => {
     const settings = {
       features: { codex_hooks: true },
       mcp_servers: {
@@ -49,8 +75,27 @@ describe("codex settings", () => {
       args: ["other-mcp"],
     });
     expect(result.mcp_servers?.serena).toEqual(RECOMMENDED_CODEX_MCP.serena);
-    expect(result.features).toEqual({ codex_hooks: true });
+    expect(result.features).toEqual({
+      codex_hooks: true,
+      ...RECOMMENDED_CODEX_FEATURES,
+    });
     expect(needsCodexSettingsUpdate(result)).toBe(false);
+  });
+
+  it("force-enables recommended features even when user disabled them", () => {
+    const settings = {
+      mcp_servers: {
+        serena: { command: "uvx", args: ["serena"] },
+      },
+      features: { goals: false, child_agents_md: false, custom_flag: true },
+    };
+
+    const result = applyRecommendedCodexSettings(settings);
+    expect(result.features).toEqual({
+      goals: true,
+      child_agents_md: true,
+      custom_flag: true,
+    });
   });
 
   it("preserves existing serena config when transport is present", () => {

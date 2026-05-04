@@ -28,6 +28,14 @@ export const RECOMMENDED_CODEX_MCP = {
   },
 };
 
+// Codex CLI experimental feature flags that default to false but oh-my-agent
+// always enables (Codex 0.124.0, 2026-05). `multi_agent` is omitted because it
+// already defaults to true upstream.
+export const RECOMMENDED_CODEX_FEATURES = {
+  goals: true,
+  child_agents_md: true,
+} as const;
+
 type JsonRecord = Record<string, unknown>;
 
 interface CodexMcpServer {
@@ -40,6 +48,7 @@ interface CodexMcpServer {
 
 export interface CodexSettings {
   mcp_servers?: Record<string, CodexMcpServer>;
+  features?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -69,9 +78,16 @@ export function serializeCodexConfig(settings: CodexSettings): string {
 
 export function needsCodexSettingsUpdate(settings: unknown): boolean {
   if (!isRecord(settings)) return true;
-  const mcp = (settings as CodexSettings).mcp_servers;
+  const typed = settings as CodexSettings;
+  const mcp = typed.mcp_servers;
   const serena = isRecord(mcp) ? (mcp.serena as CodexMcpServer) : undefined;
-  return !hasCodexMcpTransport(serena);
+  if (!hasCodexMcpTransport(serena)) return true;
+
+  const features = isRecord(typed.features) ? typed.features : undefined;
+  for (const [key, value] of Object.entries(RECOMMENDED_CODEX_FEATURES)) {
+    if (features?.[key] !== value) return true;
+  }
+  return false;
 }
 
 export function applyRecommendedCodexSettings(
@@ -90,6 +106,12 @@ export function applyRecommendedCodexSettings(
   base.mcp_servers = {
     ...currentMcp,
     serena: nextSerena,
+  };
+
+  const currentFeatures = isRecord(base.features) ? base.features : {};
+  base.features = {
+    ...currentFeatures,
+    ...RECOMMENDED_CODEX_FEATURES,
   };
 
   return base;
