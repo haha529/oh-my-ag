@@ -65,7 +65,9 @@ find_shot() {
     ai)
       [[ -f "$d/03-ai-panel.png" ]] && echo "03-ai-panel.png" && return ;;
     gallery)
-      [[ -f "$d/04-gallery.png" ]] && echo "04-gallery.png" && return ;;
+      for f in 04-gallery.png 05-gallery.png; do
+        [[ -f "$d/$f" ]] && echo "$f" && return
+      done ;;
     object)
       for f in 02b-object-placed.png 02b-box-placed.png 02-world-builder-with-object.png 05-objects-added.png; do
         [[ -f "$d/$f" ]] && echo "$f" && return
