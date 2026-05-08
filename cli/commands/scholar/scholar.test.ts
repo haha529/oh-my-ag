@@ -221,7 +221,7 @@ describe("lintDoc — v0.9.0 sidecar", () => {
       (f) => f.path === "coverage.evidence",
     );
     expect(matches.length).toBe(1);
-    expect(matches[0].severity).toBe("warning");
+    expect(matches[0]?.severity).toBe("warning");
   });
 
   it("past-tense predicate → warning, not error", () => {
@@ -242,8 +242,8 @@ describe("lintDoc — v0.9.0 sidecar", () => {
       (f) => f.path.endsWith(".predicate") && f.message.includes("past-tense"),
     );
     expect(matches.length).toBe(1);
-    expect(matches[0].severity).toBe("warning");
-    expect(matches[0].fix).toContain("evaluates_on");
+    expect(matches[0]?.severity).toBe("warning");
+    expect(matches[0]?.fix).toContain("evaluates_on");
   });
 
   it("relation density < 1.5 → warning", () => {

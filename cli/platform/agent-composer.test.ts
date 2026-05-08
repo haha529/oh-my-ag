@@ -170,7 +170,9 @@ describe("sanitizeFrontmatterForVendor — codex", () => {
     sanitizeFrontmatterForVendor(input, "codex");
 
     expect(warnSpy).toHaveBeenCalledTimes(2);
-    const warnMessages = warnSpy.mock.calls.map((c) => c[0] as string);
+    const warnMessages: string[] = warnSpy.mock.calls.map(
+      (c: unknown[]) => c[0] as string,
+    );
     expect(warnMessages.some((m) => m.includes("'tools'"))).toBe(true);
     expect(warnMessages.some((m) => m.includes("'maxTurns'"))).toBe(true);
     expect(warnMessages.every((m) => m.includes("codex variant"))).toBe(true);
@@ -232,7 +234,9 @@ describe("sanitizeFrontmatterForVendor — gemini", () => {
     sanitizeFrontmatterForVendor(input, "gemini");
 
     expect(warnSpy).toHaveBeenCalledTimes(2);
-    const warnMessages = warnSpy.mock.calls.map((c) => c[0] as string);
+    const warnMessages: string[] = warnSpy.mock.calls.map(
+      (c: unknown[]) => c[0] as string,
+    );
     expect(warnMessages.every((m) => m.includes("gemini variant"))).toBe(true);
   });
 });
@@ -267,7 +271,9 @@ describe("sanitizeFrontmatterForVendor — antigravity", () => {
       model: "antigravity/flux-1",
     });
     expect(warnSpy).toHaveBeenCalledTimes(4);
-    const warnMessages = warnSpy.mock.calls.map((c) => c[0] as string);
+    const warnMessages: string[] = warnSpy.mock.calls.map(
+      (c: unknown[]) => c[0] as string,
+    );
     expect(warnMessages.every((m) => m.includes("antigravity variant"))).toBe(
       true,
     );
@@ -306,7 +312,9 @@ describe("sanitizeFrontmatterForVendor — qwen", () => {
       thinking: true,
     });
     expect(warnSpy).toHaveBeenCalledTimes(3);
-    const warnMessages = warnSpy.mock.calls.map((c) => c[0] as string);
+    const warnMessages: string[] = warnSpy.mock.calls.map(
+      (c: unknown[]) => c[0] as string,
+    );
     expect(warnMessages.every((m) => m.includes("qwen variant"))).toBe(true);
   });
 });

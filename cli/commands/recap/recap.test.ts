@@ -97,9 +97,9 @@ describe("collectRecap", () => {
     const result = await collectRecap({ window: "1d" });
 
     expect(result.stats.totalPrompts).toBe(2);
-    expect(result.entries[0].tool).toBe("claude");
-    expect(result.entries[0].prompt).toBe("hello");
-    expect(result.entries[0].project).toBe("myproject");
+    expect(result.entries[0]?.tool).toBe("claude");
+    expect(result.entries[0]?.prompt).toBe("hello");
+    expect(result.entries[0]?.project).toBe("myproject");
     expect(result.stats.byTool.claude).toBe(2);
   });
 
@@ -124,9 +124,9 @@ describe("collectRecap", () => {
     const result = await collectRecap({ window: "1d", tool: "codex" });
 
     expect(result.stats.totalPrompts).toBe(1);
-    expect(result.entries[0].tool).toBe("codex");
-    expect(result.entries[0].prompt).toBe("codex prompt");
-    expect(result.entries[0].timestamp).toBe(tsSec * 1000);
+    expect(result.entries[0]?.tool).toBe("codex");
+    expect(result.entries[0]?.prompt).toBe("codex prompt");
+    expect(result.entries[0]?.timestamp).toBe(tsSec * 1000);
   });
 
   it("filters by tool", async () => {
@@ -164,8 +164,8 @@ describe("collectRecap", () => {
 
     const result = await collectRecap({ window: "1d", tool: "claude" });
 
-    expect(result.entries[0].prompt).toBe("first");
-    expect(result.entries[1].prompt).toBe("second");
+    expect(result.entries[0]?.prompt).toBe("first");
+    expect(result.entries[1]?.prompt).toBe("second");
   });
 
   it("computes top projects with limit", async () => {
@@ -204,8 +204,8 @@ describe("collectRecap", () => {
     });
 
     expect(result.stats.topProjects).toHaveLength(1);
-    expect(result.stats.topProjects[0].name).toBe("alpha");
-    expect(result.stats.topProjects[0].count).toBe(10);
+    expect(result.stats.topProjects[0]?.name).toBe("alpha");
+    expect(result.stats.topProjects[0]?.count).toBe(10);
   });
 
   it("supports duration sort", async () => {
@@ -248,7 +248,7 @@ describe("collectRecap", () => {
       sort: "duration",
     });
 
-    expect(result.stats.topProjects[0].name).toBe("beta");
+    expect(result.stats.topProjects[0]?.name).toBe("beta");
   });
 
   it("includes window bounds and timezone", async () => {

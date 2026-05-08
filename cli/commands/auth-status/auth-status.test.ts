@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { firstCall } from "../../__tests__/helpers.js";
 
 const mockFsFunctions = vi.hoisted(() => ({
   existsSync: vi.fn(),
@@ -65,7 +66,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result).toEqual({
         github: true,
         gemini: true,
@@ -87,7 +89,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result).toEqual({
         github: false,
         gemini: false,
@@ -110,7 +113,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.claude).toBe(true);
     });
 
@@ -120,7 +124,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.claude).toBe(false);
     });
 
@@ -130,7 +135,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.claude).toBe(false);
     });
   });
@@ -157,7 +163,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.gemini).toBe(true);
     });
 
@@ -167,7 +174,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.gemini).toBe(false);
     });
 
@@ -180,7 +188,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.gemini).toBe(false);
     });
   });
@@ -204,7 +213,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.codex).toBe(true);
     });
 
@@ -217,7 +227,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.codex).toBe(false);
     });
   });
@@ -243,7 +254,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.qwen).toBe(true);
     });
 
@@ -253,7 +265,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.qwen).toBe(false);
     });
 
@@ -268,7 +281,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.qwen).toBe(false);
     });
   });
@@ -325,7 +339,8 @@ describe("auth:status command", () => {
       const consoleSpy = vi.spyOn(console, "log");
       await checkAuthStatus(true);
 
-      const result = JSON.parse(consoleSpy.mock.calls[0][0]);
+      const [output] = firstCall(consoleSpy);
+      const result = JSON.parse(output);
       expect(result.gemini).toBe(false);
       expect(result.codex).toBe(false);
       expect(result.qwen).toBe(false);

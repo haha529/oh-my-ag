@@ -29,14 +29,16 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+
+    "typeRoots": ["./cli/node_modules/@types"],
+    "types": ["node"]
   },
-  "include": ["cli/**/*.ts"],
+  "include": ["cli/**/*.ts", "cli/**/*.tsx"],
   "exclude": [
-    "cli/__tests__/**",
-    "cli/**/*.test.ts",
-    "cli/**/*.test.tsx",
     "web/**",
-    "node_modules"
+    "node_modules",
+    "cli/coverage/**",
+    "cli/node_modules/**"
   ]
 }

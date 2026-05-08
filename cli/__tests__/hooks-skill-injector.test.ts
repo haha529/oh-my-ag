@@ -44,8 +44,8 @@ describe("skill-injector", () => {
         "ja",
         "zh",
       ]);
-      expect(pat.test("I want to search docs today")).toBe(true);
-      expect(pat.test("researchdocs")).toBe(false);
+      expect(pat?.test("I want to search docs today")).toBe(true);
+      expect(pat?.test("researchdocs")).toBe(false);
     });
 
     it("drops word boundaries for CJK locale", () => {
@@ -54,17 +54,17 @@ describe("skill-injector", () => {
         "ja",
         "zh",
       ]);
-      expect(pat.test("이거 번역해줘요")).toBe(true);
+      expect(pat?.test("이거 번역해줘요")).toBe(true);
     });
 
     it("drops word boundaries for non-ASCII triggers even in en locale", () => {
       const [pat] = buildTriggerPatterns(["翻訳"], "en", ["ko", "ja", "zh"]);
-      expect(pat.test("早く翻訳してほしい")).toBe(true);
+      expect(pat?.test("早く翻訳してほしい")).toBe(true);
     });
 
     it("is case-insensitive", () => {
       const [pat] = buildTriggerPatterns(["React Component"], "en", []);
-      expect(pat.test("build a react component")).toBe(true);
+      expect(pat?.test("build a react component")).toBe(true);
     });
   });
 
@@ -98,9 +98,9 @@ describe("skill-injector", () => {
         config,
       );
       expect(matches).toHaveLength(1);
-      expect(matches[0].name).toBe("oma-search");
-      expect(matches[0].score).toBe(20);
-      expect(matches[0].matchedTriggers).toEqual([
+      expect(matches[0]?.name).toBe("oma-search");
+      expect(matches[0]?.score).toBe(20);
+      expect(matches[0]?.matchedTriggers).toEqual([
         "search docs",
         "find library",
       ]);
@@ -120,7 +120,7 @@ describe("skill-injector", () => {
       };
       const matches = matchSkills("이거 번역해줘 빨리", "ko", [skillB], config);
       expect(matches).toHaveLength(1);
-      expect(matches[0].matchedTriggers).toContain("번역해줘");
+      expect(matches[0]?.matchedTriggers).toContain("번역해줘");
     });
 
     it("returns multiple skills sorted by score desc", () => {
@@ -145,7 +145,9 @@ describe("skill-injector", () => {
         "oma-search",
         "oma-translator",
       ]);
-      expect(matches[0].score).toBeGreaterThan(matches[1].score);
+      const [first, second] = matches;
+      if (!first || !second) throw new Error("expected two matches");
+      expect(first.score).toBeGreaterThan(second.score);
     });
 
     it("caps results at top 3", () => {
@@ -208,7 +210,7 @@ describe("skill-injector", () => {
         Date.now(),
       );
       expect(fresh).toHaveLength(2);
-      expect(nextState.sessions["sess-1"].injected).toHaveLength(2);
+      expect(nextState.sessions["sess-1"]?.injected).toHaveLength(2);
     });
 
     it("filters out skills already injected in session", () => {

@@ -289,10 +289,10 @@ describe("migration 008 — model_preset", () => {
       { model: string; effort?: string }
     >;
     expect(agents.backend).toBeDefined();
-    expect(agents.backend.model).toBe("openai/gpt-5.3-codex");
-    expect(agents.backend.effort).toBe("high");
+    expect(agents.backend?.model).toBe("openai/gpt-5.3-codex");
+    expect(agents.backend?.effort).toBe("high");
     expect(agents.orchestrator).toBeDefined();
-    expect(agents.orchestrator.model).toBe("anthropic/claude-sonnet-4-6");
+    expect(agents.orchestrator?.model).toBe("anthropic/claude-sonnet-4-6");
   });
 
   // -------------------------------------------------------------------------

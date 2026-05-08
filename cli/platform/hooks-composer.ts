@@ -126,7 +126,7 @@ function patchVendorDetection(hooksDest: string): void {
   return "claude";
 }`;
   const patchedTestFilterDetectVendor = `function inferVendorFromScriptPath(): Vendor | null {
-  const path = import.meta.path;
+  const path = import.meta.filename;
   if (path.includes(\`\${join(".cursor", "hooks")}\`)) return "cursor";
   if (path.includes(\`\${join(".qwen", "hooks")}\`)) return "qwen";
   if (path.includes(\`\${join(".claude", "hooks")}\`)) return "claude";
@@ -161,7 +161,7 @@ function detectVendor(input: Record<string, unknown>): Vendor {
   return "claude";
 }`;
   const patchedPersistentModeDetectVendor = `function inferVendorFromScriptPath(): Vendor | null {
-  const path = import.meta.path;
+  const path = import.meta.filename;
   if (path.includes(\`\${join(".cursor", "hooks")}\`)) return "cursor";
   if (path.includes(\`\${join(".qwen", "hooks")}\`)) return "qwen";
   if (path.includes(\`\${join(".claude", "hooks")}\`)) return "claude";

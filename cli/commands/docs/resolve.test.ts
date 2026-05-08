@@ -132,10 +132,10 @@ describe("resolveRefs - file: doc-relative then repo-root fallback", () => {
 
     const report = await resolveRefs(index, tmp);
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].kind).toBe("file");
-    expect(report.broken[0].reason).toMatch(/file_missing/);
+    expect(report.broken[0]?.kind).toBe("file");
+    expect(report.broken[0]?.reason).toMatch(/file_missing/);
     // Both attempted paths should appear in the reason
-    expect(report.broken[0].reason).toMatch(/tried:/);
+    expect(report.broken[0]?.reason).toMatch(/tried:/);
   });
 
   it("broken reason contains both attempted paths", async () => {
@@ -146,8 +146,8 @@ describe("resolveRefs - file: doc-relative then repo-root fallback", () => {
     ]);
 
     const report = await resolveRefs(index, tmp);
-    expect(report.broken[0].reason).toMatch(/docs[/\\]missing[/\\]file\.ts/);
-    expect(report.broken[0].reason).toMatch(/missing[/\\]file\.ts/);
+    expect(report.broken[0]?.reason).toMatch(/docs[/\\]missing[/\\]file\.ts/);
+    expect(report.broken[0]?.reason).toMatch(/missing[/\\]file\.ts/);
   });
 });
 
@@ -226,7 +226,7 @@ describe("resolveRefs - url: internal hosts are skipped (never HEAD-requested)",
 
       expect(report.broken).toHaveLength(0);
       expect(report.skipped).toHaveLength(1);
-      expect(report.skipped[0].reason).toBe("internal-host");
+      expect(report.skipped[0]?.reason).toBe("internal-host");
     });
   }
 });
@@ -253,7 +253,7 @@ describe("resolveRefs - url: HTTP status code handling", () => {
 
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].reason).toMatch(/404/);
+    expect(report.broken[0]?.reason).toMatch(/404/);
     expect(report.skipped).toHaveLength(0);
   });
 
@@ -266,7 +266,7 @@ describe("resolveRefs - url: HTTP status code handling", () => {
 
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].reason).toMatch(/410/);
+    expect(report.broken[0]?.reason).toMatch(/410/);
   });
 
   it("200 response is ok", async () => {
@@ -303,7 +303,7 @@ describe("resolveRefs - url: HTTP status code handling", () => {
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(0);
     expect(report.skipped).toHaveLength(1);
-    expect(report.skipped[0].reason).toMatch(/auth-required/);
+    expect(report.skipped[0]?.reason).toMatch(/auth-required/);
   });
 
   it("403 response is skipped (auth-required), NOT broken", async () => {
@@ -316,7 +316,7 @@ describe("resolveRefs - url: HTTP status code handling", () => {
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(0);
     expect(report.skipped).toHaveLength(1);
-    expect(report.skipped[0].reason).toMatch(/auth-required/);
+    expect(report.skipped[0]?.reason).toMatch(/auth-required/);
   });
 
   it("500 server error is skipped (unreachable), NOT broken", async () => {
@@ -329,7 +329,7 @@ describe("resolveRefs - url: HTTP status code handling", () => {
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(0);
     expect(report.skipped).toHaveLength(1);
-    expect(report.skipped[0].reason).toMatch(/unreachable/);
+    expect(report.skipped[0]?.reason).toMatch(/unreachable/);
   });
 
   it("timeout error is skipped (unreachable), NOT broken", async () => {
@@ -343,7 +343,7 @@ describe("resolveRefs - url: HTTP status code handling", () => {
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(0);
     expect(report.skipped).toHaveLength(1);
-    expect(report.skipped[0].reason).toMatch(/unreachable/);
+    expect(report.skipped[0]?.reason).toMatch(/unreachable/);
   });
 
   it("ECONNREFUSED error is skipped (unreachable), NOT broken", async () => {
@@ -399,7 +399,7 @@ describe("resolveRefs - cli: which-based lookup", () => {
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(0);
     expect(report.skipped).toHaveLength(1);
-    expect(report.skipped[0].reason).toBe("cli-unavailable");
+    expect(report.skipped[0]?.reason).toBe("cli-unavailable");
   });
 });
 
@@ -446,7 +446,7 @@ describe("resolveRefs - script: package.json lookup", () => {
 
     const report = await resolveRefs(index, tmp);
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].reason).toMatch(/script_not_in_package_json/);
+    expect(report.broken[0]?.reason).toMatch(/script_not_in_package_json/);
   });
 
   it("no package.json found while walking up is broken", async () => {
@@ -462,7 +462,7 @@ describe("resolveRefs - script: package.json lookup", () => {
 
     const report = await resolveRefs(index, tmp);
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].reason).toMatch(/package_json_not_found/);
+    expect(report.broken[0]?.reason).toMatch(/package_json_not_found/);
   });
 
   it("script in workspace root is ok when nearest package.json lacks it", async () => {
@@ -503,9 +503,9 @@ describe("resolveRefs - script: package.json lookup", () => {
 
     const report = await resolveRefs(index, tmp);
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].reason).toMatch(/script_not_in_package_json/);
-    expect(report.broken[0].reason).toContain("web/package.json");
-    expect(report.broken[0].reason).toContain("package.json");
+    expect(report.broken[0]?.reason).toMatch(/script_not_in_package_json/);
+    expect(report.broken[0]?.reason).toContain("web/package.json");
+    expect(report.broken[0]?.reason).toContain("package.json");
   });
 });
 
@@ -579,7 +579,7 @@ describe("resolveRefs - env: code grep and .env.example lookup", () => {
     const report = await resolveRefs(index, tmp);
     expect(report.broken).toHaveLength(0);
     expect(report.skipped).toHaveLength(1);
-    expect(report.skipped[0].reason).toMatch(/env-not-found-locally/);
+    expect(report.skipped[0]?.reason).toMatch(/env-not-found-locally/);
   });
 });
 
@@ -630,7 +630,7 @@ describe("resolveRefs - config: dot-path matching", () => {
 
     const report = await resolveRefs(index, "/tmp");
     expect(report.broken).toHaveLength(1);
-    expect(report.broken[0].reason).toMatch(/config_key_not_found/);
+    expect(report.broken[0]?.reason).toMatch(/config_key_not_found/);
   });
 
   it("completely unknown config key is broken", async () => {

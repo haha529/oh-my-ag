@@ -10,6 +10,7 @@ import {
   type MockInstance,
   vi,
 } from "vitest";
+import { lastCall as mockLastCall } from "../../__tests__/helpers.js";
 import { bridge, validateSerenaConfigs } from "../bridge/bridge.js";
 
 // Normalize Windows backslashes for cross-platform path string checks.
@@ -282,14 +283,12 @@ describe("bridge command", () => {
           if (stdinHandler) stdinHandler(`${msg}\n`);
         },
         getPostCallback: () => {
-          const lastCall =
-            mockHttp.request.mock.calls[mockHttp.request.mock.calls.length - 1];
-          return lastCall[1] as (res: http.IncomingMessage) => void;
+          const call = mockLastCall(mockHttp.request);
+          return call[1] as (res: http.IncomingMessage) => void;
         },
         getPostOptions: () => {
-          const lastCall =
-            mockHttp.request.mock.calls[mockHttp.request.mock.calls.length - 1];
-          return lastCall[0] as Record<string, unknown>;
+          const call = mockLastCall(mockHttp.request);
+          return call[0] as Record<string, unknown>;
         },
       };
     }
@@ -550,9 +549,8 @@ describe("bridge command", () => {
           if (stdinHandler) stdinHandler(`${msg}\n`);
         },
         getPostCallback: () => {
-          const lastCall =
-            mockHttp.request.mock.calls[mockHttp.request.mock.calls.length - 1];
-          return lastCall[1] as (res: http.IncomingMessage) => void;
+          const call = mockLastCall(mockHttp.request);
+          return call[1] as (res: http.IncomingMessage) => void;
         },
       };
     }
@@ -593,7 +591,7 @@ describe("bridge command", () => {
         (call: unknown[]) =>
           (call[0] as Record<string, unknown>).method === "GET",
       );
-      expect(getCall).toBeDefined();
+      if (!getCall) throw new Error("expected a GET request to be made");
 
       const getOptions = getCall[0] as Record<string, unknown>;
       const getHeaders = getOptions.headers as Record<string, string>;
@@ -690,10 +688,9 @@ describe("bridge command", () => {
         (call: unknown[]) =>
           (call[0] as Record<string, unknown>).method === "POST",
       );
-      if (postCalls.length > 0) {
-        const postCb = postCalls[postCalls.length - 1][1] as (
-          res: http.IncomingMessage,
-        ) => void;
+      const lastPostCall = postCalls[postCalls.length - 1];
+      if (lastPostCall) {
+        const postCb = lastPostCall[1] as (res: http.IncomingMessage) => void;
         const initRes = createMockRes({
           headers: { "mcp-session-id": "sess-409" },
           contentType: "application/json",
@@ -705,8 +702,9 @@ describe("bridge command", () => {
 
       // Now simulate 409 on the GET stream
       if (getCallback) {
+        const cb409 = getCallback as (res: http.IncomingMessage) => void;
         const res409 = createMockRes({ statusCode: 409 });
-        getCallback(res409 as unknown as http.IncomingMessage);
+        cb409(res409 as unknown as http.IncomingMessage);
 
         expect(res409.resume).toHaveBeenCalled();
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -747,10 +745,9 @@ describe("bridge command", () => {
         (call: unknown[]) =>
           (call[0] as Record<string, unknown>).method === "POST",
       );
-      if (postCalls.length > 0) {
-        const postCb = postCalls[postCalls.length - 1][1] as (
-          res: http.IncomingMessage,
-        ) => void;
+      const lastPostCall = postCalls[postCalls.length - 1];
+      if (lastPostCall) {
+        const postCb = lastPostCall[1] as (res: http.IncomingMessage) => void;
         const initRes = createMockRes({
           headers: { "mcp-session-id": "sess-405" },
           contentType: "application/json",
@@ -761,8 +758,9 @@ describe("bridge command", () => {
       }
 
       if (getCallback) {
+        const cb405 = getCallback as (res: http.IncomingMessage) => void;
         const res405 = createMockRes({ statusCode: 405 });
-        getCallback(res405 as unknown as http.IncomingMessage);
+        cb405(res405 as unknown as http.IncomingMessage);
         expect(res405.resume).toHaveBeenCalled();
       }
     });
@@ -799,10 +797,9 @@ describe("bridge command", () => {
         (call: unknown[]) =>
           (call[0] as Record<string, unknown>).method === "POST",
       );
-      if (postCalls.length > 0) {
-        const postCb = postCalls[postCalls.length - 1][1] as (
-          res: http.IncomingMessage,
-        ) => void;
+      const lastPostCall = postCalls[postCalls.length - 1];
+      if (lastPostCall) {
+        const postCb = lastPostCall[1] as (res: http.IncomingMessage) => void;
         const initRes = createMockRes({
           headers: { "mcp-session-id": "sess-notify" },
           contentType: "application/json",
@@ -813,8 +810,9 @@ describe("bridge command", () => {
       }
 
       if (getCallback) {
+        const cbNotify = getCallback as (res: http.IncomingMessage) => void;
         const getRes = createMockRes({ statusCode: 200 });
-        getCallback(getRes as unknown as http.IncomingMessage);
+        cbNotify(getRes as unknown as http.IncomingMessage);
 
         const notification =
           'event: message\ndata: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}\n\n';
@@ -858,10 +856,9 @@ describe("bridge command", () => {
         (call: unknown[]) =>
           (call[0] as Record<string, unknown>).method === "POST",
       );
-      if (postCalls.length > 0) {
-        const postCb = postCalls[postCalls.length - 1][1] as (
-          res: http.IncomingMessage,
-        ) => void;
+      const lastPostCall = postCalls[postCalls.length - 1];
+      if (lastPostCall) {
+        const postCb = lastPostCall[1] as (res: http.IncomingMessage) => void;
         const initRes = createMockRes({
           headers: { "mcp-session-id": "sess-reconnect" },
           contentType: "application/json",
@@ -875,7 +872,9 @@ describe("bridge command", () => {
 
       // Simulate stream close
       const getRes = createMockRes({ statusCode: 200 });
-      getCallbacks[0](getRes as unknown as http.IncomingMessage);
+      const firstGetCb = getCallbacks[0];
+      if (!firstGetCb) throw new Error("expected at least one GET callback");
+      firstGetCb(getRes as unknown as http.IncomingMessage);
       getRes.emit("end");
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -927,9 +926,8 @@ describe("bridge command", () => {
           );
         }
 
-        const lastCall =
-          mockHttp.request.mock.calls[mockHttp.request.mock.calls.length - 1];
-        const cb = lastCall[1] as (res: http.IncomingMessage) => void;
+        const call = mockLastCall(mockHttp.request);
+        const cb = call[1] as (res: http.IncomingMessage) => void;
         sseRes = createMockRes({
           headers: { "mcp-session-id": "sse-test" },
           contentType: "text/event-stream",

@@ -7,6 +7,7 @@
 //   3. Calls installSkill per name with extracted dir as source
 //   4. Always invokes cleanup() — even if installation throws
 
+import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const tarballState = vi.hoisted(() => ({
@@ -18,8 +19,15 @@ const tarballState = vi.hoisted(() => ({
 }));
 
 const skillsState = vi.hoisted(() => ({
-  installShared: vi.fn(),
-  installSkill: vi.fn(() => true),
+  installShared: vi.fn<(sourceDir: string, targetDir: string) => void>(),
+  installSkill: vi.fn<
+    (
+      sourceDir: string,
+      skillName: string,
+      targetDir: string,
+      variant?: string,
+    ) => boolean
+  >(() => true),
   getAllSkills: vi.fn(() => []),
   INSTALLED_SKILLS_DIR: ".agents/skills",
 }));
@@ -65,6 +73,7 @@ describe("installSkillsFromRemote", () => {
     );
     // Critical: the SOURCE must NOT equal the target
     const call = skillsState.installShared.mock.calls[0];
+    assert(call, "expected installShared to have been called");
     expect(call[0]).not.toBe(call[1]);
   });
 

@@ -18,7 +18,8 @@
     "web:lint": "bun run --cwd web lint"
   },
   "overrides": {
-    "webpack": "~5.97.0"
+    "webpack": "~5.97.0",
+    "@types/node": "^24"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",

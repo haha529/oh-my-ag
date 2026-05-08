@@ -7,6 +7,7 @@
  * Design: docs/plans/designs/008-oma-docs.md section Extractor
  */
 
+import assert from "node:assert/strict";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { extractDocRefs, GENERATOR } from "./extract.js";
@@ -43,6 +44,7 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("extracts file ref from markdown link", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     expect(doc).toBeDefined();
     const fileRefs = doc.refs.filter((r) => r.kind === "file");
     const targets = fileRefs.map((r) => r.target);
@@ -52,6 +54,7 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("extracts file ref from inline code backtick", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const fileRefs = doc.refs.filter((r) => r.kind === "file");
     const targets = fileRefs.map((r) => r.target);
     expect(targets).toContain("cli/commands/docs/extract.ts");
@@ -60,14 +63,16 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("extracts url ref", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const urlRefs = doc.refs.filter((r) => r.kind === "url");
     expect(urlRefs.length).toBeGreaterThan(0);
-    expect(urlRefs[0].target).toContain("example.com");
+    expect(urlRefs[0]?.target).toContain("example.com");
   });
 
   it("extracts cli ref from inline code with known binary", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const cliRefs = doc.refs.filter((r) => r.kind === "cli");
     const targets = cliRefs.map((r) => r.target);
     expect(targets.some((t) => t.startsWith("oma"))).toBe(true);
@@ -76,6 +81,7 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("extracts script refs (bun run test, npm run lint)", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const scriptRefs = doc.refs.filter((r) => r.kind === "script");
     const targets = scriptRefs.map((r) => r.target);
     expect(targets).toContain("test");
@@ -85,6 +91,7 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("extracts env ref from process.env pattern", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const envRefs = doc.refs.filter((r) => r.kind === "env");
     const targets = envRefs.map((r) => r.target);
     expect(targets).toContain("OPENAI_API_KEY");
@@ -93,6 +100,7 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("extracts config ref from dot-path", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const configRefs = doc.refs.filter((r) => r.kind === "config");
     const targets = configRefs.map((r) => r.target);
     expect(targets).toContain("docs.auto_verify");
@@ -101,6 +109,7 @@ describe("extractDocRefs - all 6 ref kinds (basic.md)", () => {
   it("each ref has a 1-based line number", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     for (const ref of doc.refs) {
       expect(ref.line).toBeGreaterThanOrEqual(1);
     }
@@ -115,6 +124,7 @@ describe("extractDocRefs - sort order", () => {
   it("refs are sorted by line ascending", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const lines = doc.refs.map((r) => r.line);
     const sorted = [...lines].sort((a, b) => a - b);
     expect(lines).toEqual(sorted);
@@ -136,6 +146,7 @@ describe("extractDocRefs - escape block (escape-block.md)", () => {
   it("excludes refs inside ignore-start / ignore-end block", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "escape-block.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const targets = doc.refs.map((r) => r.target);
     expect(targets).not.toContain("src/ignored.ts");
     expect(targets.some((t) => t.includes("ignored-cmd"))).toBe(false);
@@ -144,6 +155,7 @@ describe("extractDocRefs - escape block (escape-block.md)", () => {
   it("includes refs outside the ignore block", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "escape-block.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const targets = doc.refs.map((r) => r.target);
     expect(targets).toContain("src/auth.ts");
   });
@@ -151,6 +163,7 @@ describe("extractDocRefs - escape block (escape-block.md)", () => {
   it("includes ref that appears after the closing ignore-end tag", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "escape-block.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const cliRefs = doc.refs.filter((r) => r.kind === "cli");
     const targets = cliRefs.map((r) => r.target);
     expect(targets.some((t) => t.startsWith("oma docs verify"))).toBe(true);
@@ -165,6 +178,7 @@ describe("extractDocRefs - unmatched ignore-start (escape-unmatched.md)", () => 
   it("includes refs that appear before the lone ignore-start", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "escape-unmatched.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const targets = doc.refs.map((r) => r.target);
     expect(targets).toContain("src/before.ts");
   });
@@ -172,6 +186,7 @@ describe("extractDocRefs - unmatched ignore-start (escape-unmatched.md)", () => 
   it("excludes all refs after the lone ignore-start (treat as ignore until EOF)", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "escape-unmatched.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const targets = doc.refs.map((r) => r.target);
     expect(targets).not.toContain("src/after.ts");
     expect(targets.some((t) => t.includes("cmd-after-start"))).toBe(false);
@@ -197,12 +212,12 @@ describe("extractDocRefs - empty refs (empty-refs.md)", () => {
   it("includes the doc entry even when it has no refs", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "empty-refs.md");
     expect(index.docs).toHaveLength(1);
-    expect(index.docs[0].refs).toEqual([]);
+    expect(index.docs[0]?.refs).toEqual([]);
   });
 
   it("entry path matches the relative fixture path", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "empty-refs.md");
-    expect(index.docs[0].path).toBe("empty-refs.md");
+    expect(index.docs[0]?.path).toBe("empty-refs.md");
   });
 });
 
@@ -215,12 +230,14 @@ describe("extractDocRefs - UTF-8 BOM (bom.md)", () => {
     const index = await extractDocRefs(FIXTURES_DIR, "bom.md");
     expect(index.docs).toHaveLength(1);
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     expect(doc.refs.length).toBeGreaterThan(0);
   });
 
   it("BOM file produces file refs", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "bom.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const fileRefs = doc.refs.filter((r) => r.kind === "file");
     expect(fileRefs.length).toBeGreaterThan(0);
   });
@@ -234,6 +251,7 @@ describe("extractDocRefs - CLI disambiguation (cli-edge.md)", () => {
   it("does NOT extract random prose backticks as cli refs", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "cli-edge.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const cliRefs = doc.refs.filter((r) => r.kind === "cli");
     const targets = cliRefs.map((r) => r.target);
     expect(targets.some((t) => t.startsWith("notarealcommand"))).toBe(false);
@@ -243,6 +261,7 @@ describe("extractDocRefs - CLI disambiguation (cli-edge.md)", () => {
   it("extracts cli refs from known binaries inside fenced bash blocks", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "cli-edge.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const cliRefs = doc.refs.filter((r) => r.kind === "cli");
     const targets = cliRefs.map((r) => r.target);
     expect(targets.some((t) => t.startsWith("oma"))).toBe(true);
@@ -252,6 +271,7 @@ describe("extractDocRefs - CLI disambiguation (cli-edge.md)", () => {
   it("extracts inline CLI with known binary prefix", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "cli-edge.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const cliRefs = doc.refs.filter((r) => r.kind === "cli");
     const targets = cliRefs.map((r) => r.target);
     expect(targets.some((t) => t.includes("oma docs verify"))).toBe(true);
@@ -260,6 +280,7 @@ describe("extractDocRefs - CLI disambiguation (cli-edge.md)", () => {
   it("extracts file ref from file-like inline code token", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "cli-edge.md");
     const doc = index.docs[0];
+    assert(doc, "expected at least one doc");
     const fileRefs = doc.refs.filter((r) => r.kind === "file");
     const targets = fileRefs.map((r) => r.target);
     expect(targets).toContain("src/some-file.ts");
@@ -287,13 +308,13 @@ describe("extractDocRefs - path glob", () => {
   it("single-file path narrows the scan to exactly that file", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "empty-refs.md");
     expect(index.docs).toHaveLength(1);
-    expect(index.docs[0].path).toBe("empty-refs.md");
+    expect(index.docs[0]?.path).toBe("empty-refs.md");
   });
 
   it("glob pattern matching a specific file returns only that file", async () => {
     const index = await extractDocRefs(FIXTURES_DIR, "basic.md");
     expect(index.docs).toHaveLength(1);
-    expect(index.docs[0].path).toBe("basic.md");
+    expect(index.docs[0]?.path).toBe("basic.md");
   });
 });
 

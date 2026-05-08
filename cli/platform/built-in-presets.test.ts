@@ -9,6 +9,7 @@
 //     any defined alias resolves to a real preset key.
 // ---------------------------------------------------------------------------
 
+import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 
 const EXPECTED_PRESET_KEYS = [
@@ -73,6 +74,7 @@ describe("BUILT_IN_PRESETS", () => {
     const preset = BUILT_IN_PRESETS[key];
     for (const agentId of EXPECTED_AGENT_IDS) {
       const spec = preset.agent_defaults[agentId];
+      assert(spec, `Preset '${key}' missing agent '${agentId}'`);
       expect(
         typeof spec.model,
         `Preset '${key}' agent '${agentId}' must have a string model slug`,
@@ -91,7 +93,9 @@ describe("BUILT_IN_PRESETS", () => {
     const { getModelSpec } = await import("./model-registry.js");
     const preset = BUILT_IN_PRESETS[key];
     for (const agentId of EXPECTED_AGENT_IDS) {
-      const slug = preset.agent_defaults[agentId].model;
+      const agentSpec = preset.agent_defaults[agentId];
+      assert(agentSpec, `Preset '${key}' missing agent '${agentId}'`);
+      const slug = agentSpec.model;
       const spec = getModelSpec(slug);
       expect(
         spec,

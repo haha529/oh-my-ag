@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createLink, resetLinkWarnings } from "./fs-link.js";
@@ -88,6 +89,7 @@ describe("createLink", () => {
       expect(result).toBe("junction");
       expect(symlinkSync).toHaveBeenCalledTimes(2);
       const second = symlinkSync.mock.calls[1];
+      assert(second, "expected a second symlinkSync call");
       expect(second[1]).toBe("C:\\proj\\sub\\link");
       expect(second[2]).toBe("junction");
       expect(second[0]).not.toBe("..\\target"); // resolved to absolute

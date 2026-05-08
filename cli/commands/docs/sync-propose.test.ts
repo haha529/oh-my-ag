@@ -139,8 +139,10 @@ describe("proposeSyncPatches - --cached default + fallback", () => {
     expect(proposals).toHaveLength(1);
     // Verify --cached was invoked
     const cachedCall = mockExecSync.mock.calls.find(
-      ([cmd]: [string]) =>
-        cmd.includes("--cached") && cmd.includes("--name-only"),
+      (call: unknown[]) =>
+        typeof call[0] === "string" &&
+        call[0].includes("--cached") &&
+        call[0].includes("--name-only"),
     );
     expect(cachedCall).toBeDefined();
   });
@@ -162,8 +164,10 @@ describe("proposeSyncPatches - --cached default + fallback", () => {
     const proposals = await proposeSyncPatches({ repoRoot: REPO_ROOT, index });
     expect(proposals).toHaveLength(1);
     const fallbackCall = mockExecSync.mock.calls.find(
-      ([cmd]: [string]) =>
-        cmd.includes("HEAD~1..HEAD") && cmd.includes("--name-only"),
+      (call: unknown[]) =>
+        typeof call[0] === "string" &&
+        call[0].includes("HEAD~1..HEAD") &&
+        call[0].includes("--name-only"),
     );
     expect(fallbackCall).toBeDefined();
   });
@@ -190,7 +194,7 @@ describe("proposeSyncPatches - reverse lookup correctness", () => {
       index,
     });
     expect(proposals).toHaveLength(1);
-    expect(proposals[0].doc).toBe("docs/README.md");
+    expect(proposals[0]?.doc).toBe("docs/README.md");
   });
 
   it("does not include docs that have no matching ref for changed files", async () => {
@@ -210,7 +214,7 @@ describe("proposeSyncPatches - reverse lookup correctness", () => {
       index,
     });
     expect(proposals).toHaveLength(1);
-    expect(proposals[0].doc).toBe("docs/README.md");
+    expect(proposals[0]?.doc).toBe("docs/README.md");
   });
 
   it("includes changedFiles in the proposal", async () => {
@@ -220,7 +224,9 @@ describe("proposeSyncPatches - reverse lookup correctness", () => {
       diffRange: "HEAD~1..HEAD",
       index,
     });
-    expect(proposals[0].changedFiles).toContain("cli/commands/docs/extract.ts");
+    expect(proposals[0]?.changedFiles).toContain(
+      "cli/commands/docs/extract.ts",
+    );
   });
 
   it("includes matchedRefs in the proposal", async () => {
@@ -230,8 +236,8 @@ describe("proposeSyncPatches - reverse lookup correctness", () => {
       diffRange: "HEAD~1..HEAD",
       index,
     });
-    expect(proposals[0].matchedRefs).toHaveLength(1);
-    expect(proposals[0].matchedRefs[0].target).toBe(
+    expect(proposals[0]?.matchedRefs).toHaveLength(1);
+    expect(proposals[0]?.matchedRefs[0]?.target).toBe(
       "cli/commands/docs/extract.ts",
     );
   });
@@ -254,8 +260,8 @@ describe("proposeSyncPatches - reverse lookup correctness", () => {
       index,
     });
     expect(proposals).toHaveLength(2);
-    expect(proposals[0].doc).toBe("docs/a-readme.md");
-    expect(proposals[1].doc).toBe("docs/z-guide.md");
+    expect(proposals[0]?.doc).toBe("docs/a-readme.md");
+    expect(proposals[1]?.doc).toBe("docs/z-guide.md");
   });
 });
 
@@ -297,10 +303,11 @@ describe("proposeSyncPatches - secret redaction (file exclusion by pattern)", ()
 
       // git diff should never be called for the secret file
       const diffCallsForSecret = mockExecSync.mock.calls.filter(
-        ([cmd]: [string]) =>
-          cmd.includes("git diff") &&
-          cmd.includes(secretFile) &&
-          cmd.includes(" -- "),
+        (call: unknown[]) =>
+          typeof call[0] === "string" &&
+          call[0].includes("git diff") &&
+          call[0].includes(secretFile) &&
+          call[0].includes(" -- "),
       );
       expect(diffCallsForSecret).toHaveLength(0);
     });

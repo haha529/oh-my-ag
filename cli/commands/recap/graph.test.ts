@@ -26,10 +26,10 @@ describe("buildGraphData", () => {
       entry({ timestamp: 3000, project: "beta" }),
     ]);
     expect(nodes).toHaveLength(2);
-    expect(nodes[0].id).toBe("alpha");
-    expect(nodes[0].count).toBe(2);
-    expect(nodes[1].id).toBe("beta");
-    expect(nodes[1].count).toBe(1);
+    expect(nodes[0]?.id).toBe("alpha");
+    expect(nodes[0]?.count).toBe(2);
+    expect(nodes[1]?.id).toBe("beta");
+    expect(nodes[1]?.count).toBe(1);
   });
 
   it("assigns primaryTool from most-used tool per project", () => {
@@ -38,7 +38,7 @@ describe("buildGraphData", () => {
       entry({ timestamp: 2000, project: "proj", tool: "gemini" }),
       entry({ timestamp: 3000, project: "proj", tool: "gemini" }),
     ]);
-    expect(nodes[0].primaryTool).toBe("gemini");
+    expect(nodes[0]?.primaryTool).toBe("gemini");
   });
 
   it("creates edges between projects used within 30min", () => {
@@ -48,7 +48,7 @@ describe("buildGraphData", () => {
       entry({ timestamp: base + 60_000, project: "beta" }), // 1min later
     ]);
     expect(edges).toHaveLength(1);
-    expect(edges[0].weight).toBe(1);
+    expect(edges[0]?.weight).toBe(1);
   });
 
   it("does not create edges for projects >30min apart", () => {
@@ -78,7 +78,7 @@ describe("buildGraphData", () => {
       entry({ timestamp: base + 3000, project: "beta" }),
     ]);
     expect(edges).toHaveLength(1);
-    expect(edges[0].weight).toBeGreaterThan(1);
+    expect(edges[0]?.weight).toBeGreaterThan(1);
   });
 
   it("respects top-K limit", () => {
@@ -94,8 +94,8 @@ describe("buildGraphData", () => {
       2,
     );
     expect(nodes).toHaveLength(2);
-    expect(nodes[0].id).toBe("a");
-    expect(nodes[1].id).toBe("b");
+    expect(nodes[0]?.id).toBe("a");
+    expect(nodes[1]?.id).toBe("b");
   });
 
   it("excludes edges to filtered-out nodes", () => {
@@ -118,6 +118,6 @@ describe("buildGraphData", () => {
       entry({ timestamp: 2000 }),
     ]);
     expect(nodes).toHaveLength(1);
-    expect(nodes[0].id).toBe("(unknown)");
+    expect(nodes[0]?.id).toBe("(unknown)");
   });
 });

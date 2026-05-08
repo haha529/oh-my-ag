@@ -65,7 +65,13 @@ const skillsState = vi.hoisted(() => ({
   installConfigs: vi.fn(),
   installSkill: vi.fn(),
   installVendorAdaptations: vi.fn(),
-  createCliSymlinks: vi.fn(() => ({ created: [], skipped: [] })),
+  createCliSymlinks: vi.fn<
+    (
+      targetDir: string,
+      cliTools: string[],
+      skillNames: string[],
+    ) => { created: string[]; skipped: string[] }
+  >(() => ({ created: [], skipped: [] })),
   ensureCursorMcpSymlink: vi.fn(),
   vendorRequiresHomeConsent: vi.fn((cli: string) => cli === "hermes"),
   getVendorDisplayPath: vi.fn((cli: string) =>
@@ -215,7 +221,7 @@ describe("install home policy", () => {
     expect(symlinkCalls.length).toBeGreaterThan(0);
     // hermes must not be in the cliTools array passed to createCliSymlinks
     for (const call of symlinkCalls) {
-      const cliTools = call[1] as string[];
+      const cliTools = call[1];
       expect(cliTools).not.toContain("hermes");
     }
   });
@@ -230,7 +236,7 @@ describe("install home policy", () => {
     await install();
 
     const symlinkCalls = skillsState.createCliSymlinks.mock.calls;
-    const allCliTools = symlinkCalls.flatMap((c) => c[1] as string[]);
+    const allCliTools = symlinkCalls.flatMap((c) => c[1]);
     expect(allCliTools).toContain("hermes");
   });
 

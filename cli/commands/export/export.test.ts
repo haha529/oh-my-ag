@@ -43,11 +43,11 @@ describe("readRules", () => {
 
     const rules = readRules(mockTargetDir);
     expect(rules).toHaveLength(1);
-    expect(rules[0].name).toBe("frontend");
-    expect(rules[0].description).toBe("Frontend standards");
-    expect(rules[0].globs).toBe("**/*.tsx");
-    expect(rules[0].alwaysApply).toBe(false);
-    expect(rules[0].body).toContain("# Frontend");
+    expect(rules[0]?.name).toBe("frontend");
+    expect(rules[0]?.description).toBe("Frontend standards");
+    expect(rules[0]?.globs).toBe("**/*.tsx");
+    expect(rules[0]?.alwaysApply).toBe(false);
+    expect(rules[0]?.body).toContain("# Frontend");
   });
 
   it("should filter non-.md files", () => {

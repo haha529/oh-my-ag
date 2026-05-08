@@ -9,7 +9,7 @@ function makeRecap(overrides: Partial<RecapOutput> = {}): RecapOutput {
     entries: [],
     stats: {
       totalPrompts: 0,
-      byTool: {},
+      byTool: { gemini: 0, claude: 0, codex: 0, qwen: 0, cursor: 0 },
       topProjects: [],
     },
     ...overrides,
