@@ -731,37 +731,6 @@ oma visualize
 oma viz --json
 ```
 
-### export
-
-Export skills for external IDEs that consume their own rules format (e.g. Cursor).
-
-```
-oma export <format> [-d <path>] [--json] [--output <format>]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|:---------|:---------|:-----------|
-| `format` | Yes | Target format. Currently supports: `cursor` |
-
-**Options:**
-
-| Flag | Short | Description | Default |
-|:-----|:------|:-----------|:--------|
-| `--dir <path>` | `-d` | Target directory to write the exported rules into. | Current working directory |
-| `--json` / `--output <format>` | | Machine-readable output | `text` |
-
-**Examples:**
-
-```bash
-# Export to ./.cursor/rules in the current project
-oma export cursor
-
-# Export to a sibling project's directory
-oma export cursor -d ../another-project
-```
-
 ### search
 
 Mechanical search primitives — fetch, metadata, RSS, media, code, and trust scoring. Aliased as `oma s`. All subcommands output JSON to stdout (one object per line, or pretty-printed with `--pretty`).

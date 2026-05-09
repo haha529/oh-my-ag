@@ -5,8 +5,7 @@ import {
   generateCursorRules,
   mergeRulesIndexForVendor,
   readRules,
-} from "../../platform/rules.js";
-import { exportRules } from "../export/export.js";
+} from "./rules.js";
 
 vi.mock("node:fs", () => ({
   existsSync: vi.fn(),
@@ -400,47 +399,5 @@ describe("mergeRulesIndexForVendor", () => {
     expect(content).toContain(omaStart);
     expect(content).not.toContain("old block");
     expect(content).toContain("# oh-my-agent");
-  });
-});
-
-describe("exportRules CLI", () => {
-  beforeEach(() => vi.clearAllMocks());
-  afterEach(() => vi.restoreAllMocks());
-
-  it("should throw on unsupported format", async () => {
-    await expect(exportRules("windsurf", mockTargetDir)).rejects.toThrow(
-      "Unsupported format: windsurf",
-    );
-  });
-
-  it("should throw when no rules found", async () => {
-    (fs.existsSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      false,
-    );
-    await expect(exportRules("cursor", mockTargetDir)).rejects.toThrow(
-      "No rules found",
-    );
-  });
-
-  it("should output JSON when jsonMode is true", async () => {
-    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-
-    (fs.existsSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      true,
-    );
-    (fs.readdirSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
-      "frontend.md",
-    ]);
-    (fs.readFileSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      "---\ndescription: test\n---\n\n# Test",
-    );
-
-    await exportRules("cursor", mockTargetDir, true);
-
-    const parsed = JSON.parse(consoleSpy.mock.calls[0]?.[0] as string);
-    expect(parsed.format).toBe("cursor");
-    expect(parsed.exported).toContain("frontend");
-
-    consoleSpy.mockRestore();
   });
 });
