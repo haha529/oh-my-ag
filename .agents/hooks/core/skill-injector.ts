@@ -21,6 +21,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join } from "node:path";
+import { toPosixPath } from "./fs-utils.ts";
 import { makePromptOutput, resolveGitRoot, type Vendor } from "./types.ts";
 
 const MAX_SKILLS = 3;
@@ -389,11 +390,13 @@ export function findClaudeSlashSkill(
     }
     const { frontmatter, body } = parseSkillFrontmatter(content);
     if (frontmatter["disable-model-invocation"] !== true) continue;
+    const posixPath = toPosixPath(skillPath);
+    const posixRoot = toPosixPath(projectDir);
     return {
       name,
-      skillRelPath: skillPath.startsWith(`${projectDir}/`)
-        ? skillPath.slice(projectDir.length + 1)
-        : skillPath,
+      skillRelPath: posixPath.startsWith(`${posixRoot}/`)
+        ? posixPath.slice(posixRoot.length + 1)
+        : posixPath,
       body: body.trim(),
     };
   }

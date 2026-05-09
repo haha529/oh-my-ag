@@ -490,6 +490,21 @@ describe("skill-injector", () => {
       expect(findClaudeSlashSkill("nope", "/repo")).toBe(null);
     });
 
+    it("normalizes backslash paths to forward slashes (Windows)", () => {
+      const skillContent =
+        "---\nname: ralph\ndisable-model-invocation: true\n---\nbody";
+      (fs.existsSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+        true,
+      );
+      (fs.readFileSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+        skillContent,
+      );
+
+      const entry = findClaudeSlashSkill("ralph", "C:\\repo");
+      expect(entry?.skillRelPath).not.toContain("\\");
+      expect(entry?.skillRelPath).toBe(".claude/skills/ralph/SKILL.md");
+    });
+
     it("falls back to .agents/skills when .claude/skills lacks the skill", () => {
       const skillContent =
         "---\nname: shared\ndisable-model-invocation: true\n---\nshared body";
