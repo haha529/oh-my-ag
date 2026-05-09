@@ -2,7 +2,7 @@ import { Command } from "commander";
 
 const JSON_OUTPUT_ENV = "OH_MY_AG_OUTPUT_FORMAT";
 const OUTPUT_FORMATS = ["text", "json"] as const;
-const VENDORS = ["gemini", "claude", "codex", "qwen"] as const;
+const VENDORS = ["gemini", "claude", "codex", "qwen", "cursor"] as const;
 const AGENT_TYPES = [
   "backend",
   "frontend",

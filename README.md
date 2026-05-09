@@ -140,6 +140,7 @@ oma recap --window 1d       # Cross-tool conversation history recap
 oma search fetch <url>      # Mechanical search with auto-escalating strategies
 oma image generate "cat"    # Multi-vendor AI image generation
 oma export cursor           # Project skills as `.cursor/rules` for external IDEs
+oma model:check             # Detect drift between registered models and live vendor lists
 ```
 
 Model selection follows two layers:

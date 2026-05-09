@@ -15,6 +15,7 @@ import {
 } from "./commands/install/command.js";
 import { registerLink } from "./commands/link/command.js";
 import { registerMemory } from "./commands/memory/command.js";
+import { registerModelCommands } from "./commands/model/command.js";
 import { registerRecap } from "./commands/recap/command.js";
 import { registerRetro } from "./commands/retro/command.js";
 import { registerScholarCommand } from "./commands/scholar/index.js";
@@ -87,6 +88,7 @@ registerDocsCommands(program);
 registerCleanup(program);
 registerBridge(program);
 registerAgentCommands(program);
+registerModelCommands(program);
 registerMemory(program);
 registerVerify(program);
 registerStar(program);
