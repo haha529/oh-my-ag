@@ -1,7 +1,7 @@
 {
   "name": "oh-my-agent",
   "version": "6.20.0",
-  "releaseDate": "2026-05-09T01:47:45.553Z",
+  "releaseDate": "2026-05-09T02:29:38.775Z",
   "repository": "https://github.com/first-fluke/oh-my-agent",
   "files": [
     {
@@ -86,8 +86,13 @@
     },
     {
       "path": ".agents/hooks/core/fs-utils.ts",
-      "sha256": "7e32d5ee1df8cd973621c6380ed537459e0be91baffaededbb62fbcb23a62924",
-      "size": 346
+      "sha256": "711e81167fbf6b25a09c158c9f0cb78febf45fa5f5ed1552a901863610934337",
+      "size": 932
+    },
+    {
+      "path": ".agents/hooks/core/hook-output.ts",
+      "sha256": "91171f9effc2179dceaa3b8a5c8dd7fc6dfb5f59afc5242f1078968656484a3c",
+      "size": 2352
     },
     {
       "path": ".agents/hooks/core/hud.ts",
@@ -96,23 +101,23 @@
     },
     {
       "path": ".agents/hooks/core/keyword-detector.ts",
-      "sha256": "9445c3899b6f414e50e693b79d6e0541098c09ba52b1bf5d899699d5675aaf75",
-      "size": 18655
+      "sha256": "1ad34eb1910eeb3bcdf94f3856ef985118721a559c7772c0c1d6500e561ed5da",
+      "size": 18708
     },
     {
       "path": ".agents/hooks/core/persistent-mode.ts",
-      "sha256": "3112678a4ac99a26be4e8992692f998d7e58a2f92d653d332f81541e5a7b0a02",
-      "size": 7018
+      "sha256": "0289516475f8aef8ea6f925916b02a38afa53f22c166061917154fa925b62825",
+      "size": 7071
     },
     {
       "path": ".agents/hooks/core/skill-injector.ts",
-      "sha256": "920a67d2d2c1e0e05e43cffc096231c09e745bf5c67c6eac5ab6317da32139c2",
-      "size": 16408
+      "sha256": "09001395f607732a76e659e3be0c9836e4cc25a25b14911927182739bfc8c980",
+      "size": 16443
     },
     {
       "path": ".agents/hooks/core/test-filter.ts",
-      "sha256": "8d5b0b7d54f507809700a2e1e05f6e2fd0d564f9baeb80e9dfc2d86629aee535",
-      "size": 4339
+      "sha256": "44e4189bf89f6da42484bccce82735d5ac9a8fca5e009ac7eccfea116ff70e0e",
+      "size": 4406
     },
     {
       "path": ".agents/hooks/core/triggers.json",
@@ -121,8 +126,8 @@
     },
     {
       "path": ".agents/hooks/core/types.ts",
-      "sha256": "f7a4e53fcdbc391e75d6040ad0ffe063693d47083b2f802a6464c605b3c2b2d2",
-      "size": 3493
+      "sha256": "af35e41ec81a97fa4517bc6f9cf273ff6b2f40abc026f7763bda645fb50215bb",
+      "size": 691
     },
     {
       "path": ".agents/hooks/variants/claude.json",
@@ -1466,6 +1471,6 @@
   "metadata": {
     "skillCount": 25,
     "workflowCount": 18,
-    "totalFiles": 291
+    "totalFiles": 292
   }
 }
