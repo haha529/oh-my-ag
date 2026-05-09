@@ -1,7 +1,7 @@
 {
   "name": "oh-my-agent",
   "version": "7.3.0",
-  "releaseDate": "2026-05-09T08:48:57.369Z",
+  "releaseDate": "2026-05-09T09:02:52.800Z",
   "repository": "https://github.com/first-fluke/oh-my-agent",
   "files": [
     {
@@ -356,28 +356,28 @@
     },
     {
       "path": ".agents/skills/oma-academic-writer/SKILL.md",
-      "sha256": "9fcc71196a74de7484cc792f43d085a51c3b8becf7d7fe5b45d38e1e6d4d05e7",
-      "size": 13457
+      "sha256": "5edb7f749ce1a0c141169266669803b144c1eb72d1a16fe654c88f690fa831f9",
+      "size": 13543
     },
     {
       "path": ".agents/skills/oma-academic-writer/resources/academic-verb-tiers.md",
-      "sha256": "3396a4d72d3cd81cc898f9f1a14c8988ba1d858b65d352eef9bd917c7e18751b",
-      "size": 9614
+      "sha256": "ba605e1652e7e682a3bbfecf80140172b09b4ca90fd390b8d29a1c5d46b7b334",
+      "size": 9584
     },
     {
       "path": ".agents/skills/oma-academic-writer/resources/anti-ai-checklist.md",
-      "sha256": "3f3e11b79cb7162ba7d0b0b578e68a1cb3cfb0ee14ceda34af88578718864b41",
-      "size": 9504
+      "sha256": "d985d40868c35f38edc27aedea09e83a06b891902d0ff13c1f488aef887f8737",
+      "size": 9444
     },
     {
       "path": ".agents/skills/oma-academic-writer/resources/hedging-guide.md",
-      "sha256": "356cf5cbd0eb93e2cfb32da46214a39abd7305a6242c45a4c9bcb103e418e213",
-      "size": 5486
+      "sha256": "1eb9d8f8cd2b1690fc805f5fb78946bac990c7c86fe3ce7f48aa667ce79738f5",
+      "size": 5466
     },
     {
       "path": ".agents/skills/oma-academic-writer/resources/sentence-structure-reference.md",
-      "sha256": "2e414d72abd652a356e94a237b5e1fcca0a1594edcbeb5bcbcfc44e256dcacb5",
-      "size": 7739
+      "sha256": "7f9a0050df3454419858456c6e372deca1d17fe6b9e0029df6f6e626e029e45e",
+      "size": 7714
     },
     {
       "path": ".agents/skills/oma-architecture/SKILL.md",
