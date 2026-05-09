@@ -116,6 +116,7 @@ O usa slash commands para flujos estructurados:
 | 3 | `/ultrawork` | Flujo de calidad en 5 fases con 11 puertas de revisión |
 | 4 | `/review` | Auditoría de seguridad + rendimiento + accesibilidad |
 | 5 | `/debug` | Debugging estructurado de causa raíz |
+| 5 | `/docs` | Verificación y sincronización de drift de documentación con `oma-docs` |
 | 6 | `/scm` | Flujo SCM y Git con soporte de Conventional Commits |
 
 **Auto-detección**: Ni siquiera necesitas slash commands — palabras clave como "arquitectura", "plan", "review" y "debug" en tu mensaje (¡en 11 idiomas!) activan automáticamente el flujo correcto.

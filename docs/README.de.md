@@ -116,6 +116,7 @@ Oder nutz Slash Commands für strukturierte Workflows:
 | 3 | `/ultrawork` | 5-Phasen-Qualitätsworkflow mit 11 Review-Gates |
 | 4 | `/review` | Sicherheits- + Performance- + Barrierefreiheits-Audit |
 | 5 | `/debug` | Strukturiertes Ursachen-Debugging |
+| 5 | `/docs` | Dokumentations-Drift verifizieren und synchronisieren via `oma-docs` |
 | 6 | `/scm` | SCM- und Git-Workflow sowie Unterstützung für Conventional Commits |
 
 **Auto-Erkennung**: Du brauchst nicht mal Slash Commands — Schlüsselwörter wie "Architektur", "plan", "review" und "debug" in deiner Nachricht (in 11 Sprachen!) aktivieren automatisch den richtigen Workflow.

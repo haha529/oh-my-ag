@@ -220,6 +220,7 @@ function buildVendorBlock(vendor: string, rules: ParsedRule[]): string {
     "| review | `review.md` | QA audit |",
     "| debug | `debug.md` | Root cause + minimal fix |",
     "| scm | `scm.md` | SCM + Git operations + Conventional Commits |",
+    "| docs | `docs.md` | Documentation drift verify + sync |",
     "",
     `To execute: read and follow \`.agents/workflows/{name}.md\` step by step.`,
     "",

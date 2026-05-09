@@ -116,6 +116,7 @@ Hoặc sử dụng slash command cho các workflow có cấu trúc:
 | 3 | `/ultrawork` | Workflow chất lượng 5 giai đoạn với 11 cổng đánh giá |
 | 4 | `/review` | Kiểm tra bảo mật + hiệu suất + accessibility |
 | 5 | `/debug` | Debug có cấu trúc tìm nguyên nhân gốc |
+| 5 | `/docs` | Xác minh và đồng bộ trôi tài liệu qua `oma-docs` |
 | 6 | `/scm` | Quy trình SCM và Git, hỗ trợ Conventional Commits |
 
 **Tự động phát hiện**: Bạn không nhất thiết cần slash command — các từ khóa như "kiến trúc", "kế hoạch", "đánh giá", "debug" trong tin nhắn (hỗ trợ 11 ngôn ngữ!) sẽ tự động kích hoạt workflow phù hợp.
