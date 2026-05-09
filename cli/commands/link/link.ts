@@ -11,6 +11,7 @@ import {
   ensureCursorMcpSymlink,
   getInstalledSkillNames,
   installCodexWorkflowSkills,
+  installCopilotWorkflowPrompts,
   installVendorAdaptations,
   isHookVendor,
   readVendorsFromConfig,
@@ -109,7 +110,12 @@ export function link(vendorFilter?: string[]): void {
     }
   }
 
-  // 2c. Codex-specific settings
+  // 2c. Copilot-specific: workflow prompt wrappers under .github/prompts/
+  if (configuredVendors.includes("copilot")) {
+    installCopilotWorkflowPrompts(cwd, cwd);
+  }
+
+  // 2d. Codex-specific settings
   if (configuredVendors.includes("codex")) {
     installCodexWorkflowSkills(cwd, cwd);
     const codexConfigPath = join(cwd, ".codex", "config.toml");
