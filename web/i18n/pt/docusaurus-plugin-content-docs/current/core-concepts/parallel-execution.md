@@ -135,7 +135,7 @@ agents:
   backend:  { model: openai/gpt-5.5, effort: high }
 ```
 
-Presets built-in: `claude-only`, `codex-only`, `gemini-only`, `qwen-only`, `antigravity`. Veja [Per-Agent Models](../guide/per-agent-models.md) para detalhes.
+Presets built-in: `claude-only`, `codex-only`, `gemini-only`, `qwen-only`, `cursor-only`, `antigravity`. Veja [Per-Agent Models](../guide/per-agent-models.md) para detalhes.
 
 ### Prioridade de Resolução de Vendor
 

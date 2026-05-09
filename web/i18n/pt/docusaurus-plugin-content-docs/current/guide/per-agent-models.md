@@ -38,6 +38,7 @@ model_preset: gemini-only
 | `codex-only` | Todos os agentes usam OpenAI Codex (GPT-5.x) com níveis de esforço | Usuários do ChatGPT Plus/Pro |
 | `gemini-only` | Todos os agentes usam Gemini CLI, com thinking habilitado para papéis de implementação | Usuários do Google AI Pro |
 | `qwen-only` | Todos os agentes roteados externamente via Qwen Code; thinking binário (sem níveis de esforço) | Inferência local / self-hosted |
+| `cursor-only` | Todos os agentes usam Cursor `composer-2` (`composer-2-fast` para orchestrator/qa/pm/docs/retrieval) | Assinantes do Cursor Pro / Pro Student |
 | `antigravity` | Mista: papéis de implementação usam Codex, architecture/qa/pm usam Claude, retrieval usa Gemini | Pontos fortes cross-vendor sem gerenciar configuração por agente |
 
 Os presets nativos são distribuídos dentro do pacote da CLI e atualizam automaticamente quando você atualiza o `oh-my-agent`. Nenhum arquivo local para manter.

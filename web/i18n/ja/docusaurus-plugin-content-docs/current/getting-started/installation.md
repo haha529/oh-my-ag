@@ -199,7 +199,7 @@ bun install --global @qwen-code/qwen-code
 ```yaml
 # Required
 language: en
-model_preset: gemini-only   # ビルトイン: claude-only, codex-only, gemini-only, qwen-only, antigravity
+model_preset: gemini-only   # ビルトイン: claude-only, codex-only, gemini-only, qwen-only, cursor-only, antigravity
 
 # Optional — 日時の設定
 date_format: ISO

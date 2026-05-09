@@ -199,7 +199,7 @@ The `oma install` command creates `.agents/oma-config.yaml`. This is the central
 ```yaml
 # Required
 language: en
-model_preset: gemini-only   # built-in: claude-only, codex-only, gemini-only, qwen-only, antigravity
+model_preset: gemini-only   # built-in: claude-only, codex-only, gemini-only, qwen-only, cursor-only, antigravity
 
 # Optional — date/time preferences
 date_format: ISO

@@ -194,7 +194,7 @@ language: en
 
 # Obrigatório
 language: en
-model_preset: gemini-only   # built-in: claude-only, codex-only, gemini-only, qwen-only, antigravity
+model_preset: gemini-only   # built-in: claude-only, codex-only, gemini-only, qwen-only, cursor-only, antigravity
 
 # Opcional — preferências de data/hora
 date_format: ISO

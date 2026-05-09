@@ -199,7 +199,7 @@ Lệnh `oma install` tạo `.agents/oma-config.yaml`. Đây là file cấu hình
 ```yaml
 # Bắt buộc
 language: en
-model_preset: gemini-only   # built-in: claude-only, codex-only, gemini-only, qwen-only, antigravity
+model_preset: gemini-only   # built-in: claude-only, codex-only, gemini-only, qwen-only, cursor-only, antigravity
 
 # Tùy chọn — tùy chọn ngày/giờ
 date_format: ISO

@@ -38,6 +38,7 @@ model_preset: gemini-only
 | `codex-only` | Alle agents gebruiken OpenAI Codex (GPT-5.x) met effort levels | ChatGPT Plus/Pro-gebruikers |
 | `gemini-only` | Alle agents gebruiken Gemini CLI, thinking ingeschakeld voor implementatierollen | Google AI Pro-gebruikers |
 | `qwen-only` | Alle agents extern gerouteerd via Qwen Code; binaire thinking (geen effort levels) | Lokale / self-hosted inference |
+| `cursor-only` | Alle agents gebruiken Cursor `composer-2` (`composer-2-fast` voor orchestrator/qa/pm/docs/retrieval) | Cursor Pro / Pro Student-abonnees |
 | `antigravity` | Gemengd: implementatierollen gebruiken Codex, architecture/qa/pm gebruiken Claude, retrieval gebruikt Gemini | Cross-vendor sterke punten zonder per-agent configuratie te beheren |
 
 Ingebouwde presets worden meegeleverd binnen het CLI-pakket en updaten automatisch wanneer je `oh-my-agent` upgradet. Geen lokaal bestand om te onderhouden.

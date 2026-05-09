@@ -135,7 +135,7 @@ agents:
   backend:  { model: openai/gpt-5.5, effort: high }
 ```
 
-Built-in presets: `claude-only`, `codex-only`, `gemini-only`, `qwen-only`, `antigravity`. See [Per-Agent Models](../guide/per-agent-models.md) for details.
+Built-in presets: `claude-only`, `codex-only`, `gemini-only`, `qwen-only`, `cursor-only`, `antigravity`. See [Per-Agent Models](../guide/per-agent-models.md) for details.
 
 ### Vendor Resolution
 
